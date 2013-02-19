@@ -19,6 +19,11 @@ import net.sf.uadetector.UADetectorServiceFactory;
 import net.sf.uadetector.UserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 
+/**
+ * TODO Add persistence
+ * 
+ * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
+ */
 @Alternative
 public class AnalyticsImpl implements Analytics {
 

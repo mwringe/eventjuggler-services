@@ -71,7 +71,7 @@ public class SubsystemExtension implements Extension {
         }
     }
 
-    public static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
+    private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
     public static final String NAMESPACE = "urn:eventjuggler:analytics:1.0";
 

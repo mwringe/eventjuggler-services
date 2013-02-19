@@ -24,7 +24,6 @@ package org.eventjuggler.analytics.deployment;
 import javax.enterprise.inject.spi.Extension;
 
 import org.eventjuggler.analytics.AnalyticsWeldExtension;
-import org.eventjuggler.analytics.extension.SubsystemExtension;
 import org.jboss.as.server.deployment.AttachmentList;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -42,7 +41,7 @@ import org.jboss.weld.metadata.MetadataImpl;
  */
 public class AnalyticsWeldExtensionProcessor implements DeploymentUnitProcessor {
 
-    private static final Logger log = SubsystemExtension.log;
+    private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
     public static final Phase PHASE = Phase.PARSE;
 

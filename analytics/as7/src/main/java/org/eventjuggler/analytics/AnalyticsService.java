@@ -21,6 +21,7 @@
  */
 package org.eventjuggler.analytics;
 
+import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -28,9 +29,18 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 
 /**
+ * TODO Add AnalyticsService to JNDI so it can be retrieved by AnalyticsFilter without CDI
+ * 
+ * TODO Allow configuring what applications (WARs) to enable analytics for through standalone.xml. This should allow enabling
+ * analytics for a WAR without modifying it.
+ * 
+ * TODO Add REST interfaces
+ * 
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class AnalyticsService implements Service<Analytics> {
+
+    public static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
     public static ServiceName createServiceName(String suffix) {
         return ServiceName.JBOSS.append("analytics", suffix);
@@ -45,6 +55,7 @@ public class AnalyticsService implements Service<Analytics> {
 
     @Override
     public void start(StartContext context) throws StartException {
+        log.info("Starting Analytics Service");
         analytics = new AnalyticsImpl();
     }
 

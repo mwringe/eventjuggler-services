@@ -21,7 +21,6 @@
  */
 package org.eventjuggler.analytics.deployment;
 
-import org.eventjuggler.analytics.extension.SubsystemExtension;
 import org.jboss.as.server.deployment.AttachmentKey;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
@@ -43,7 +42,7 @@ public class AnalyticsMarkerProcessor implements DeploymentUnitProcessor {
 
     public static final ModuleIdentifier ANALYTICS_IDENTIFIER = ModuleIdentifier.create("org.eventjuggler.analytics");
 
-    private static final Logger log = SubsystemExtension.log;
+    private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");;
 
     public static final Phase PHASE = Phase.STRUCTURE;
 

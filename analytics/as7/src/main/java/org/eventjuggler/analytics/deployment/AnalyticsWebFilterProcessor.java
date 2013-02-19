@@ -24,7 +24,6 @@ package org.eventjuggler.analytics.deployment;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import org.eventjuggler.analytics.extension.SubsystemExtension;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -34,18 +33,21 @@ import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.module.ModuleDependency;
 import org.jboss.as.server.deployment.module.ModuleSpecification;
 import org.jboss.as.web.deployment.WarMetaData;
+import org.jboss.as.weld.WeldDeploymentMarker;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.web.spec.FilterMappingMetaData;
 import org.jboss.metadata.web.spec.FilterMetaData;
 import org.jboss.metadata.web.spec.FiltersMetaData;
 import org.jboss.metadata.web.spec.WebMetaData;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleLoader;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
 
-    private static final Logger log = SubsystemExtension.log;
+    private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
     public static final Phase PHASE = Phase.PARSE;
 
@@ -65,9 +67,10 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
             }
         }
 
-        if (!enableAnalyticsFilter(deploymentUnit)) {
-            return;
-        }
+        // TODO Remove this hack when AnalyticsFilter doesn't require CDI
+        WeldDeploymentMarker.mark(deploymentUnit);
+
+        addDependency(deploymentUnit);
 
         WarMetaData warMetaData = deploymentUnit.getAttachment(WarMetaData.ATTACHMENT_KEY);
         if (warMetaData == null) {
@@ -99,14 +102,18 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
         log.infov("Enabling analytics filter for {0}", deploymentUnit.getName());
     }
 
-    private boolean enableAnalyticsFilter(DeploymentUnit deploymentUnit) {
+    private void addDependency(DeploymentUnit deploymentUnit) {
         ModuleSpecification moduleSpecification = deploymentUnit.getAttachment(Attachments.MODULE_SPECIFICATION);
         for (ModuleDependency d : moduleSpecification.getUserDependencies()) {
             if (d.getIdentifier().equals(AnalyticsMarkerProcessor.ANALYTICS_IDENTIFIER)) {
-                return true;
+                return;
             }
         }
-        return false;
+
+        ModuleLoader moduleLoader = Module.getBootModuleLoader();
+        ModuleDependency moduleDependency = new ModuleDependency(moduleLoader, AnalyticsMarkerProcessor.ANALYTICS_IDENTIFIER, false, false,
+                false, false);
+        moduleSpecification.addSystemDependency(moduleDependency);
     }
 
     @Override
