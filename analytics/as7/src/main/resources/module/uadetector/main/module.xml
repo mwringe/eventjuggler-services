@@ -1,0 +1,11 @@
+<module xmlns="urn:jboss:module:1.0" name="net.sf.uadetector">
+   <resources>
+      <resource-root path="uadetector-core.jar" />
+      <resource-root path="uadetector-resources.jar" />
+   </resources>
+
+   <dependencies>
+      <module name="org.slf4j" />
+      <module name="javax.api" />
+   </dependencies>
+</module>

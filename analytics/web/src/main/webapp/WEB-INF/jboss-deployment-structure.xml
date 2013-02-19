@@ -1,0 +1,7 @@
+<jboss-deployment-structure>
+   <deployment>
+      <dependencies>
+         <module name="org.eventjuggler.analytics" />
+      </dependencies>
+   </deployment>
+</jboss-deployment-structure>

@@ -1,0 +1,18 @@
+# Eclipse project files
+.apt_generated
+.project
+.factorypath
+.classpath
+.settings
+.externalToolBuilders
+
+# Build results
+target/
+
+# IntelliJ IDEA project files
+/.idea
+*.ipr
+*.iml
+
+# OS-X meta files
+.DS_Store
