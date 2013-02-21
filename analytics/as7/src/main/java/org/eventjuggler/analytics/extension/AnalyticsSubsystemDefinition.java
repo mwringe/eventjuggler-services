@@ -19,49 +19,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.analytics;
+package org.eventjuggler.analytics.extension;
 
-import java.io.IOException;
-
-import javax.inject.Inject;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.as.controller.SimpleResourceDefinition;
+import org.jboss.as.controller.registry.ManagementResourceRegistration;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class AnalyticsFilter implements Filter {
+public class AnalyticsSubsystemDefinition extends SimpleResourceDefinition {
 
-    private static final Logger log = LoggerFactory.getLogger("org.eventjuggler.analytics");
+    public static final AnalyticsSubsystemDefinition INSTANCE = new AnalyticsSubsystemDefinition();
 
-    @Inject
-    private Analytics analytics;
-
-    @Override
-    public void destroy() {
+    private AnalyticsSubsystemDefinition() {
+        super(AnalyticsSubsystemExtension.SUBSYSTEM_PATH, AnalyticsSubsystemExtension.getResourceDescriptionResolver(null),
+                AnalyticsSubsystemAdd.INSTANCE, AnalyticsSubsystemRemove.INSTANCE);
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-    ServletException {
-        chain.doFilter(request, response);
-
-        try {
-            analytics.addEvent(request, response);
-        } catch (Throwable t) {
-            log.warn("Unexpected error while processing request for analytics", t);
-        }
+    public void registerAttributes(ManagementResourceRegistration resourceRegistration) {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
+    public void registerOperations(ManagementResourceRegistration resourceRegistration) {
+        super.registerOperations(resourceRegistration);
     }
 
 }

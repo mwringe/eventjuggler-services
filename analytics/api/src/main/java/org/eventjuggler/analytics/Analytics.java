@@ -21,35 +21,16 @@
  */
 package org.eventjuggler.analytics;
 
-import java.util.List;
-import java.util.Map.Entry;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * TODO Add query functionality
- * 
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public interface Analytics {
 
     void addEvent(ServletRequest request, ServletResponse response);
 
-    List<Event> getEvents();
-
-    List<Event> getEvents(String contextPath);
-
-    List<Entry<String, Long>> getPopularPages();
-
-    List<Entry<String, Long>> getPopularPages(String contextPath);
-
-    List<Entry<String, Long>> getRelatedPages(String page);
-
-    List<Entry<String, Long>> getRelatedPages(String contextPath, String page);
-
-    Statistics getStatistics();
-
-    Statistics getStatistics(String contextPath);
+    AnalyticsQuery createQuery();
 
 }

@@ -25,27 +25,22 @@ import org.eventjuggler.analytics.AnalyticsService;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.dmr.ModelNode;
-import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-class SubsystemRemove extends AbstractRemoveStepHandler {
+class AnalyticsSubsystemRemove extends AbstractRemoveStepHandler {
 
-    static final SubsystemRemove INSTANCE = new SubsystemRemove();
+    static final AnalyticsSubsystemRemove INSTANCE = new AnalyticsSubsystemRemove();
 
-    private SubsystemRemove() {
+    private AnalyticsSubsystemRemove() {
     }
 
     @Override
     protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
             throws OperationFailedException {
-        String suffix = PathAddress.pathAddress(operation.get(ModelDescriptionConstants.ADDRESS)).getLastElement().getValue();
-        ServiceName name = AnalyticsService.createServiceName(suffix);
-        context.removeService(name);
+        context.removeService(AnalyticsService.SERVICE_NAME);
     }
 
 }

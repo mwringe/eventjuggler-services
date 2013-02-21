@@ -23,24 +23,35 @@ package org.eventjuggler.analytics;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
+@Entity
 public class EventImpl implements Serializable, Event {
 
-    private final String contextPath;
-    private final String country;
-    private final String language;
-    private final String remoteAddr;
-    private final long time;
-    private final String uri;
-    private final String userAgent;
+    private String contextPath;
+    private String country;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String language;
+    private String page;
+    private String remoteAddr;
+    private long time;
+    private String userAgent;
 
-    public EventImpl(long time, String contextPath, String uri, String remoteAddr, String country, String language,
+    public EventImpl() {
+    }
+
+    public EventImpl(long time, String contextPath, String page, String remoteAddr, String country, String language,
             String userAgent) {
         this.time = time;
         this.contextPath = contextPath;
-        this.uri = uri;
+        this.page = page;
         this.remoteAddr = remoteAddr;
         this.country = country;
         this.language = language;
@@ -64,7 +75,7 @@ public class EventImpl implements Serializable, Event {
 
     @Override
     public String getPage() {
-        return uri;
+        return page;
     }
 
     @Override

@@ -33,7 +33,6 @@ import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.module.ModuleDependency;
 import org.jboss.as.server.deployment.module.ModuleSpecification;
 import org.jboss.as.web.deployment.WarMetaData;
-import org.jboss.as.weld.WeldDeploymentMarker;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.web.spec.FilterMappingMetaData;
 import org.jboss.metadata.web.spec.FilterMetaData;
@@ -57,25 +56,12 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
         DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
 
-        if (deploymentUnit.getParent() == null) {
-            if (deploymentUnit.getAttachment(AnalyticsMarkerProcessor.ENABLE_ANALYTICS_KEY) == null) {
-                return;
-            }
-        } else {
-            if (deploymentUnit.getParent().getAttachment(AnalyticsMarkerProcessor.ENABLE_ANALYTICS_KEY) == null) {
-                return;
-            }
-        }
-
-        // TODO Remove this hack when AnalyticsFilter doesn't require CDI
-        WeldDeploymentMarker.mark(deploymentUnit);
-
-        addDependency(deploymentUnit);
-
         WarMetaData warMetaData = deploymentUnit.getAttachment(WarMetaData.ATTACHMENT_KEY);
         if (warMetaData == null) {
             return;
         }
+
+        addDependency(deploymentUnit);
 
         FilterMetaData filterMetaData = new FilterMetaData();
         filterMetaData.setFilterClass(org.eventjuggler.analytics.AnalyticsFilter.class.getName());
@@ -111,8 +97,8 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
         }
 
         ModuleLoader moduleLoader = Module.getBootModuleLoader();
-        ModuleDependency moduleDependency = new ModuleDependency(moduleLoader, AnalyticsMarkerProcessor.ANALYTICS_IDENTIFIER, false, false,
-                false, false);
+        ModuleDependency moduleDependency = new ModuleDependency(moduleLoader, AnalyticsMarkerProcessor.ANALYTICS_IDENTIFIER,
+                false, false, false, false);
         moduleSpecification.addSystemDependency(moduleDependency);
     }
 

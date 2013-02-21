@@ -2,11 +2,11 @@
    <rich:dataTable value="#{data}" var="e">
       <h:column>
          <f:facet name="header">#{label}</f:facet>
-         #{e.key}
+         #{e.label}
       </h:column>
       <h:column>
          <f:facet name="header">Views</f:facet>
-         #{e.value}
+         #{e.count}
       </h:column>
    </rich:dataTable>
 </ui:composition>

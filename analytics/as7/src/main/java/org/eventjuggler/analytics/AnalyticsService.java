@@ -21,46 +21,65 @@
  */
 package org.eventjuggler.analytics;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
+
+import org.jboss.as.controller.ServiceVerificationHandler;
+import org.jboss.as.txn.service.UserTransactionService;
 import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
+import org.jboss.msc.service.ServiceBuilder;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
+import org.jboss.msc.value.InjectedValue;
 
 /**
- * TODO Add AnalyticsService to JNDI so it can be retrieved by AnalyticsFilter without CDI
- * 
- * TODO Allow configuring what applications (WARs) to enable analytics for through standalone.xml. This should allow enabling
- * analytics for a WAR without modifying it.
- * 
+ * TODO Currently all applications (WARs) and all urls are logged. This should be configurable through standalone.xml (AS
+ * management)
+ *
  * TODO Add REST interfaces
- * 
+ *
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class AnalyticsService implements Service<Analytics> {
 
     public static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
-    public static ServiceName createServiceName(String suffix) {
-        return ServiceName.JBOSS.append("analytics", suffix);
+    public static ServiceName SERVICE_NAME = ServiceName.JBOSS.append("analytics");
+
+    public static ServiceController<Analytics> addService(final ServiceTarget target,
+            final ServiceVerificationHandler verificationHandler) {
+        AnalyticsService service = new AnalyticsService();
+        ServiceBuilder<Analytics> serviceBuilder = target.addService(SERVICE_NAME, service);
+        serviceBuilder.addDependency(UserTransactionService.SERVICE_NAME, UserTransaction.class, service.userTransaction);
+        serviceBuilder.addListener(verificationHandler);
+        return serviceBuilder.install();
     }
 
-    private Analytics analytics;
+    public final InjectedValue<UserTransaction> userTransaction = new InjectedValue<UserTransaction>();
+
+    private EntityManagerFactory emf;
 
     @Override
     public Analytics getValue() throws IllegalStateException, IllegalArgumentException {
-        return analytics;
+        return new AnalyticsImpl(emf, userTransaction.getValue());
     }
 
     @Override
     public void start(StartContext context) throws StartException {
         log.info("Starting Analytics Service");
-        analytics = new AnalyticsImpl();
+
+        emf = Persistence.createEntityManagerFactory("analytics");
     }
 
     @Override
     public void stop(StopContext context) {
+        emf.close();
     }
 
 }

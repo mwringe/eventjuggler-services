@@ -1,70 +1,81 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:rich="http://richfaces.org/rich" xmlns:a4j="http://richfaces.org/a4j">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <h:head></h:head>
 <h:body>
 
-   <h2>Total</h2>
+	<h2>Total</h2>
    #{analyticsBean.statistics.totalViews}
 
    <h2>Popular</h2>
 
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.popular}" />
-   </ui:decorate>
+	<rich:dataTable value="#{analyticsBean.popular}" var="e">
+		<h:column>
+			<f:facet name="header">Page</f:facet>#{e}
+			</h:column>
+	</rich:dataTable>
 
-   <h2>Related</h2>
 
-   <p><h:form>
-      <h:inputText value="#{analyticsBean.page}" style="width: 50em;">
-         <a4j:ajax event="change" render="related" />
-      </h:inputText>
-   </h:form></p>
+	<h2>Related</h2>
 
-   <div id="related">
-      <ui:decorate template="table.xhtml">
-         <ui:param name="label" value="Page" />
-         <ui:param name="data" value="#{analyticsBean.related}" />
-      </ui:decorate>
-   </div>
+	<p>
+		<h:form>
+			<h:inputText value="#{analyticsBean.page}" style="width: 50em;">
+				<a4j:ajax event="change" render="related" />
+			</h:inputText>
+		</h:form>
+	</p>
 
-   <h2>Statistics</h2>
+	<div id="related">
+		<rich:dataTable value="#{analyticsBean.related}" var="e">
+			<h:column>
+				<f:facet name="header">Page</f:facet>#{e}
+			</h:column>
+		</rich:dataTable>
+	</div>
 
-   <h3>Page</h3>
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.statistics.pageViews}" />
-   </ui:decorate>
+	<h2>Statistics</h2>
 
-   <h3>Country</h3>
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.statistics.countryViews}" />
-   </ui:decorate>
-   
-   <h3>Language</h3>
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.statistics.languageViews}" />
-   </ui:decorate>
-   
-   <h3>User</h3>
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.statistics.userViews}" />
-   </ui:decorate>
-   
-   <h3>Browser</h3>
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.statistics.browserViews}" />
-   </ui:decorate>
+	<h3>Page</h3>
+	<ui:decorate template="table.xhtml">
+		<ui:param name="label" value="Page" />
+		<ui:param name="data" value="#{analyticsBean.statistics.pageViews}" />
+	</ui:decorate>
 
-   <h3>OS</h3>
-   <ui:decorate template="table.xhtml">
-      <ui:param name="label" value="Page" />
-      <ui:param name="data" value="#{analyticsBean.statistics.osViews}" />
-   </ui:decorate>
+	<h3>Country</h3>
+	<ui:decorate template="table.xhtml">
+		<ui:param name="label" value="Page" />
+		<ui:param name="data" value="#{analyticsBean.statistics.countryViews}" />
+	</ui:decorate>
+
+	<h3>Language</h3>
+	<ui:decorate template="table.xhtml">
+		<ui:param name="label" value="Page" />
+		<ui:param name="data"
+			value="#{analyticsBean.statistics.languageViews}" />
+	</ui:decorate>
+
+	<h3>User</h3>
+	<ui:decorate template="table.xhtml">
+		<ui:param name="label" value="Page" />
+		<ui:param name="data" value="#{analyticsBean.statistics.userViews}" />
+	</ui:decorate>
+
+	<h3>Browser</h3>
+	<ui:decorate template="table.xhtml">
+		<ui:param name="label" value="Page" />
+		<ui:param name="data" value="#{analyticsBean.statistics.browserViews}" />
+	</ui:decorate>
+
+	<h3>OS</h3>
+	<ui:decorate template="table.xhtml">
+		<ui:param name="label" value="Page" />
+		<ui:param name="data" value="#{analyticsBean.statistics.osViews}" />
+	</ui:decorate>
 
 </h:body>
 </html>

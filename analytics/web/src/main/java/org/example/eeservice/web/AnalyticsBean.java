@@ -22,7 +22,6 @@
 package org.example.eeservice.web;
 
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -54,16 +53,16 @@ public class AnalyticsBean {
         return page;
     }
 
-    public List<Entry<String, Long>> getPopular() {
-        return analytics.getPopularPages();
+    public List<String> getPopular() {
+        return analytics.createQuery().getPopularPages();
     }
 
-    public List<Entry<String, Long>> getRelated() {
-        return analytics.getRelatedPages(page);
+    public List<String> getRelated() {
+        return analytics.createQuery().getRelatedPages(page);
     }
 
     public Statistics getStatistics() {
-        return analytics.getStatistics();
+        return analytics.createQuery().getStatistics();
     }
 
     public void setPage(String page) {

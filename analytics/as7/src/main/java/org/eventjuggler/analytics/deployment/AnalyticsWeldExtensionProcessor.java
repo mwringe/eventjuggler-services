@@ -32,7 +32,6 @@ import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.weld.deployment.WeldAttachments;
 import org.jboss.logging.Logger;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.metadata.MetadataImpl;
 
@@ -46,12 +45,6 @@ public class AnalyticsWeldExtensionProcessor implements DeploymentUnitProcessor 
     public static final Phase PHASE = Phase.PARSE;
 
     public static final int PRIORITY = Phase.PARSE_WEB_COMPONENTS - 1;
-
-    private final ServiceName serviceName;
-
-    public AnalyticsWeldExtensionProcessor(ServiceName serviceName) {
-        this.serviceName = serviceName;
-    }
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
@@ -74,7 +67,7 @@ public class AnalyticsWeldExtensionProcessor implements DeploymentUnitProcessor 
             }
         }
 
-        Extension extension = new AnalyticsWeldExtension(phaseContext.getServiceRegistry(), serviceName);
+        Extension extension = new AnalyticsWeldExtension();
         Metadata<Extension> metadata = new MetadataImpl<Extension>(extension, deploymentUnit.getName());
         deploymentUnit.addToAttachmentList(WeldAttachments.PORTABLE_EXTENSIONS, metadata);
 

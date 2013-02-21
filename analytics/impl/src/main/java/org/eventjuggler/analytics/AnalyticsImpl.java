@@ -1,35 +1,61 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.eventjuggler.analytics;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import javax.enterprise.inject.Alternative;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
-import net.sf.uadetector.UADetectorServiceFactory;
-import net.sf.uadetector.UserAgent;
-import net.sf.uadetector.UserAgentStringParser;
+import javax.transaction.UserTransaction;
 
 /**
- * TODO Add persistence
- * 
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@Alternative
 public class AnalyticsImpl implements Analytics {
 
     private final List<String> acceptedContentTypes = Arrays.asList("text/html", "application/json", "application/xml");
 
-    private final List<Event> events = new LinkedList<Event>();
+    private final EntityManagerFactory emf;
+
+    private final EntityManager em;
+
+    private final UserTransaction userTransaction;
+
+    private final ExecutorService executor;
+
+    public AnalyticsImpl(EntityManagerFactory emf, UserTransaction userTransaction) {
+        this.emf = emf;
+        this.userTransaction = userTransaction;
+
+        // TODO This may be a problem under high load, but then again logging with JPA isn't brilliant either
+        executor = Executors.newSingleThreadExecutor();
+        em = emf.createEntityManager();
+    }
 
     @Override
     public synchronized void addEvent(ServletRequest request, ServletResponse response) {
@@ -37,137 +63,66 @@ public class AnalyticsImpl implements Analytics {
             return;
         }
 
-        if (response.getContentType() == null || !acceptedContentTypes.contains(response.getContentType().split(";")[0])) {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+
+        String contentType = response.getContentType();
+        if (contentType == null || !acceptedContentTypes.contains(contentType.split(";")[0])) {
             return;
         }
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-        if (httpRequest.getContextPath().startsWith("/analytics-web")) {
+        String contextPath = httpRequest.getContextPath();
+        if (contextPath.startsWith("/analytics-web")) {
             return;
         }
 
         long time = System.currentTimeMillis();
-        String contextPath = httpRequest.getContextPath();
         String page = httpRequest.getRequestURI();
-        String remoteAddr = request.getRemoteAddr();
         String country = request.getLocale().getISO3Country();
         String language = request.getLocale().getISO3Language();
+
         String userAgent = httpRequest.getHeader("user-agent");
 
-        Event event = new EventImpl(time, contextPath, page, remoteAddr, country, language, userAgent);
-        events.add(event);
-    }
-
-    private Statistics generateStatistics(List<Event> events) {
-        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-
-        long totalViews = 0;
-        Map<String, Long> pageViews = new HashMap<String, Long>();
-        Map<String, Long> userViews = new HashMap<String, Long>();
-        Map<String, Long> countryViews = new HashMap<String, Long>();
-        Map<String, Long> languageViews = new HashMap<String, Long>();
-        Map<String, Long> browserViews = new HashMap<String, Long>();
-        Map<String, Long> osViews = new HashMap<String, Long>();
-
-        for (Event e : events) {
-            UserAgent agent = parser.parse(e.getUserAgent());
-
-            String browser = agent.getName();
-            String os = agent.getOperatingSystem().getName();
-
-            totalViews++;
-
-            increment(e.getPage(), pageViews);
-            increment(e.getRemoteAddr(), userViews);
-            increment(e.getCountry(), countryViews);
-            increment(e.getLanguage(), languageViews);
-            increment(browser, browserViews);
-            increment(os, osViews);
+        String remoteAddr = request.getRemoteAddr();
+        if (httpRequest.getHeader("x-forwarded-for") != null) {
+            remoteAddr = httpRequest.getHeader("x-forwarded-for");
         }
 
-        return new StatisticsImpl(totalViews, pageViews, userViews, countryViews, languageViews, browserViews, osViews);
+        final Event event = new EventImpl(time, contextPath, page, remoteAddr, country, language, userAgent);
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                persistEvent(event);
+            }
+        });
     }
 
-    @Override
-    public synchronized List<Event> getEvents() {
-        return Collections.unmodifiableList(events);
-    }
+    private void persistEvent(Event event) {
+        try {
+            userTransaction.begin();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-    @Override
-    public synchronized List<Event> getEvents(String contextPath) {
-        List<Event> l = new LinkedList<Event>();
-        for (Event e : events) {
-            if (e.getContextPath().equals(contextPath)) {
-                l.add(e);
+        try {
+            em.joinTransaction();
+            em.persist(event);
+        } finally {
+            try {
+                userTransaction.commit();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
-        return l;
-    }
-
-    private List<Entry<String, Long>> getPopular(List<Entry<String, Long>> l) {
-        Collections.sort(l, new SortByPopularityComparator());
-        return l.size() < 10 ? l : l.subList(0, 10);
     }
 
     @Override
-    public synchronized List<Entry<String, Long>> getPopularPages() {
-        return getPopular(getStatistics().getPageViews());
+    public AnalyticsQuery createQuery() {
+        return new AnalyticsQueryImpl(emf.createEntityManager());
     }
 
-    @Override
-    public synchronized List<Entry<String, Long>> getPopularPages(String contextPath) {
-        return getPopular(getStatistics(contextPath).getPageViews());
-    }
-
-    private List<Entry<String, Long>> getRelatedPages(List<Event> events, String page) {
-        Set<String> usersWithVisit = new HashSet<String>();
-        for (Event e : events) {
-            if (e.getPage().equals(page)) {
-                usersWithVisit.add(e.getRemoteAddr());
-            }
-        }
-
-        List<Event> eventsForUsersWithVisit = new LinkedList<Event>();
-        for (Event e : events) {
-            if (usersWithVisit.contains(e.getRemoteAddr())) {
-                eventsForUsersWithVisit.add(e);
-            }
-        }
-
-        return getPopular(generateStatistics(eventsForUsersWithVisit).getPageViews());
-    }
-
-    @Override
-    public synchronized List<Entry<String, Long>> getRelatedPages(String page) {
-        return getRelatedPages(getEvents(), page);
-    }
-
-    @Override
-    public synchronized List<Entry<String, Long>> getRelatedPages(String contextPath, String page) {
-        return getRelatedPages(getEvents(contextPath), page);
-    }
-
-    @Override
-    public synchronized Statistics getStatistics() {
-        return generateStatistics(getEvents());
-    }
-
-    @Override
-    public synchronized Statistics getStatistics(String contextPath) {
-        return generateStatistics(getEvents(contextPath));
-    }
-
-    private void increment(String label, Map<String, Long> map) {
-        if (label == null) {
-            label = "unknown";
-        }
-
-        if (map.containsKey(label)) {
-            map.put(label, map.get(label) + 1);
-        } else {
-            map.put(label, 1L);
-        }
+    public EntityManager getEm() {
+        return em;
     }
 
 }

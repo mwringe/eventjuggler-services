@@ -20,85 +20,86 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-      <groupId>org.eventjuggler</groupId>
+    <parent>
+        <groupId>org.eventjuggler</groupId>
         <artifactId>analytics-parent</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-   </parent>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
 
-   <artifactId>analytics-as7</artifactId>
-   <name>Analytics Service AS7 Subsystem</name>
+    <artifactId>analytics-as7</artifactId>
+    <name>Analytics Service AS7 Subsystem</name>
 
-   <packaging>jar</packaging>
+    <packaging>jar</packaging>
 
-   <dependencies>
-      <dependency>
-         <groupId>org.eventjuggler</groupId>
-         <artifactId>analytics-api</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.eventjuggler</groupId>
-         <artifactId>analytics-impl</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.as</groupId>
-         <artifactId>jboss-as-weld</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.as</groupId>
-         <artifactId>jboss-as-controller</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.as</groupId>
-         <artifactId>jboss-as-server</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>net.sf.uadetector</groupId>
-         <artifactId>uadetector-resources</artifactId>
-      </dependency>
-   </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.eventjuggler</groupId>
+            <artifactId>analytics-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eventjuggler</groupId>
+            <artifactId>analytics-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-weld</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-controller</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.uadetector</groupId>
+            <artifactId>uadetector-resources</artifactId>
+        </dependency>
+    </dependencies>
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <inherited>false</inherited>
-            <version>1.6</version>
-            <executions>
-               <execution>
-                  <id>build-dist</id>
-                  <goals>
-                     <goal>run</goal>
-                  </goals>
-                  <phase>package</phase>
-                  <configuration>
-                     <target>
-                        <delete dir="target/module" />
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <inherited>false</inherited>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>build-dist</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <delete dir="target/module" />
 
-                        <property name="module.dir" value="target/module/org/eventjuggler/analytics/main" />
+                                <property name="module.dir" value="target/module/org/eventjuggler/analytics/main" />
 
-                        <copy file="target/${project.artifactId}-${project.version}.jar" tofile="${module.dir}/analytics-as7.jar" />
-                        <copy file="${org.eventjuggler:analytics-api:jar}" tofile="${module.dir}/analytics-api.jar" />
-                        <copy file="${org.eventjuggler:analytics-impl:jar}" tofile="${module.dir}/analytics-impl.jar" />
+                                <copy file="target/${project.artifactId}-${project.version}.jar" tofile="${module.dir}/analytics-as7.jar" />
+                                <copy file="${org.eventjuggler:analytics-api:jar}" tofile="${module.dir}/analytics-api.jar" />
+                                <copy file="${org.eventjuggler:analytics-impl:jar}" tofile="${module.dir}/analytics-impl.jar" />
 
-                        <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" />
+                                <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" />
 
-                        <copy file="${net.sf.uadetector:uadetector-core:jar}" tofile="target/module/net/sf/uadetector/main/uadetector-core.jar" />
-                        <copy file="${net.sf.uadetector:uadetector-resources:jar}" tofile="target/module/net/sf/uadetector/main/uadetector-resources.jar" />
-                        <copy file="src/main/resources/module/uadetector/main/module.xml" tofile="target/module/net/sf/uadetector/main/module.xml" />
-                     </target>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
+                                <copy file="${net.sf.uadetector:uadetector-core:jar}" tofile="target/module/net/sf/uadetector/main/uadetector-core.jar" />
+                                <copy file="${net.sf.uadetector:uadetector-resources:jar}" tofile="target/module/net/sf/uadetector/main/uadetector-resources.jar" />
+                                <copy file="src/main/resources/module/uadetector/main/module.xml" tofile="target/module/net/sf/uadetector/main/module.xml" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

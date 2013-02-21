@@ -21,25 +21,55 @@
  */
 package org.eventjuggler.analytics;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
+import java.io.IOException;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class AnalyticsProducer {
+public class AnalyticsFilter implements Filter {
 
-    @ApplicationScoped
-    @Default
-    @Produces
-    public Analytics createAnalytics() {
+    private static final Logger log = LoggerFactory.getLogger("org.eventjuggler.analytics");
+
+    private Analytics analytics;
+
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
+        chain.doFilter(request, response);
+
         try {
-            return (Analytics) new InitialContext().lookup("java:jboss/AnalyticsService");
+            if (analytics != null) {
+                analytics.addEvent(request, response);
+            }
+        } catch (Throwable t) {
+            log.warn("Unexpected error while processing request for analytics", t);
+        }
+    }
+
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+        log.info("Init filter");
+
+        try {
+            analytics = (Analytics) new InitialContext().lookup("java:jboss/AnalyticsService");
         } catch (NamingException e) {
-            throw new RuntimeException(e);
+            log.warn("Failed to lookup analytics service", e);
         }
     }
 

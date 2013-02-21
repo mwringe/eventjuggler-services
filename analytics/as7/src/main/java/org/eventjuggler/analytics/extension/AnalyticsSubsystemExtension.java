@@ -44,7 +44,6 @@ import org.jboss.as.controller.persistence.SubsystemMarshallingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
 import org.jboss.dmr.ModelNode;
-import org.jboss.logging.Logger;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.staxmapper.XMLElementWriter;
 import org.jboss.staxmapper.XMLExtendedStreamReader;
@@ -53,10 +52,10 @@ import org.jboss.staxmapper.XMLExtendedStreamWriter;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class SubsystemExtension implements Extension {
+public class AnalyticsSubsystemExtension implements Extension {
 
     private static class SubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>,
-    XMLElementWriter<SubsystemMarshallingContext> {
+            XMLElementWriter<SubsystemMarshallingContext> {
 
         @Override
         public void readElement(XMLExtendedStreamReader reader, List<ModelNode> list) throws XMLStreamException {
@@ -66,16 +65,14 @@ public class SubsystemExtension implements Extension {
 
         @Override
         public void writeContent(XMLExtendedStreamWriter writer, SubsystemMarshallingContext context) throws XMLStreamException {
-            context.startSubsystemElement(SubsystemExtension.NAMESPACE, false);
+            context.startSubsystemElement(AnalyticsSubsystemExtension.NAMESPACE, false);
             writer.writeEndElement();
         }
     }
 
-    private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
-
     public static final String NAMESPACE = "urn:eventjuggler:analytics:1.0";
 
-    private static final String RESOURCE_NAME = SubsystemExtension.class.getPackage().getName() + ".LocalDescriptions";
+    private static final String RESOURCE_NAME = AnalyticsSubsystemExtension.class.getPackage().getName() + ".LocalDescriptions";
 
     public static final String SUBSYSTEM_NAME = "org.eventjuggler.analytics";
 
@@ -90,8 +87,8 @@ public class SubsystemExtension implements Extension {
 
     static StandardResourceDescriptionResolver getResourceDescriptionResolver(final String keyPrefix) {
         String prefix = SUBSYSTEM_NAME + (keyPrefix == null ? "" : "." + keyPrefix);
-        return new StandardResourceDescriptionResolver(prefix, RESOURCE_NAME, SubsystemExtension.class.getClassLoader(), true,
-                false);
+        return new StandardResourceDescriptionResolver(prefix, RESOURCE_NAME,
+                AnalyticsSubsystemExtension.class.getClassLoader(), true, false);
     }
 
     private final SubsystemParser parser = new SubsystemParser();
@@ -99,7 +96,8 @@ public class SubsystemExtension implements Extension {
     @Override
     public void initialize(ExtensionContext context) {
         final SubsystemRegistration subsystem = context.registerSubsystem(SUBSYSTEM_NAME, 1, 0);
-        final ManagementResourceRegistration registration = subsystem.registerSubsystemModel(SubsystemDefinition.INSTANCE);
+        final ManagementResourceRegistration registration = subsystem
+                .registerSubsystemModel(AnalyticsSubsystemDefinition.INSTANCE);
         registration.registerOperationHandler(DESCRIBE, GenericSubsystemDescribeHandler.INSTANCE,
                 GenericSubsystemDescribeHandler.INSTANCE, false, OperationEntry.EntryType.PRIVATE);
 

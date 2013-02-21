@@ -5,7 +5,7 @@ cd $DIR
 
 rm -rf build/target
 
-mvn clean install
+mvn clean install -DskipTests
 mkdir -p build/target/modules
 mkdir -p build/target/standalone/configuration
 

@@ -23,69 +23,119 @@ package org.eventjuggler.analytics;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import net.sf.uadetector.UADetectorServiceFactory;
+import net.sf.uadetector.UserAgent;
+import net.sf.uadetector.UserAgentStringParser;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class StatisticsImpl implements Serializable, Statistics {
 
-    private final Map<String, Long> browserViews;
-    private final Map<String, Long> countryViews;
-    private final Map<String, Long> languageViews;
-    private final Map<String, Long> osViews;
-    private final Map<String, Long> pageViews;
-    private final long totalViews;
-    private final Map<String, Long> userViews;
+    class EntryImpl implements Entry {
 
-    public StatisticsImpl(long totalViews, Map<String, Long> pageViews, Map<String, Long> userViews,
-            Map<String, Long> countryViews, Map<String, Long> languageViews, Map<String, Long> browserViews,
-            Map<String, Long> osViews) {
-        this.pageViews = pageViews;
-        this.userViews = userViews;
-        this.totalViews = totalViews;
-        this.countryViews = countryViews;
-        this.languageViews = languageViews;
-        this.browserViews = browserViews;
-        this.osViews = osViews;
+        private long count;
+        private String label;
+
+        @Override
+        public long getCount() {
+            return count;
+        }
+
+        @Override
+        public String getLabel() {
+            return label;
+        }
+
+    }
+
+    class SortByPopularityComparator implements Comparator<Entry> {
+
+        @Override
+        public int compare(Entry o1, Entry o2) {
+            long c1 = o1.getCount();
+            long c2 = o2.getCount();
+            if (c1 == c2) {
+                return 0;
+            }
+            return c1 < c2 ? 1 : -1;
+        }
+
+    }
+
+    private final List<Statistics.Entry> browserViews;
+    private final List<Statistics.Entry> countryViews;
+    private final List<Statistics.Entry> languageViews;
+    private final List<Statistics.Entry> osViews;
+    private final List<Statistics.Entry> pageViews;
+
+    private long totalViews;
+
+    private final List<Statistics.Entry> userViews;
+
+    public StatisticsImpl(List<Event> events) {
+        this.pageViews = new LinkedList<Statistics.Entry>();
+        this.userViews = new LinkedList<Statistics.Entry>();
+        this.totalViews = 0;
+        this.countryViews = new LinkedList<Statistics.Entry>();
+        this.languageViews = new LinkedList<Statistics.Entry>();
+        this.browserViews = new LinkedList<Statistics.Entry>();
+        this.osViews = new LinkedList<Statistics.Entry>();
+
+        UserAgentStringParser userAgentParser = UADetectorServiceFactory.getResourceModuleParser();
+
+        for (Event e : events) {
+            UserAgent agent = userAgentParser.parse(e.getUserAgent());
+
+            String browser = agent.getName();
+            String os = agent.getOperatingSystem().getName();
+
+            totalViews++;
+
+            increment(e.getPage(), pageViews);
+            increment(e.getRemoteAddr(), userViews);
+            increment(e.getCountry(), countryViews);
+            increment(e.getLanguage(), languageViews);
+            increment(browser, browserViews);
+            increment(os, osViews);
+        }
+
+        SortByPopularityComparator comparator = new SortByPopularityComparator();
+        Collections.sort(pageViews, comparator);
+        Collections.sort(userViews, comparator);
+        Collections.sort(countryViews, comparator);
+        Collections.sort(languageViews, comparator);
+        Collections.sort(browserViews, comparator);
+        Collections.sort(osViews, comparator);
     }
 
     @Override
-    public List<Entry<String, Long>> getBrowserViews() {
-        LinkedList<Entry<String, Long>> l = new LinkedList<Map.Entry<String, Long>>(browserViews.entrySet());
-        Collections.sort(l, new SortByPopularityComparator());
-        return l;
+    public List<Entry> getBrowserViews() {
+        return browserViews;
     }
 
     @Override
-    public List<Entry<String, Long>> getCountryViews() {
-        LinkedList<Entry<String, Long>> l = new LinkedList<Map.Entry<String, Long>>(countryViews.entrySet());
-        Collections.sort(l, new SortByPopularityComparator());
-        return l;
+    public List<Entry> getCountryViews() {
+        return countryViews;
     }
 
     @Override
-    public List<Entry<String, Long>> getLanguageViews() {
-        LinkedList<Entry<String, Long>> l = new LinkedList<Map.Entry<String, Long>>(languageViews.entrySet());
-        Collections.sort(l, new SortByPopularityComparator());
-        return l;
+    public List<Entry> getLanguageViews() {
+        return languageViews;
     }
 
     @Override
-    public List<Entry<String, Long>> getOsViews() {
-        LinkedList<Entry<String, Long>> l = new LinkedList<Map.Entry<String, Long>>(osViews.entrySet());
-        Collections.sort(l, new SortByPopularityComparator());
-        return l;
+    public List<Entry> getOsViews() {
+        return osViews;
     }
 
     @Override
-    public List<Entry<String, Long>> getPageViews() {
-        LinkedList<Entry<String, Long>> l = new LinkedList<Map.Entry<String, Long>>(pageViews.entrySet());
-        Collections.sort(l, new SortByPopularityComparator());
-        return l;
+    public List<Entry> getPageViews() {
+        return pageViews;
     }
 
     @Override
@@ -94,10 +144,26 @@ public class StatisticsImpl implements Serializable, Statistics {
     }
 
     @Override
-    public List<Entry<String, Long>> getUserViews() {
-        LinkedList<Entry<String, Long>> l = new LinkedList<Map.Entry<String, Long>>(userViews.entrySet());
-        Collections.sort(l, new SortByPopularityComparator());
-        return l;
+    public List<Entry> getUserViews() {
+        return userViews;
+    }
+
+    private void increment(String label, List<Statistics.Entry> list) {
+        if (label == null) {
+            label = "unknown";
+        }
+
+        for (Statistics.Entry e : list) {
+            if (e.getLabel().equals(label)) {
+                ((EntryImpl) e).count++;
+                return;
+            }
+        }
+
+        EntryImpl e = new EntryImpl();
+        e.label = label;
+        e.count = 1;
+        list.add(e);
     }
 
 }

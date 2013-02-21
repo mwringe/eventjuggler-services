@@ -19,30 +19,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.analytics.extension;
+package org.eventjuggler.analytics;
 
-import org.jboss.as.controller.SimpleResourceDefinition;
-import org.jboss.as.controller.registry.ManagementResourceRegistration;
+import java.util.List;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class SubsystemDefinition extends SimpleResourceDefinition {
+public interface AnalyticsQuery {
 
-    public static final SubsystemDefinition INSTANCE = new SubsystemDefinition();
+    AnalyticsQuery after(long time);
 
-    private SubsystemDefinition() {
-        super(SubsystemExtension.SUBSYSTEM_PATH, SubsystemExtension.getResourceDescriptionResolver(null),
-                SubsystemAdd.INSTANCE, SubsystemRemove.INSTANCE);
-    }
+    AnalyticsQuery before(long time);
 
-    @Override
-    public void registerAttributes(ManagementResourceRegistration resourceRegistration) {
-    }
+    AnalyticsQuery contextPath(String contextPath);
 
-    @Override
-    public void registerOperations(ManagementResourceRegistration resourceRegistration) {
-        super.registerOperations(resourceRegistration);
-    }
+    AnalyticsQuery firstResult(int firstResult);
+
+    List<String> getPopularPages();
+
+    List<String> getRelatedPages(String page);
+
+    List<Event> getResults();
+
+    Statistics getStatistics();
+
+    AnalyticsQuery maxResult(int maxResult);
+
+    AnalyticsQuery page(String pagePattern);
 
 }

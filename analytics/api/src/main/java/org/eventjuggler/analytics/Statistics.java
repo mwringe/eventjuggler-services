@@ -22,25 +22,30 @@
 package org.eventjuggler.analytics;
 
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public interface Statistics {
 
-    List<Entry<String, Long>> getBrowserViews();
+    public interface Entry {
+        long getCount();
 
-    List<Entry<String, Long>> getCountryViews();
+        String getLabel();
+    }
 
-    List<Entry<String, Long>> getLanguageViews();
+    List<Entry> getBrowserViews();
 
-    List<Entry<String, Long>> getOsViews();
+    List<Entry> getCountryViews();
 
-    List<Entry<String, Long>> getPageViews();
+    List<Entry> getLanguageViews();
+
+    List<Entry> getOsViews();
+
+    List<Entry> getPageViews();
 
     long getTotalViews();
 
-    List<Entry<String, Long>> getUserViews();
+    List<Entry> getUserViews();
 
 }
