@@ -88,32 +88,32 @@ public class AnalyticsImpl implements Analytics {
         }
 
         final Event event = new EventImpl(time, contextPath, page, remoteAddr, country, language, userAgent);
+        addEvent(event);
+    }
 
+    @Override
+    public void addEvent(final Event event) {
         executor.submit(new Runnable() {
             @Override
             public void run() {
-                persistEvent(event);
+                try {
+                    userTransaction.begin();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                try {
+                    em.joinTransaction();
+                    em.persist(event);
+                } finally {
+                    try {
+                        userTransaction.commit();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         });
-    }
-
-    private void persistEvent(Event event) {
-        try {
-            userTransaction.begin();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            em.joinTransaction();
-            em.persist(event);
-        } finally {
-            try {
-                userTransaction.commit();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     @Override

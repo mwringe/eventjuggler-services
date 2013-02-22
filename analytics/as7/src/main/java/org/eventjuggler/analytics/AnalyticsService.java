@@ -25,8 +25,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
+import org.eventjuggler.analytics.rest.AnalyticsApplication;
+import org.eventjuggler.analytics.rest.RestEasyPublisher;
 import org.jboss.as.controller.ServiceVerificationHandler;
+import org.jboss.as.security.plugins.SecurityDomainContext;
+import org.jboss.as.security.service.SecurityDomainService;
 import org.jboss.as.txn.service.UserTransactionService;
+import org.jboss.as.web.VirtualHost;
+import org.jboss.as.web.WebSubsystemServices;
 import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceBuilder;
@@ -48,6 +54,8 @@ import org.jboss.msc.value.InjectedValue;
  */
 public class AnalyticsService implements Service<Analytics> {
 
+    private static final String REST_PATH = "/analytics-rest";
+
     public static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
     public static ServiceName SERVICE_NAME = ServiceName.JBOSS.append("analytics");
@@ -57,11 +65,22 @@ public class AnalyticsService implements Service<Analytics> {
         AnalyticsService service = new AnalyticsService();
         ServiceBuilder<Analytics> serviceBuilder = target.addService(SERVICE_NAME, service);
         serviceBuilder.addDependency(UserTransactionService.SERVICE_NAME, UserTransaction.class, service.userTransaction);
+
+        serviceBuilder.addDependency(WebSubsystemServices.JBOSS_WEB_HOST.append("default-host"), VirtualHost.class,
+                service.virtualHostValue);
+
+        serviceBuilder.addDependency(SecurityDomainService.SERVICE_NAME.append("other"), SecurityDomainContext.class,
+                service.securityDomainContextValue);
+
         serviceBuilder.addListener(verificationHandler);
         return serviceBuilder.install();
     }
 
-    public final InjectedValue<UserTransaction> userTransaction = new InjectedValue<UserTransaction>();
+    private final InjectedValue<UserTransaction> userTransaction = new InjectedValue<UserTransaction>();
+
+    private final InjectedValue<VirtualHost> virtualHostValue = new InjectedValue<VirtualHost>();
+
+    private final InjectedValue<SecurityDomainContext> securityDomainContextValue = new InjectedValue<SecurityDomainContext>();
 
     private EntityManagerFactory emf;
 
@@ -74,9 +93,23 @@ public class AnalyticsService implements Service<Analytics> {
     public void start(StartContext context) throws StartException {
         log.info("Starting Analytics Service");
 
+        log.info("Creating entity manager factory");
         emf = Persistence.createEntityManagerFactory("analytics");
+
+        log.info("Registering rest context: " + REST_PATH);
+
+        RestEasyPublisher publisher = new RestEasyPublisher(virtualHostValue.getValue().getHost(),
+                securityDomainContextValue.getValue());
+        try {
+            publisher.publishRestServlet(REST_PATH, AnalyticsApplication.class);
+        } catch (Exception e) {
+            throw new StartException("Failed to register rest context", e);
+        }
     }
 
+    /**
+     * TODO Remove rest context
+     */
     @Override
     public void stop(StopContext context) {
         emf.close();

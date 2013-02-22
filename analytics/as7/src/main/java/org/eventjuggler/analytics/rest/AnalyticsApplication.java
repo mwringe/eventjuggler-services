@@ -19,20 +19,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.analytics;
+package org.eventjuggler.analytics.rest;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.ws.rs.core.Application;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public interface Analytics {
+public class AnalyticsApplication extends Application {
 
-    void addEvent(ServletRequest request, ServletResponse response);
-
-    void addEvent(Event event);
-
-    AnalyticsQuery createQuery();
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(AnalyticsResource.class);
+        return classes;
+    }
 
 }
