@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.eventjuggler.analytics.Analytics;
 import org.eventjuggler.analytics.AnalyticsService;
+import org.eventjuggler.analytics.AnalyticsWebService;
 import org.eventjuggler.analytics.deployment.AnalyticsMarkerProcessor;
 import org.eventjuggler.analytics.deployment.AnalyticsWebFilterProcessor;
 import org.eventjuggler.analytics.deployment.AnalyticsWeldExtensionProcessor;
@@ -83,7 +84,7 @@ class AnalyticsSubsystemAdd extends AbstractBoottimeAddStepHandler {
 
         final BinderService binderService = new BinderService("AnalyticsService");
         final ServiceBuilder<ManagedReferenceFactory> builder = context.getServiceTarget().addService(
-                ContextNames.JBOSS_CONTEXT_SERVICE_NAME.append("AnalyticsService"), binderService);
+                AnalyticsService.JNDI_SERVICE_NAME, binderService);
         builder.addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class,
                 binderService.getNamingStoreInjector());
         builder.addDependency(AnalyticsService.SERVICE_NAME, Analytics.class, new Injector<Analytics>() {
@@ -98,6 +99,11 @@ class AnalyticsSubsystemAdd extends AbstractBoottimeAddStepHandler {
                 binderService.getManagedObjectInjector().uninject();
             }
         });
+
+        final ServiceController<AnalyticsWebService> webController = AnalyticsWebService
+                .addService(target, verificationHandler);
+        controllers.add(webController);
+
         builder.addListener(verificationHandler);
 
         controllers.add(builder.install());

@@ -27,7 +27,6 @@
         <module>api</module>
         <module>as7</module>
         <module>impl</module>
-        <module>web</module>
     </modules>
 
 </project>

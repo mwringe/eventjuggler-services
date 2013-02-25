@@ -35,6 +35,8 @@ import org.jboss.security.SimplePrincipal;
 import org.jboss.util.Base64;
 
 /**
+ * TODO Check if user is member of 'analytics' group
+ *
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class AuthenticationValve extends ValveBase {

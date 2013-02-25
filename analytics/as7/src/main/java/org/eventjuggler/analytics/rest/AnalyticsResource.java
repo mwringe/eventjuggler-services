@@ -42,7 +42,7 @@ import org.eventjuggler.analytics.Statistics;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@Path("/")
+@Path("/rest")
 public class AnalyticsResource {
 
     private final Analytics analytics;
