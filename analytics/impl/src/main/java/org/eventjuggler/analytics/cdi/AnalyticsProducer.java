@@ -19,28 +19,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.analytics;
+package org.eventjuggler.analytics.cdi;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.eventjuggler.analytics.Analytics;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class AnalyticsWeldExtension implements Extension {
+public class AnalyticsProducer {
 
-    public AnalyticsWeldExtension() {
-    }
-
-    public void register(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-        final AnnotatedType<Analytics> analytics = bm.createAnnotatedType(Analytics.class);
-        bbd.addAnnotatedType(analytics);
-
-        final AnnotatedType<AnalyticsProducer> analyticsProducer = bm.createAnnotatedType(AnalyticsProducer.class);
-        bbd.addAnnotatedType(analyticsProducer);
+    @ApplicationScoped
+    @Default
+    @Produces
+    public Analytics createAnalytics() {
+        try {
+            return (Analytics) new InitialContext().lookup("java:jboss/AnalyticsService");
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

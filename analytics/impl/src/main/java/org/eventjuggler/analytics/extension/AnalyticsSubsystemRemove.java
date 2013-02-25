@@ -21,7 +21,6 @@
  */
 package org.eventjuggler.analytics.extension;
 
-import org.eventjuggler.analytics.AnalyticsService;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;

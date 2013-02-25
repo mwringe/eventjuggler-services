@@ -1,4 +1,4 @@
-package org.eventjuggler.analytics;
+package org.eventjuggler.analytics.extension;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

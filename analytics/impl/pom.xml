@@ -31,30 +31,50 @@
     </parent>
 
     <artifactId>analytics-impl</artifactId>
-    <name>Analytics Service Implementation</name>
+    <name>Analytics Service Subsystem</name>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.eventjuggler</groupId>
-            <artifactId>analytics-api</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <groupId>org.eventjuggler</groupId>
+            <artifactId>analytics-api</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jboss.spec.javax.transaction</groupId>
-            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-weld</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-controller</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-server</artifactId>
         </dependency>
         <dependency>
             <groupId>net.sf.uadetector</groupId>
             <artifactId>uadetector-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
+            <version>2.3.5.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
@@ -64,32 +84,48 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <inherited>false</inherited>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>build-dist</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <delete dir="target/module" />
+
+                                <property name="module.dir" value="target/module/org/eventjuggler/analytics/main" />
+
+                                <copy file="${org.eventjuggler:analytics-api:jar}" tofile="${module.dir}/analytics-api.jar" />
+                                <copy file="target/${project.artifactId}-${project.version}.jar" tofile="${module.dir}/analytics-impl.jar" />
+
+                                <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" />
+
+                                <copy file="${net.sf.uadetector:uadetector-core:jar}" tofile="target/module/net/sf/uadetector/main/uadetector-core.jar" />
+                                <copy file="${net.sf.uadetector:uadetector-resources:jar}" tofile="target/module/net/sf/uadetector/main/uadetector-resources.jar" />
+                                <copy file="src/main/resources/module/uadetector/main/module.xml" tofile="target/module/net/sf/uadetector/main/module.xml" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

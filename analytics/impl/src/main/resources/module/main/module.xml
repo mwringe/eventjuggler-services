@@ -3,7 +3,6 @@
 	<resources>
 		<resource-root path="analytics-api.jar" />
 		<resource-root path="analytics-impl.jar" />
-		<resource-root path="analytics-as7.jar" />
 	</resources>
 
 	<exports>

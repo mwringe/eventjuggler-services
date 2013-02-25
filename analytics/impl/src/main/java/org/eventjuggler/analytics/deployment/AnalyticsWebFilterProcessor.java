@@ -64,11 +64,11 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
         addDependency(deploymentUnit);
 
         FilterMetaData filterMetaData = new FilterMetaData();
-        filterMetaData.setFilterClass(org.eventjuggler.analytics.AnalyticsFilter.class.getName());
-        filterMetaData.setFilterName(org.eventjuggler.analytics.AnalyticsFilter.class.getSimpleName());
+        filterMetaData.setFilterClass(org.eventjuggler.analytics.web.AnalyticsFilter.class.getName());
+        filterMetaData.setFilterName(org.eventjuggler.analytics.web.AnalyticsFilter.class.getSimpleName());
 
         FilterMappingMetaData filterMappingMetaData = new FilterMappingMetaData();
-        filterMappingMetaData.setFilterName(org.eventjuggler.analytics.AnalyticsFilter.class.getSimpleName());
+        filterMappingMetaData.setFilterName(org.eventjuggler.analytics.web.AnalyticsFilter.class.getSimpleName());
         filterMappingMetaData.setUrlPatterns(Collections.singletonList("/*"));
 
         if (warMetaData.getWebMetaData() == null) {

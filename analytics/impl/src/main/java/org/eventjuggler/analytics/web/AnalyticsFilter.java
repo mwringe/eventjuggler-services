@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.analytics;
+package org.eventjuggler.analytics.web;
 
 import java.io.IOException;
 
@@ -32,6 +32,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.eventjuggler.analytics.Analytics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -19,12 +19,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.analytics;
+package org.eventjuggler.analytics.extension;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
+import org.eventjuggler.analytics.Analytics;
+import org.eventjuggler.analytics.AnalyticsImpl;
 import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.naming.deployment.ContextNames;
 import org.jboss.as.txn.service.UserTransactionService;

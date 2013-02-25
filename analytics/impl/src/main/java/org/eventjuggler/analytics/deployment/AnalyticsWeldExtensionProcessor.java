@@ -23,7 +23,7 @@ package org.eventjuggler.analytics.deployment;
 
 import javax.enterprise.inject.spi.Extension;
 
-import org.eventjuggler.analytics.AnalyticsWeldExtension;
+import org.eventjuggler.analytics.cdi.AnalyticsCdiExtension;
 import org.jboss.as.server.deployment.AttachmentList;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -61,13 +61,13 @@ public class AnalyticsWeldExtensionProcessor implements DeploymentUnitProcessor 
         AttachmentList<Metadata<Extension>> extensions = deploymentUnit.getAttachment(WeldAttachments.PORTABLE_EXTENSIONS);
         if (extensions != null) {
             for (Metadata<Extension> e : extensions) {
-                if (e.getValue() instanceof AnalyticsWeldExtension) {
+                if (e.getValue() instanceof AnalyticsCdiExtension) {
                     return;
                 }
             }
         }
 
-        Extension extension = new AnalyticsWeldExtension();
+        Extension extension = new AnalyticsCdiExtension();
         Metadata<Extension> metadata = new MetadataImpl<Extension>(extension, deploymentUnit.getName());
         deploymentUnit.addToAttachmentList(WeldAttachments.PORTABLE_EXTENSIONS, metadata);
 

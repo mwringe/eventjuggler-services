@@ -9,7 +9,7 @@ mvn clean install -DskipTests
 mkdir -p build/target/modules
 mkdir -p build/target/standalone/configuration
 
-cp -r analytics/as7/target/module/* build/target/modules/
+cp -r analytics/impl/target/module/* build/target/modules/
 cp standalone.xml build/target/standalone/configuration/
 
 cd build/target

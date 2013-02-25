@@ -24,8 +24,6 @@ package org.eventjuggler.analytics.extension;
 import java.util.List;
 
 import org.eventjuggler.analytics.Analytics;
-import org.eventjuggler.analytics.AnalyticsService;
-import org.eventjuggler.analytics.AnalyticsWebService;
 import org.eventjuggler.analytics.deployment.AnalyticsMarkerProcessor;
 import org.eventjuggler.analytics.deployment.AnalyticsWebFilterProcessor;
 import org.eventjuggler.analytics.deployment.AnalyticsWeldExtensionProcessor;
