@@ -46,7 +46,7 @@ public class AnalyticsMarkerProcessor implements DeploymentUnitProcessor {
 
     public static final Phase PHASE = Phase.STRUCTURE;
 
-    public static final int PRIORITY = 0x4000;
+    public static final int PRIORITY = 0x3000;
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {

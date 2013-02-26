@@ -65,8 +65,6 @@ public class AnalyticsFilter implements Filter {
 
     @Override
     public void init(FilterConfig arg0) throws ServletException {
-        log.info("Init filter");
-
         try {
             analytics = (Analytics) new InitialContext().lookup("java:jboss/AnalyticsService");
         } catch (NamingException e) {

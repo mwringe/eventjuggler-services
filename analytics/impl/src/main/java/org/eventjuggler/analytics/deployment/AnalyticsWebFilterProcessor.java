@@ -24,6 +24,7 @@ package org.eventjuggler.analytics.deployment;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.eventjuggler.analytics.web.AnalyticsFilter;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -48,9 +49,9 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
 
     private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
-    public static final Phase PHASE = Phase.PARSE;
+    public static final Phase PHASE = Phase.STRUCTURE;
 
-    public static final int PRIORITY = Phase.PARSE_WEB_COMPONENTS - 1;
+    public static final int PRIORITY = 0x4000;
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
@@ -64,11 +65,11 @@ public class AnalyticsWebFilterProcessor implements DeploymentUnitProcessor {
         addDependency(deploymentUnit);
 
         FilterMetaData filterMetaData = new FilterMetaData();
-        filterMetaData.setFilterClass(org.eventjuggler.analytics.web.AnalyticsFilter.class.getName());
-        filterMetaData.setFilterName(org.eventjuggler.analytics.web.AnalyticsFilter.class.getSimpleName());
+        filterMetaData.setFilterClass(AnalyticsFilter.class.getName());
+        filterMetaData.setFilterName(AnalyticsFilter.class.getSimpleName());
 
         FilterMappingMetaData filterMappingMetaData = new FilterMappingMetaData();
-        filterMappingMetaData.setFilterName(org.eventjuggler.analytics.web.AnalyticsFilter.class.getSimpleName());
+        filterMappingMetaData.setFilterName(AnalyticsFilter.class.getSimpleName());
         filterMappingMetaData.setUrlPatterns(Collections.singletonList("/*"));
 
         if (warMetaData.getWebMetaData() == null) {

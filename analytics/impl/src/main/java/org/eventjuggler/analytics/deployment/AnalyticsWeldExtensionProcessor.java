@@ -42,9 +42,9 @@ public class AnalyticsWeldExtensionProcessor implements DeploymentUnitProcessor 
 
     private static final Logger log = Logger.getLogger("org.eventjuggler.analytics");
 
-    public static final Phase PHASE = Phase.PARSE;
+    public static final Phase PHASE = Phase.STRUCTURE;
 
-    public static final int PRIORITY = Phase.PARSE_WEB_COMPONENTS - 1;
+    public static final int PRIORITY = 0x4000;
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
