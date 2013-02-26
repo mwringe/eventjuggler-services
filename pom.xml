@@ -41,7 +41,7 @@
         <version.war.plugin>2.1.1</version.war.plugin>
         <version.org.jboss.as.plugins.maven.plugin>7.3.Final</version.org.jboss.as.plugins.maven.plugin>
         <version.checkstyle.plugin>2.9.1</version.checkstyle.plugin>
-        
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

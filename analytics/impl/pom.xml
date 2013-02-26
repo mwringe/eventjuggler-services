@@ -46,7 +46,7 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eventjuggler</groupId>
             <artifactId>analytics-api</artifactId>
