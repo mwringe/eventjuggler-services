@@ -1,0 +1,61 @@
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2012, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<project name="module-repository" basedir="." default="modules">
+
+    <import file="lib.xml"/>
+
+    <property name="output.dir" value="${jboss.target.dir}"/>
+
+	<target name="unzip-jboss" if="jbossas.zip">
+		<unzip src="${jbossas.zip}" dest="target" overwrite="false"/>
+        <chmod perm="755">
+            <fileset dir="${jboss.target.dir}/bin">
+                <include name="**/*.sh"/>
+            </fileset>
+        </chmod>
+	</target>
+
+    <target name="extract-schemas">
+        <unzip src="${org.eventjuggler.services:analytics-impl:jar}" dest="${output.dir}/docs/schema/">
+            <patternset>
+                <include name="**/*.xsd"/>
+            </patternset>
+            <mapper type="flatten"/>
+        </unzip>
+    </target>
+
+    <target name="modules">
+        <module-def name="net.sf.uadetector">
+            <maven-resource group="net.sf.uadetector" artifact="uadetector-core"/>
+            <maven-resource group="net.sf.uadetector" artifact="uadetector-resources"/>
+        </module-def>
+
+        <module-def name="org.eventjuggler.services.analytics">
+            <maven-resource group="org.eventjuggler.services" artifact="analytics-api"/>
+            <maven-resource group="org.eventjuggler.services" artifact="analytics-impl"/>
+        </module-def>
+    </target>
+
+    <target name="all" depends="unzip-jboss, modules, extract-schemas">
+	</target>
+</project>
