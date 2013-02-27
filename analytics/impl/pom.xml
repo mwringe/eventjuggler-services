@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.eventjuggler.services</groupId>
         <artifactId>analytics-parent</artifactId>
-        <version>0.1.0.20130227</version>
+        <version>0.1.0.20130228-SNAPSHOT</version>
     </parent>
 
     <artifactId>analytics-impl</artifactId>
