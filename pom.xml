@@ -50,6 +50,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/eventjuggler/eventjuggler-services.git</connection>
+        <developerConnection>scm:git:https://github.com/eventjuggler/eventjuggler-services.git</developerConnection>
+        <url>https://github.com/eventjuggler/eventjuggler-services.git</url>
+    </scm>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
