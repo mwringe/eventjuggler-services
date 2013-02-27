@@ -1,0 +1,27 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:org.eventjuggler.services.analytics:1.0"
+	xmlns="urn:org.eventjuggler.services.analytics:1.0"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="1.0">
+
+	<xs:element name="subsystem" type="subsystemType" />
+
+	<xs:complexType name="subsystemType">
+		<xs:all>
+			<xs:element name="deployments" type="deploymentsType" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="deploymentsType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="deployment" type="deploymentType" />
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="deploymentType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="url-pattern" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="name" use="required" />
+	</xs:complexType>
+
+</xs:schema>
