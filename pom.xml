@@ -43,6 +43,7 @@
         <version.org.jboss.resteasy>2.3.5.Final</version.org.jboss.resteasy>
         <version.rhino.js>1.7R2</version.rhino.js>
 
+        <version.release.plugin>2.4</version.release.plugin>
         <version.checkstyle.plugin>2.9.1</version.checkstyle.plugin>
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
@@ -155,6 +156,16 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${version.release.plugin}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>
                 </plugin>
 
                 <plugin>
