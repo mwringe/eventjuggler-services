@@ -20,12 +20,12 @@ location for the JBoss AS download.
 
 To create an overlay and install it on an existing JBoss AS installation run:
 
-  mvn clean install
-  cp -r build/target/jboss-as-7.1.3.Final/* <JBOSS_HOME>/
+    mvn clean install
+    cp -r build/target/jboss-as-7.1.3.Final/* <JBOSS_HOME>/
 
 Alternatively create a full package with:
 
-  mvn clean install -Djboss.zip=<JBOSS AS ZIP>
+    mvn clean install -Djboss.zip=<JBOSS AS ZIP>
 
 
 Testsuite
@@ -36,11 +36,11 @@ uses the full package, or alternatively an AS7 instance can be configured and st
 
 To run the testsuite in managed mode, run:
 
-mvn -Pit-managed -Djboss.zip=<JBOSS AS ZIP> clean install
+    mvn -Pit-managed -Djboss.zip=<JBOSS AS ZIP> clean install
 
-In managed mode you either have to provide "-Djboss.zip=<JBOSS AS ZIP>" as it requires a full package (see the installation section).
+In managed mode you either have to provide "-Djboss.zip" as it requires a full package (see the installation section).
 
 To run the testsuite in remote mode, first start a JBoss AS with the EventJuggler Services sub-systems enabled, and run:
 
-mvn -Pit-remote -Djboss.zip=<JBOSS AS ZIP> clean install
+    mvn -Pit-remote -Djboss.zip=<JBOSS AS ZIP> clean install
 
