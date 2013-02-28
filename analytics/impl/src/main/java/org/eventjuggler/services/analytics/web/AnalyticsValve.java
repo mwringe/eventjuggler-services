@@ -24,14 +24,13 @@ package org.eventjuggler.services.analytics.web;
 import java.io.IOException;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+import org.apache.catalina.valves.ValveBase;
 import org.eventjuggler.services.analytics.Analytics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,21 +38,21 @@ import org.slf4j.LoggerFactory;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class AnalyticsFilter implements Filter {
+public class AnalyticsValve extends ValveBase {
 
     private static final Logger log = LoggerFactory.getLogger("org.eventjuggler.services.analytics");
 
     private Analytics analytics;
 
-    @Override
-    public void destroy() {
+    public AnalyticsValve() {
+        try {
+            analytics = (Analytics) new InitialContext().lookup("java:jboss/AnalyticsService");
+        } catch (Throwable t) {
+            log.warn("Failed to lookup analytics service", t);
+        }
     }
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
-        chain.doFilter(request, response);
-
+    private void addEvent(ServletRequest request, ServletResponse response) {
         try {
             if (analytics != null) {
                 analytics.addEvent(request, response);
@@ -64,12 +63,10 @@ public class AnalyticsFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
-        try {
-            analytics = (Analytics) new InitialContext().lookup("java:jboss/AnalyticsService");
-        } catch (NamingException e) {
-            log.warn("Failed to lookup analytics service", e);
-        }
+    public void invoke(Request request, Response response) throws IOException, ServletException {
+        getNext().invoke(request, response);
+
+        addEvent(request, response);
     }
 
 }

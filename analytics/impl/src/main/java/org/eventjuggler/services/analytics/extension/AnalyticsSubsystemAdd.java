@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.eventjuggler.services.analytics.Analytics;
 import org.eventjuggler.services.analytics.deployment.AnalyticsMarkerProcessor;
-import org.eventjuggler.services.analytics.deployment.AnalyticsWebFilterProcessor;
-import org.eventjuggler.services.analytics.deployment.AnalyticsWeldExtensionProcessor;
+import org.eventjuggler.services.analytics.deployment.AnalyticsValveInstallerProcessor;
+import org.eventjuggler.services.analytics.deployment.AnalyticsWeldExtensionInstallerProcessor;
 import org.jboss.as.controller.AbstractBoottimeAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
@@ -72,11 +72,11 @@ class AnalyticsSubsystemAdd extends AbstractBoottimeAddStepHandler {
                 processorTarget.addDeploymentProcessor(AnalyticsMarkerProcessor.PHASE, AnalyticsMarkerProcessor.PRIORITY,
                         new AnalyticsMarkerProcessor());
 
-                processorTarget.addDeploymentProcessor(AnalyticsWebFilterProcessor.PHASE, AnalyticsWebFilterProcessor.PRIORITY,
-                        new AnalyticsWebFilterProcessor());
+                processorTarget.addDeploymentProcessor(AnalyticsValveInstallerProcessor.PHASE, AnalyticsValveInstallerProcessor.PRIORITY,
+                        new AnalyticsValveInstallerProcessor());
 
-                processorTarget.addDeploymentProcessor(AnalyticsWeldExtensionProcessor.PHASE,
-                        AnalyticsWeldExtensionProcessor.PRIORITY, new AnalyticsWeldExtensionProcessor());
+                processorTarget.addDeploymentProcessor(AnalyticsWeldExtensionInstallerProcessor.PHASE,
+                        AnalyticsWeldExtensionInstallerProcessor.PRIORITY, new AnalyticsWeldExtensionInstallerProcessor());
             }
         }, OperationContext.Stage.RUNTIME);
 

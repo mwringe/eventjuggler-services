@@ -38,7 +38,7 @@ import org.jboss.weld.metadata.MetadataImpl;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class AnalyticsWeldExtensionProcessor implements DeploymentUnitProcessor {
+public class AnalyticsWeldExtensionInstallerProcessor implements DeploymentUnitProcessor {
 
     private static final Logger log = Logger.getLogger("org.eventjuggler.services.analytics");
 

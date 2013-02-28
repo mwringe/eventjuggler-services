@@ -67,7 +67,7 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <ant antfile="build.xml" inheritRefs="true">
+                                <ant antfile="build.xml" inheritRefs="false">
                                     <target name="all" />
                                 </ant>
                             </target>

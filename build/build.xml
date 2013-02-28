@@ -22,40 +22,49 @@
 
 <project name="module-repository" basedir="." default="modules">
 
-    <import file="lib.xml"/>
+	<import file="lib.xml" />
 
-    <property name="output.dir" value="${jboss.target.dir}"/>
+	<property name="output.dir" value="${jboss.target.dir}" />
 
-	<target name="unzip-jboss" if="jbossas.zip">
-		<unzip src="${jbossas.zip}" dest="target" overwrite="false"/>
-        <chmod perm="755">
-            <fileset dir="${jboss.target.dir}/bin">
-                <include name="**/*.sh"/>
-            </fileset>
-        </chmod>
+	<target name="clean">
+		<delete dir="${output.dir}" />
 	</target>
 
-    <target name="extract-schemas">
-        <unzip src="${org.eventjuggler.services:analytics-impl:jar}" dest="${output.dir}/docs/schema/">
-            <patternset>
-                <include name="**/*.xsd"/>
-            </patternset>
-            <mapper type="flatten"/>
-        </unzip>
-    </target>
+	<target name="unzip-jboss" if="jboss.zip">
+		<unzip src="${jboss.zip}" dest="target" />
+		<chmod perm="755">
+			<fileset dir="${jboss.target.dir}/bin">
+				<include name="**/*.sh" />
+			</fileset>
+		</chmod>
+	</target>
 
-    <target name="modules">
-        <module-def name="net.sf.uadetector">
-            <maven-resource group="net.sf.uadetector" artifact="uadetector-core"/>
-            <maven-resource group="net.sf.uadetector" artifact="uadetector-resources"/>
-        </module-def>
+	<target name="copy-files">
+		<copy file="src/main/resources/application-roles.properties" todir="${output.dir}/standalone/configuration" overwrite="true" />
+		<copy file="src/main/resources/application-users.properties" todir="${output.dir}/standalone/configuration" overwrite="true" />
+	</target>
 
-        <module-def name="org.eventjuggler.services.analytics">
-            <maven-resource group="org.eventjuggler.services" artifact="analytics-api"/>
-            <maven-resource group="org.eventjuggler.services" artifact="analytics-impl"/>
-        </module-def>
-    </target>
+	<target name="extract-schemas">
+		<unzip src="${org.eventjuggler.services:analytics-impl:jar}" dest="${output.dir}/docs/schema/">
+			<patternset>
+				<include name="**/*.xsd" />
+			</patternset>
+			<mapper type="flatten" />
+		</unzip>
+	</target>
 
-    <target name="all" depends="unzip-jboss, modules, extract-schemas">
+	<target name="modules">
+		<module-def name="net.sf.uadetector">
+			<maven-resource group="net.sf.uadetector" artifact="uadetector-core" />
+			<maven-resource group="net.sf.uadetector" artifact="uadetector-resources" />
+		</module-def>
+
+		<module-def name="org.eventjuggler.services.analytics">
+			<maven-resource group="org.eventjuggler.services" artifact="analytics-api" />
+			<maven-resource group="org.eventjuggler.services" artifact="analytics-impl" />
+		</module-def>
+	</target>
+
+	<target name="all" depends="clean, unzip-jboss, modules, copy-files, extract-schemas">
 	</target>
 </project>

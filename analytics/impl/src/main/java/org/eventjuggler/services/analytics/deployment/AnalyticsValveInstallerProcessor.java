@@ -21,61 +21,57 @@
  */
 package org.eventjuggler.services.analytics.deployment;
 
-import org.jboss.as.server.deployment.AttachmentKey;
-import org.jboss.as.server.deployment.Attachments;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eventjuggler.services.analytics.web.AnalyticsValve;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
-import org.jboss.as.server.deployment.module.ModuleDependency;
-import org.jboss.as.server.deployment.module.ModuleSpecification;
+import org.jboss.as.web.deployment.WarMetaData;
 import org.jboss.logging.Logger;
-import org.jboss.modules.ModuleIdentifier;
+import org.jboss.metadata.web.jboss.JBossWebMetaData;
+import org.jboss.metadata.web.jboss.ValveMetaData;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class AnalyticsMarkerProcessor implements DeploymentUnitProcessor {
-
-    public static final AttachmentKey<Boolean> ENABLE_ANALYTICS_KEY = AttachmentKey.create(Boolean.class);
-
-    public static final String ANALYTICS_IDENTIFIER_NAME = "org.eventjuggler.services.analytics";
-
-    public static final ModuleIdentifier ANALYTICS_IDENTIFIER = ModuleIdentifier.create(ANALYTICS_IDENTIFIER_NAME);
+public class AnalyticsValveInstallerProcessor implements DeploymentUnitProcessor {
 
     private static final Logger log = Logger.getLogger("org.eventjuggler.services.analytics");
 
-    public static final Phase PHASE = Phase.STRUCTURE;
+    public static final Phase PHASE = Phase.PARSE;
 
-    public static final int PRIORITY = 0x3000;
+    public static final int PRIORITY = 0x4000;
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
         DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
 
-        if (enabledAnalytics(deploymentUnit)) {
-
-            if (deploymentUnit.getParent() != null) {
-                deploymentUnit = deploymentUnit.getParent();
-            }
-
-            Boolean existingValue = deploymentUnit.putAttachment(ENABLE_ANALYTICS_KEY, true);
-
-            if (existingValue == null) {
-                log.infov("Enabling analytics for {0}", deploymentUnit.getName());
-            }
+        final WarMetaData warMetaData = deploymentUnit.getAttachment(WarMetaData.ATTACHMENT_KEY);
+        if (warMetaData == null) {
+            return;
         }
-    }
 
-    private boolean enabledAnalytics(DeploymentUnit deploymentUnit) {
-        ModuleSpecification moduleSpecification = deploymentUnit.getAttachment(Attachments.MODULE_SPECIFICATION);
-        for (ModuleDependency d : moduleSpecification.getUserDependencies()) {
-            if (d.getIdentifier().equals(ANALYTICS_IDENTIFIER)) {
-                return true;
-            }
+        final JBossWebMetaData metaData = warMetaData.getMergedJBossWebMetaData();
+        if (metaData == null) {
+            return;
         }
-        return false;
+
+        ValveMetaData valve = new ValveMetaData();
+        valve.setId(AnalyticsValve.class.getSimpleName());
+        valve.setValveClass(AnalyticsValve.class.getName());
+        valve.setModule(AnalyticsMarkerProcessor.ANALYTICS_IDENTIFIER_NAME);
+
+        List<ValveMetaData> valves = metaData.getValves();
+        if (valves == null) {
+            metaData.setValves(valves = new ArrayList<ValveMetaData>());
+        }
+        valves.add(valve);
+
+        log.infov("Enabling analytics valve for {0}", deploymentUnit.getName());
     }
 
     @Override

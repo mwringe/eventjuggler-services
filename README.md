@@ -25,4 +25,22 @@ To create an overlay and install it on an existing JBoss AS installation run:
 
 Alternatively create a full package with:
 
-  mvn clean install -Djbossas.zip=<JBOSS AS ZIP>
+  mvn clean install -Djboss.zip=<JBOSS AS ZIP>
+
+
+Testsuite
+=========
+
+The testsuite contains integration tests that uses the EventJuggler Services deployed to AS7. The tests can be run in managed mode, which 
+uses the full package, or alternatively an AS7 instance can be configured and started manually and tests run in remote mode.
+
+To run the testsuite in managed mode, run:
+
+mvn -Pit-managed -Djboss.zip=<JBOSS AS ZIP> clean install
+
+In managed mode you either have to provide "-Djboss.zip=<JBOSS AS ZIP>" as it requires a full package (see the installation section).
+
+To run the testsuite in remote mode, first start a JBoss AS with the EventJuggler Services sub-systems enabled, and run:
+
+mvn -Pit-remote -Djboss.zip=<JBOSS AS ZIP> clean install
+
