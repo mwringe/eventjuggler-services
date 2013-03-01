@@ -24,7 +24,10 @@ package org.eventjuggler.services.analytics.deployment;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eventjuggler.services.analytics.extension.AnalyticsService;
 import org.eventjuggler.services.analytics.web.AnalyticsValve;
+import org.jboss.as.naming.ManagedReferenceFactory;
+import org.jboss.as.server.deployment.AttachmentKey;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
@@ -59,6 +62,8 @@ public class AnalyticsValveInstallerProcessor implements DeploymentUnitProcessor
         if (metaData == null) {
             return;
         }
+
+        phaseContext.addDependency(AnalyticsService.JNDI_SERVICE_NAME, AttachmentKey.create(ManagedReferenceFactory.class));
 
         ValveMetaData valve = new ValveMetaData();
         valve.setId(AnalyticsValve.class.getSimpleName());
