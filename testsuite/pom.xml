@@ -29,7 +29,7 @@
         <version>0.1.0.20130302-SNAPSHOT</version>
     </parent>
 
-    <artifactId>testsuite</artifactId>
+    <artifactId>eventjuggler-services-testsuite</artifactId>
     <name>EventJuggler Services Testsuite</name>
 
     <packaging>jar</packaging>
