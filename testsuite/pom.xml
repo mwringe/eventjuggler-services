@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.eventjuggler.services</groupId>
         <artifactId>eventjuggler-services-parent</artifactId>
-        <version>0.1.0.20130301</version>
+        <version>0.1.0.20130302-SNAPSHOT</version>
     </parent>
 
     <artifactId>testsuite</artifactId>
