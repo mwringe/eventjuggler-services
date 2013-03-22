@@ -37,7 +37,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jboss.target.dir>target/jboss-as-${version.org.jboss.as}</jboss.target.dir>
+        <jboss.target.dir>target/${eap.dirname}</jboss.target.dir>
     </properties>
 
     <dependencies>
@@ -49,6 +49,7 @@
             <groupId>org.eventjuggler.services</groupId>
             <artifactId>analytics-impl</artifactId>
         </dependency>
+
         <dependency>
             <groupId>net.sf.uadetector</groupId>
             <artifactId>uadetector-resources</artifactId>
@@ -81,17 +82,17 @@
                     <dependency>
                         <groupId>org.jboss</groupId>
                         <artifactId>jandex</artifactId>
-                        <version>${version.org.jboss.jandex}</version>
+                        <version>1.0.3.Final</version>
                     </dependency>
                     <dependency>
                         <groupId>org.apache.ant</groupId>
                         <artifactId>ant-apache-bsf</artifactId>
-                        <version>${version.org.apache.ant}</version>
+                        <version>1.8.2</version>
                     </dependency>
                     <dependency>
                         <groupId>rhino</groupId>
                         <artifactId>js</artifactId>
-                        <version>${version.rhino.js}</version>
+                        <version>1.7R2</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -110,7 +111,7 @@
                         <configuration>
                             <transformationSets>
                                 <transformationSet>
-                                    <dir>src/main/resources/jboss-as-${version.org.jboss.as}/standalone/configuration</dir>
+                                    <dir>src/main/resources/${eap.dirname}/standalone/configuration</dir>
                                     <stylesheet>src/main/resources/xslt/standalone.xsl</stylesheet>
                                     <includes>
                                         <include>standalone*.xml</include>

@@ -5,10 +5,10 @@ Eventjuggler Services
 Prerequisites
 =============
 
-- Java Development Kit 6
+- Java Development Kit 7
 - Recent Git client
 - Recent Maven 3
-- JBoss AS 7.1.3.Final
+- JBoss EAP 6.1.0.Alpha
 
 
 
@@ -17,16 +17,16 @@ Installation
 
 The build component creates a package of the services. By default an overlay package is created. The overlay package only contains
 the file that is added/changed to a standard JBoss AS installation. It is also possible to create a full package by specifying a
-location for the JBoss AS download.
+location for the JBoss EAP download.
 
-To create an overlay and install it on an existing JBoss AS installation run:
+To create an overlay and install it on an existing JBoss EAP installation run:
 
     mvn clean install
-    cp -r build/target/jboss-as-7.1.3.Final/* <JBOSS_HOME>/
+    cp -r build/target/jboss-eap-6.1/* <JBOSS_HOME>/
 
 Alternatively create a full package with:
 
-    mvn clean install -Djboss.zip=<JBOSS AS ZIP>
+    mvn clean install -Djboss.zip=<JBOSS EAP ZIP>
 
 
 Testsuite
@@ -37,11 +37,11 @@ tests have been configured to use the full package built by the build module.
 
 To run the testsuite in managed mode, run:
 
-    mvn -Pit-managed -Djboss.zip=<PATH TO JBOSS AS ZIP> clean install
+    mvn -Pit-managed -Djboss.zip=<PATH TO JBOSS EAP ZIP> clean install
 
 In managed mode you have to provide "-Djboss.zip" as it requires a full package (see the installation section).
 
-To run the testsuite in remote mode, first start a JBoss AS with the EventJuggler Services sub-systems enabled, and run:
+To run the testsuite in remote mode, first start a JBoss EAP with the EventJuggler Services sub-systems enabled, and run:
 
     mvn -Pit-remote clean install
 

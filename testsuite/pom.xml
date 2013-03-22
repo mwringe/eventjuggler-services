@@ -87,7 +87,6 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.12</version>
         </dependency>
     </dependencies>
 
@@ -151,7 +150,7 @@
                 </property>
             </activation>
             <properties>
-                <jboss.home>${project.parent.basedir}/build/target/jboss-as-${version.org.jboss.as}</jboss.home>
+                <jboss.home>${project.parent.basedir}/build/target/${eap.dirname}</jboss.home>
             </properties>
         </profile>
 

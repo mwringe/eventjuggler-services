@@ -63,6 +63,8 @@
 			<maven-resource group="org.eventjuggler.services" artifact="analytics-api" />
 			<maven-resource group="org.eventjuggler.services" artifact="analytics-impl" />
 		</module-def>
+		
+		<echo file="${jboss.target.dir}/modules/layers.conf">layers=ejs</echo>
 	</target>
 
 	<target name="all" depends="clean, unzip-jboss, modules, copy-files, extract-schemas">

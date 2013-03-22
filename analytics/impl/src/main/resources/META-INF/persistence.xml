@@ -5,12 +5,16 @@
 
     <persistence-unit name="analytics" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
+
         <class>org.eventjuggler.services.analytics.EventImpl</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="true" />
+            
             <property name="hibernate.listeners.envers.autoRegister" value="false" />
             <property name="javax.persistence.validation.mode" value="none" />
             <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />

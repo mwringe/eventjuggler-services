@@ -78,13 +78,13 @@ public class StatisticsImpl implements Serializable, Statistics {
     private final List<Statistics.Entry> userViews;
 
     public StatisticsImpl(List<Event> events) {
-        this.pageViews = new LinkedList<Statistics.Entry>();
-        this.userViews = new LinkedList<Statistics.Entry>();
+        this.pageViews = new LinkedList<>();
+        this.userViews = new LinkedList<>();
         this.totalViews = 0;
-        this.countryViews = new LinkedList<Statistics.Entry>();
-        this.languageViews = new LinkedList<Statistics.Entry>();
-        this.browserViews = new LinkedList<Statistics.Entry>();
-        this.osViews = new LinkedList<Statistics.Entry>();
+        this.countryViews = new LinkedList<>();
+        this.languageViews = new LinkedList<>();
+        this.browserViews = new LinkedList<>();
+        this.osViews = new LinkedList<>();
 
         UserAgentStringParser userAgentParser = UADetectorServiceFactory.getResourceModuleParser();
 

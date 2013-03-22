@@ -49,7 +49,7 @@ public class QueryBuilder {
         builder = em.getCriteriaBuilder();
         criteria = builder.createQuery(EventImpl.class);
         root = criteria.from(rootClass);
-        predicates = new LinkedList<Predicate>();
+        predicates = new LinkedList<>();
     }
 
     public void addPredicate(Predicate predicate) {

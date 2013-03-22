@@ -55,7 +55,7 @@ public class AnalyticsIT {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "analytics-test.war").addClasses(AnalyticsIT.class,
                 DataBaseTool.class, DataBaseToolServlet.class, HelloServlet.class);
         archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        archive.addAsManifestResource("jboss-deployment-structure.xml");
+        archive.addAsManifestResource("analytics-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
         archive.addAsResource("analytics-persistence.xml", "META-INF/persistence.xml");
         return archive;
     }

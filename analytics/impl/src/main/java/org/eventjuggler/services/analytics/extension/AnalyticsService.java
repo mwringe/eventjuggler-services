@@ -68,7 +68,7 @@ public class AnalyticsService implements Service<Analytics> {
 
     private EntityManagerFactory emf;
 
-    private final InjectedValue<UserTransaction> userTransaction = new InjectedValue<UserTransaction>();
+    private final InjectedValue<UserTransaction> userTransaction = new InjectedValue<>();
 
     @Override
     public Analytics getValue() throws IllegalStateException, IllegalArgumentException {

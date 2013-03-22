@@ -66,16 +66,18 @@ class AnalyticsSubsystemAdd extends AbstractBoottimeAddStepHandler {
         controllers.add(controller);
 
         context.addStep(new AbstractDeploymentChainStep() {
-            @SuppressWarnings("deprecation")
             @Override
             public void execute(DeploymentProcessorTarget processorTarget) {
-                processorTarget.addDeploymentProcessor(AnalyticsMarkerProcessor.PHASE, AnalyticsMarkerProcessor.PRIORITY,
+                processorTarget.addDeploymentProcessor(AnalyticsSubsystemExtension.SUBSYSTEM_NAME,
+                        AnalyticsMarkerProcessor.PHASE, AnalyticsMarkerProcessor.PRIORITY,
                         new AnalyticsMarkerProcessor());
 
-                processorTarget.addDeploymentProcessor(AnalyticsValveInstallerProcessor.PHASE, AnalyticsValveInstallerProcessor.PRIORITY,
+                processorTarget.addDeploymentProcessor(AnalyticsSubsystemExtension.SUBSYSTEM_NAME,
+                        AnalyticsValveInstallerProcessor.PHASE, AnalyticsValveInstallerProcessor.PRIORITY,
                         new AnalyticsValveInstallerProcessor());
 
-                processorTarget.addDeploymentProcessor(AnalyticsWeldExtensionInstallerProcessor.PHASE,
+                processorTarget.addDeploymentProcessor(AnalyticsSubsystemExtension.SUBSYSTEM_NAME,
+                        AnalyticsWeldExtensionInstallerProcessor.PHASE,
                         AnalyticsWeldExtensionInstallerProcessor.PRIORITY, new AnalyticsWeldExtensionInstallerProcessor());
             }
         }, OperationContext.Stage.RUNTIME);

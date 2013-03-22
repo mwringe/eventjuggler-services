@@ -32,15 +32,13 @@ import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.eventjuggler.services.analytics.Analytics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.jboss.logging.Logger;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class AnalyticsValve extends ValveBase {
 
-    private static final Logger log = LoggerFactory.getLogger("org.eventjuggler.services.analytics");
+    private static final Logger log = Logger.getLogger("org.eventjuggler.services.analytics");
 
     private Analytics analytics;
 

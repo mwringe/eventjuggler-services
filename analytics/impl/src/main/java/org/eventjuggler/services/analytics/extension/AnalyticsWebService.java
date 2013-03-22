@@ -94,9 +94,9 @@ public class AnalyticsWebService implements Service<AnalyticsWebService> {
 
     private Host host;
 
-    private final InjectedValue<SecurityDomainContext> securityDomainContextValue = new InjectedValue<SecurityDomainContext>();
+    private final InjectedValue<SecurityDomainContext> securityDomainContextValue = new InjectedValue<>();
 
-    private final InjectedValue<VirtualHost> virtualHostValue = new InjectedValue<VirtualHost>();
+    private final InjectedValue<VirtualHost> virtualHostValue = new InjectedValue<>();
 
     @Override
     public AnalyticsWebService getValue() throws IllegalStateException, IllegalArgumentException {

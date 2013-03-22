@@ -68,7 +68,7 @@ public class AnalyticsWeldExtensionInstallerProcessor implements DeploymentUnitP
         }
 
         Extension extension = new AnalyticsCdiExtension();
-        Metadata<Extension> metadata = new MetadataImpl<Extension>(extension, deploymentUnit.getName());
+        Metadata<Extension> metadata = new MetadataImpl<>(extension, deploymentUnit.getName());
         deploymentUnit.addToAttachmentList(WeldAttachments.PORTABLE_EXTENSIONS, metadata);
 
         log.infov("Enabling analytics extension for {0}", deploymentUnit.getName());
