@@ -26,8 +26,8 @@ package org.eventjuggler.services.idb.rest;
  */
 public interface KeyGenerator {
 
-    public abstract String createApplicationKey();
+    String createApplicationKey();
 
-    public abstract String createApplicationSecret();
+    String createApplicationSecret();
 
 }

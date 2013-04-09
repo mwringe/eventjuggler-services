@@ -44,7 +44,7 @@ public class Application {
 
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<IdentityProvider> providers;
 
     private String secret;

@@ -42,7 +42,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.IdentityProvider;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -51,7 +50,7 @@ import org.eventjuggler.services.idb.model.IdentityProvider;
 @Stateless
 public class AdminResource {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "idb")
     private EntityManager em;
 
     @Inject
@@ -73,20 +72,6 @@ public class AdminResource {
         return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
     }
 
-    @POST
-    @Path("/applications/{applicationKey}/providers")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createProvider(@PathParam("applicationKey") String applicationKey, IdentityProvider provider,
-            @Context UriInfo uriInfo) {
-        if (provider.getId() != null) {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
-
-        em.persist(provider);
-
-        return Response.created(uriInfo.getAbsolutePathBuilder().build(provider.getId())).build();
-    }
-
     @DELETE
     @Path("/applications/{applicationKey}")
     public Response deleteApplication(@PathParam("applicationKey") String applicationKey) {
@@ -100,25 +85,12 @@ public class AdminResource {
         return Response.noContent().build();
     }
 
-    @DELETE
-    @Path("/applications/{applicationKey}/providers/{providerId}")
-    public Response deleteApplication(@PathParam("applicationKey") String applicationKey,
-            @PathParam("providerId") Long providerId) {
-        IdentityProvider provider = em.find(IdentityProvider.class, providerId);
-        if (provider == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
-
-        em.remove(provider);
-
-        return Response.noContent().build();
-    }
-
     @GET
     @Path("/applications/{applicationKey}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApplication(@PathParam("applicationKey") String applicationKey) {
         Application application = em.find(Application.class, applicationKey);
+
         if (application == null) {
             return Response.status(Status.NOT_FOUND).build();
         } else {
@@ -133,39 +105,11 @@ public class AdminResource {
         return em.createQuery("from Application", Application.class).getResultList();
     }
 
-    @GET
-    @Path("/applications/{applicationKey}/providers/{providerId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getProvider(@PathParam("applicationKey") String applicationKey, @PathParam("providerId") Long providerId) {
-        IdentityProvider provider = em.find(IdentityProvider.class, providerId);
-        if (provider == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(provider).build();
-        }
-    }
-
-    @GET
-    @Path("/applications/{applicationKey}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<IdentityProvider> getProviders(@PathParam("applicationKey") String applicationKey) {
-        return em.find(Application.class, applicationKey).getProviders();
-    }
-
     @PUT
     @Path("/applications/{applicationKey}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
         application = em.merge(application);
-        return Response.noContent().build();
-    }
-
-    @PUT
-    @Path("/applications/{applicationKey}/providers/{providerId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateProvider(@PathParam("applicationKey") String applicationKey,
-            @PathParam("providerId") Long providerId, IdentityProvider provider) {
-        provider = em.merge(provider);
         return Response.noContent().build();
     }
 
