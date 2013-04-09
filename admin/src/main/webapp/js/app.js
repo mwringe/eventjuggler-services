@@ -3,9 +3,12 @@
 var eventjugglerModule = angular.module('eventjugglerAdmin', [ 'eventjugglerAdminServices' ]);
 
 eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
-    $routeProvider.when('/welcome', {
-        templateUrl : 'partials/welcome.html',
-        controller : WelcomeCtrl
+    $routeProvider.when('/applications/:key', {
+        templateUrl : 'partials/application-detail.html',
+        controller : ApplicationDetailCtrl
+    }).when('/applications', {
+        templateUrl : 'partials/application-list.html',
+        controller : ApplicationListCtrl
     }).otherwise({
         templateUrl : 'partials/welcome.html',
         controller : WelcomeCtrl

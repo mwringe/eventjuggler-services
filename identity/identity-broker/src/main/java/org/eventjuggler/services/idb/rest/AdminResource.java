@@ -109,7 +109,9 @@ public class AdminResource {
     @Path("/applications/{applicationKey}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
+        System.out.println("Providers before:" + application.getProviders().size());
         application = em.merge(application);
+        System.out.println("Providers after:" + application.getProviders().size());
         return Response.noContent().build();
     }
 

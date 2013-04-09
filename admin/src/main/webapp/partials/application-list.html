@@ -1,0 +1,18 @@
+<div class="row-fluid">
+    <div class="btn-group">
+        <a class="btn" href="#/applications/create">Create</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Application</th>
+                <th>Key</th>
+            </tr>
+        </thead>
+        <tr ng-repeat="application in applications">
+            <td><a href="#/applications/{{application.key}}">{{application.name}}</a></td>
+            <td>{{application.key}}</td>
+        </tr>
+    </table>
+</div>

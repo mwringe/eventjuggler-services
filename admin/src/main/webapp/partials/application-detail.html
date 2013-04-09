@@ -1,0 +1,51 @@
+<div class="row-fluid">
+
+    <button type="submit" class="btn" ng-show="application.key" ng-click="remove()">Delete</button>
+
+    <form class="form-horizontal" ng-submit="save()">
+        <div class="control-group">
+            <label class="control-label" for="name">Name</label>
+            <div class="controls">
+                <input type="text" id="name" placeholder="Name" ng-model="application.name" required>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="callbackUrl">Callback URL</label>
+            <div class="controls">
+                <input type="text" id="callbackUrl" placeholder="Callback URL" ng-model="application.callbackUrl" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn" ng-show="!application.key">Save</button>
+                <button type="submit" class="btn" ng-show="application.key">Update</button>
+            </div>
+        </div>
+
+        <div class="well">
+            <div class="btn-group">
+                <a class="btn" ng-click="addProvider()">Add Provider</a>
+            </div>
+            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Provider name</th>
+                        <th>Key</th>
+                        <th>Secret</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="provider in application.providers">
+                    <td><input type="text" placeholder="Provider" ng-model="provider.provider" required></td>
+                    <td><input type="text" placeholder="Key" ng-model="provider.configuration.key" required></td>
+                    <td><input type="text" placeholder="Secret" ng-model="provider.configuration.secret" required></td>
+                    <td><button class="btn" ng-click="removeProvider(provider)">Remove</button></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+    <pre>{{application|json}}</pre>
+</div>
