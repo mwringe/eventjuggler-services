@@ -28,8 +28,10 @@
     </licenses>
 
     <modules>
+        <module>admin</module>
         <module>analytics</module>
         <module>build</module>
+        <module>identity</module>
         <module>testsuite</module>
     </modules>
 
