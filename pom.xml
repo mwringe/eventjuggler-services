@@ -66,9 +66,9 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-ej-ej-eventjuggler-services</id>
-            <name>ej-ej-eventjuggler-services</name>
-            <url>https://api.bintray.com/maven/ej/ej/eventjuggler-services</url>
+            <id>bintray-ej-eventjuggler-services-repo</id>
+            <name>ej-eventjuggler-services-repo</name>
+            <url>https://api.bintray.com/maven/ej/eventjuggler-services/repo</url>
         </repository>
     </distributionManagement>
 
