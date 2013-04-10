@@ -64,6 +64,14 @@
         <tag>HEAD</tag>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-ej-ej-eventjuggler-services</id>
+            <name>ej-ej-eventjuggler-services</name>
+            <url>https://api.bintray.com/maven/ej/ej/eventjuggler-services</url>
+        </repository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
