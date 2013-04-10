@@ -21,11 +21,7 @@
  */
 package org.eventjuggler.services.idb.model;
 
-import java.util.Map;
-
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,33 +33,42 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class IdentityProvider {
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Map<String, String> configuration;
-
     @Id
     @GeneratedValue
     private Long id;
 
+    private String key;
+
     private String provider;
 
-    public Map<String, String> getConfiguration() {
-        return configuration;
-    }
+    private String secret;
 
     public Long getId() {
         return id;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public String getProvider() {
         return provider;
     }
 
-    public void setConfiguration(Map<String, String> configuration) {
-        this.configuration = configuration;
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
 }

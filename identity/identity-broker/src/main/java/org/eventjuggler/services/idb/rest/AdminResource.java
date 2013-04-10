@@ -23,10 +23,11 @@ package org.eventjuggler.services.idb.rest;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -35,13 +36,16 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
+import org.eventjuggler.services.idb.model.providers.IdentityProviderDescription;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -50,11 +54,12 @@ import org.eventjuggler.services.idb.model.Application;
 @Stateless
 public class AdminResource {
 
-    @PersistenceContext(unitName = "idb")
-    private EntityManager em;
+    @EJB
+    private ApplicationService service;
 
     @Inject
-    private KeyGenerator keyGenerator;
+    @Any
+    private Instance<IdentityProviderDescription> providerDescriptions;
 
     @POST
     @Path("/applications")
@@ -64,10 +69,7 @@ public class AdminResource {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        application.setKey(keyGenerator.createApplicationKey());
-        application.setSecret(keyGenerator.createApplicationSecret());
-
-        em.persist(application);
+        service.create(application);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
     }
@@ -75,44 +77,45 @@ public class AdminResource {
     @DELETE
     @Path("/applications/{applicationKey}")
     public Response deleteApplication(@PathParam("applicationKey") String applicationKey) {
-        Application application = em.find(Application.class, applicationKey);
-        if (application == null) {
+        if (service.remove(applicationKey)) {
+            return Response.noContent().build();
+        } else {
             return Response.status(Status.NOT_FOUND).build();
         }
-
-        em.remove(application);
-
-        return Response.noContent().build();
     }
 
     @GET
     @Path("/applications/{applicationKey}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getApplication(@PathParam("applicationKey") String applicationKey) {
-        Application application = em.find(Application.class, applicationKey);
-
+    public Application getApplication(@PathParam("applicationKey") String applicationKey) {
+        Application application = service.getApplication(applicationKey);
         if (application == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(application).build();
+            throw new WebApplicationException(Status.NOT_FOUND);
         }
+
+        return application;
     }
 
     @GET
     @Path("/applications")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Application> getApplications() {
-        return em.createQuery("from Application", Application.class).getResultList();
+        return service.getApplications();
     }
 
     @PUT
     @Path("/applications/{applicationKey}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
-        System.out.println("Providers before:" + application.getProviders().size());
-        application = em.merge(application);
-        System.out.println("Providers after:" + application.getProviders().size());
+        service.update(application);
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/providers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public IdentityProviderDescription[] getProviderTypes() {
+        return IdentityProviderDescription.getProviders();
     }
 
 }

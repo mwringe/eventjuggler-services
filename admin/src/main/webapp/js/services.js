@@ -11,3 +11,7 @@ eventjugglerServices.factory('Application', function($resource) {
         }
     });
 });
+
+eventjugglerServices.factory('Provider', function($resource) {
+    return $resource('/identity-broker/admin/providers');
+});
