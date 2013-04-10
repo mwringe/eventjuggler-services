@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.eventjuggler.services</groupId>
         <artifactId>eventjuggler-services-parent</artifactId>
-        <version>0.1.0.20130326-SNAPSHOT</version>
+        <version>0.1.0.20130410</version>
     </parent>
 
     <artifactId>admin</artifactId>
