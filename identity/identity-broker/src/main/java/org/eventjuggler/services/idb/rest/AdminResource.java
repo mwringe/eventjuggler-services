@@ -76,11 +76,9 @@ public class AdminResource {
 
     @DELETE
     @Path("/applications/{applicationKey}")
-    public Response deleteApplication(@PathParam("applicationKey") String applicationKey) {
-        if (service.remove(applicationKey)) {
-            return Response.noContent().build();
-        } else {
-            return Response.status(Status.NOT_FOUND).build();
+    public void deleteApplication(@PathParam("applicationKey") String applicationKey) {
+        if (!service.remove(applicationKey)) {
+            throw new WebApplicationException(Status.NOT_FOUND);
         }
     }
 
@@ -106,9 +104,8 @@ public class AdminResource {
     @PUT
     @Path("/applications/{applicationKey}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
+    public void updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
         service.update(application);
-        return Response.noContent().build();
     }
 
     @GET
