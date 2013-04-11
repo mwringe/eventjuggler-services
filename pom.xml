@@ -31,6 +31,7 @@
         <module>admin</module>
         <module>analytics</module>
         <module>build</module>
+        <module>dist</module>
         <module>identity</module>
         <module>testsuite</module>
     </modules>
@@ -112,6 +113,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
+                <artifactId>admin</artifactId>
+                <type>war</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
                 <artifactId>eventjuggler-services-build</artifactId>
                 <type>pom</type>
                 <version>${project.version}</version>
@@ -124,6 +131,18 @@
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
                 <artifactId>analytics-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>identity-broker</artifactId>
+                <type>war</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>simple-auth</artifactId>
+                <type>war</type>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

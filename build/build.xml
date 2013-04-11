@@ -44,6 +44,12 @@
 		<copy file="src/main/resources/application-users.properties" todir="${output.dir}/standalone/configuration" overwrite="true" />
 	</target>
 
+	<target name="copy-deployments">
+		<copy file="${org.eventjuggler.services:admin:war}" tofile="${output.dir}/standalone/deployments/admin.war" overwrite="true" />
+		<copy file="${org.eventjuggler.services:identity-broker:war}" tofile="${output.dir}/standalone/deployments/identity-broker.war" overwrite="true" />
+		<copy file="${org.eventjuggler.services:simple-auth:war}" tofile="${output.dir}/standalone/deployments/simple-auth.war" overwrite="true" />
+	</target>
+
 	<target name="extract-schemas">
 		<unzip src="${org.eventjuggler.services:analytics-impl:jar}" dest="${output.dir}/docs/schema/">
 			<patternset>
@@ -67,6 +73,6 @@
 		<echo file="${jboss.target.dir}/modules/layers.conf">layers=ejs</echo>
 	</target>
 
-	<target name="all" depends="clean, unzip-jboss, modules, copy-files, extract-schemas">
+	<target name="all" depends="clean, unzip-jboss, modules, copy-files, copy-deployments, extract-schemas">
 	</target>
 </project>
