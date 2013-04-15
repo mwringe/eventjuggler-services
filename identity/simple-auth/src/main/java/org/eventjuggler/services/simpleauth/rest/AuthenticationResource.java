@@ -1,76 +1,129 @@
 /*
- * JBoss, Home of Professional Open Source.
- * Copyright 2012, Red Hat, Inc., and individual contributors
- * as indicated by the @author tags. See the copyright.txt file in the
- * distribution for a full listing of individual contributors.
+ * JBoss, Home of Professional Open Source
  *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.eventjuggler.services.simpleauth.rest;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-/**
- * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
- */
+import org.eventjuggler.services.simpleauth.TokenManager;
+import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.credential.Credentials;
+import org.picketlink.idm.credential.Password;
+import org.picketlink.idm.credential.UsernamePasswordCredentials;
+import org.picketlink.idm.model.User;
+
 @Path("/")
 public class AuthenticationResource {
 
-    private static AuthenticationRequest request;
+    @Inject
+    private IdentityManager identityManager;
+
+    @EJB
+    private TokenManager tokenManager;
 
     @Path("/signin")
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public AuthenticationResponse login(final AuthenticationRequest request) {
-        AuthenticationResource.request = request;
+    public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
+        User user = null;
+        String token = null;
+
+        if (authcRequest.getPassword() != null) {
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(authcRequest.getUserId(), new Password(
+                    authcRequest.getPassword()));
+
+            identityManager.validateCredentials(credentials);
+
+            if (Credentials.Status.VALID.equals(credentials.getStatus())) {
+                user = identityManager.getUser(credentials.getUsername());
+                token = tokenManager.put(user);
+            }
+        } else if (authcRequest.getToken() != null) {
+            user = tokenManager.get(authcRequest.getToken());
+            token = authcRequest.getToken();
+        }
 
         AuthenticationResponse response = new AuthenticationResponse();
-
-        if (request.getUserId().equals("user")) {
+        if (user != null) {
             response.setLoggedIn(true);
-            response.setToken(request.getPassword());
-            response.setUserId(request.getUserId());
+            response.setUserId(user.getLoginName());
+            response.setToken(token);
         }
 
         return response;
     }
 
-    @Path("/logout")
     @GET
-    public void logout() {
-        request = null;
+    @Path("/logout")
+    public void logout(@QueryParam("token") String token) {
+        if (token != null && tokenManager.valid(token)) {
+            tokenManager.remove(token);
+        }
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/userinfo")
-    public Response getInfo() {
-        if (request != null) {
-            UserInfo info = new UserInfo();
-            info.setFullName("User Name");
-            info.setUserId("user");
-            return Response.ok(info).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInfo(@QueryParam("token") String token) {
+        if (token != null && tokenManager.valid(token)) {
+            User user = tokenManager.get(token);
+
+            String fullName = user.getFirstName();
+            if (user.getFirstName() != null) {
+                fullName = user.getLastName() != null ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
+            } else {
+                fullName = user.getLastName();
+            }
+
+            UserInfo userInfo = new UserInfo();
+            userInfo.setFullName(fullName);
+            userInfo.setUserId(user.getLoginName());
+
+            return Response.ok(userInfo).build();
         } else {
-            return Response.status(Status.UNAUTHORIZED).build();
+            return Response.status(Status.FORBIDDEN).build();
+        }
+    }
+
+    @GET
+    @Path("/jss/{script}")
+    @Produces("text/javascript")
+    public Response getLoginScripts(@PathParam("script") String script) throws IOException {
+        InputStream is = getClass().getResourceAsStream("/js/" + script);
+        if (is != null) {
+            return Response.ok(is).type("text/javascript").build();
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
         }
     }
 

@@ -40,7 +40,7 @@ import org.picketlink.idm.model.User;
  */
 @Stateless
 @Path("/accregister")
-public class AccountRegistrationEndpoint {
+public class AccountRegistrationResource {
 
     @Inject
     private IdentityManager identityManager;
