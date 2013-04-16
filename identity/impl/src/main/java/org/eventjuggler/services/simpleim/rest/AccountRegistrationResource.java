@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
-import org.eventjuggler.services.simpleim.rest.AccountRegistration;
-import org.eventjuggler.services.simpleim.rest.AccountRegistrationRequest;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.Attribute;
