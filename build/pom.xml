@@ -27,13 +27,13 @@
 
     <parent>
         <groupId>org.eventjuggler.services</groupId>
-        <artifactId>eventjuggler-services-parent</artifactId>
+        <artifactId>ejs-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>eventjuggler-services-build</artifactId>
+    <artifactId>ejs-build</artifactId>
 
-    <name>EventJuggler Services Build</name>
+    <name>Build</name>
     <packaging>pom</packaging>
 
     <properties>
@@ -43,25 +43,16 @@
     <dependencies>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
-            <artifactId>admin</artifactId>
+            <artifactId>ejs-admin</artifactId>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
-            <artifactId>analytics-api</artifactId>
+            <artifactId>ejs-analytics-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
-            <artifactId>analytics-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eventjuggler.services</groupId>
-            <artifactId>identity-broker</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.eventjuggler.services</groupId>
-            <artifactId>simple-auth</artifactId>
+            <artifactId>ejs-identity-impl</artifactId>
             <type>war</type>
         </dependency>
 

@@ -30,7 +30,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.PathParam;
 
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.rest.KeyGenerator;
+import org.eventjuggler.services.utils.KeyGenerator;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>

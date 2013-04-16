@@ -14,13 +14,13 @@
 
     <parent>
         <groupId>org.eventjuggler.services</groupId>
-        <artifactId>eventjuggler-services-parent</artifactId>
+        <artifactId>ejs-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>analytics-parent</artifactId>
+    <artifactId>ejs-analytics-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Analytics Service Parent</name>
+    <name>Analytics Parent</name>
 
     <modules>
         <module>api</module>

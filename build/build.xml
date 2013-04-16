@@ -45,13 +45,12 @@
 	</target>
 
 	<target name="copy-deployments">
-		<copy file="${org.eventjuggler.services:admin:war}" tofile="${output.dir}/standalone/deployments/admin.war" overwrite="true" />
-		<copy file="${org.eventjuggler.services:identity-broker:war}" tofile="${output.dir}/standalone/deployments/identity-broker.war" overwrite="true" />
-		<copy file="${org.eventjuggler.services:simple-auth:war}" tofile="${output.dir}/standalone/deployments/simple-auth.war" overwrite="true" />
+		<copy file="${org.eventjuggler.services:ejs-admin:war}" tofile="${output.dir}/standalone/deployments/ejs-admin.war" overwrite="true" />
+		<copy file="${org.eventjuggler.services:ejs-identity-impl:war}" tofile="${output.dir}/standalone/deployments/ejs-identity-impl.war" overwrite="true" />
 	</target>
 
 	<target name="extract-schemas">
-		<unzip src="${org.eventjuggler.services:analytics-impl:jar}" dest="${output.dir}/docs/schema/">
+		<unzip src="${org.eventjuggler.services:ejs-analytics-impl:jar}" dest="${output.dir}/docs/schema/">
 			<patternset>
 				<include name="**/*.xsd" />
 			</patternset>
@@ -66,8 +65,8 @@
 		</module-def>
 
 		<module-def name="org.eventjuggler.services.analytics">
-			<maven-resource group="org.eventjuggler.services" artifact="analytics-api" />
-			<maven-resource group="org.eventjuggler.services" artifact="analytics-impl" />
+			<maven-resource group="org.eventjuggler.services" artifact="ejs-analytics-api" />
+			<maven-resource group="org.eventjuggler.services" artifact="ejs-analytics-impl" />
 		</module-def>
 		
 		<echo file="${jboss.target.dir}/modules/layers.conf">layers=ejs</echo>

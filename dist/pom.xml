@@ -27,18 +27,18 @@
 
     <parent>
         <groupId>org.eventjuggler.services</groupId>
-        <artifactId>eventjuggler-services-parent</artifactId>
+        <artifactId>ejs-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>eventjuggler-services-dist</artifactId>
-    <name>EventJuggler Services Dist</name>
+    <artifactId>ejs-dist</artifactId>
+    <name>Dist</name>
     <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
         <groupId>org.eventjuggler.services</groupId>
-            <artifactId>eventjuggler-services-build</artifactId>
+            <artifactId>ejs-build</artifactId>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>

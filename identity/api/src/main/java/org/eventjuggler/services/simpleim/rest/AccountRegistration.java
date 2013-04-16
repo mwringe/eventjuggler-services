@@ -15,33 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.eventjuggler.services.simpleauth.rest;
+package org.eventjuggler.services.simpleim.rest;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-@Path("/auth")
-public interface Authentication {
+@Path("/im/accregister")
+public interface AccountRegistration {
 
-    @Path("/signin")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    AuthenticationResponse login(final AuthenticationRequest authcRequest);
-
-    @GET
-    @Path("/logout")
-    void logout(@QueryParam("token") String token);
-
-    @GET
-    @Path("/userinfo")
-    @Produces(MediaType.APPLICATION_JSON)
-    UserInfo getInfo(@QueryParam("token") String token);
+    void register(AccountRegistrationRequest request);
 
 }

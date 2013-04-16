@@ -25,48 +25,55 @@
 
     <parent>
         <groupId>org.eventjuggler.services</groupId>
-        <artifactId>analytics-parent</artifactId>
+        <artifactId>ejs-analytics-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>analytics-impl</artifactId>
-    <name>Analytics Service Subsystem</name>
+    <artifactId>ejs-analytics-impl</artifactId>
+    <name>Analytics Impl</name>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
-            <artifactId>analytics-api</artifactId>
+            <artifactId>ejs-analytics-api</artifactId>
         </dependency>
 
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-controller</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-naming</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-server</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-web</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-weld</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.web</groupId>
             <artifactId>jbossweb</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

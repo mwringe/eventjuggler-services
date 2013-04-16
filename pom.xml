@@ -9,11 +9,12 @@
     License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
     OF ANY KIND, either express or implied. See the License for the specific 
     language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eventjuggler.services</groupId>
-    <artifactId>eventjuggler-services-parent</artifactId>
+    <artifactId>ejs-parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>EventJuggler Services Parent</name>
@@ -38,6 +39,7 @@
 
     <properties>
         <version.net.sf.uadetector>2012.08</version.net.sf.uadetector>
+	<version.org.apache.commons.io>1.3.2</version.org.apache.commons.io>
         <version.org.jboss.arquillian>1.0.3.Final</version.org.jboss.arquillian>
         <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
         <version.org.jboss.as.plugins.maven.plugin>7.3.Final</version.org.jboss.as.plugins.maven.plugin>
@@ -45,7 +47,9 @@
         <version.org.jboss.resteasy>2.3.5.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.jboss.javaee.6.0>3.0.0.Final</version.org.jboss.spec.jboss.javaee.6.0>
         <version.org.jboss.weld>1.1.10.Final</version.org.jboss.weld>
+	<version.org.json>20090211</version.org.json>
         <version.org.picketlink>3.0.0.Beta1</version.org.picketlink>
+	<version.junit>4.11</version.junit>
 
         <version.checkstyle.plugin>2.9.1</version.checkstyle.plugin>
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
@@ -75,6 +79,45 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-admin</artifactId>
+                <type>war</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-build</artifactId>
+                <type>pom</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-analytics-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-analytics-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-identity-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-identity-impl</artifactId>
+                <type>war</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-identity-picketlink</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -112,40 +155,6 @@
                 <version>${version.net.sf.uadetector}</version>
             </dependency>
             <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>admin</artifactId>
-                <type>war</type>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>eventjuggler-services-build</artifactId>
-                <type>pom</type>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>analytics-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>analytics-impl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>identity-broker</artifactId>
-                <type>war</type>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>simple-auth</artifactId>
-                <type>war</type>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>${version.org.jboss.resteasy}</version>
@@ -153,17 +162,17 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>1.3.2</version>
+                <version>${version.org.apache.commons.io}</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20090211</version>
+                <version>${version.org.json}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${version.junit}</version>
             </dependency>
             <dependency>
                 <groupId>org.picketlink</groupId>

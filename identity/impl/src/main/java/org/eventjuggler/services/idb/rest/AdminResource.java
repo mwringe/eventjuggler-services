@@ -28,17 +28,10 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -52,7 +45,7 @@ import org.eventjuggler.services.idb.model.providers.IdentityProviderDescription
  */
 @Path("/admin")
 @Stateless
-public class AdminResource {
+public class AdminResource implements Admin {
 
     @EJB
     private ApplicationService service;
@@ -61,9 +54,7 @@ public class AdminResource {
     @Any
     private Instance<IdentityProviderDescription> providerDescriptions;
 
-    @POST
-    @Path("/applications")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
     public Response createApplication(Application application, @Context UriInfo uriInfo) {
         if (application.getKey() != null || application.getSecret() != null) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -74,17 +65,14 @@ public class AdminResource {
         return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
     }
 
-    @DELETE
-    @Path("/applications/{applicationKey}")
+    @Override
     public void deleteApplication(@PathParam("applicationKey") String applicationKey) {
         if (!service.remove(applicationKey)) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
     }
 
-    @GET
-    @Path("/applications/{applicationKey}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Override
     public Application getApplication(@PathParam("applicationKey") String applicationKey) {
         Application application = service.getApplication(applicationKey);
         if (application == null) {
@@ -94,23 +82,17 @@ public class AdminResource {
         return application;
     }
 
-    @GET
-    @Path("/applications")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Override
     public List<Application> getApplications() {
         return service.getApplications();
     }
 
-    @PUT
-    @Path("/applications/{applicationKey}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
     public void updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
         service.update(application);
     }
 
-    @GET
-    @Path("/providers")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Override
     public IdentityProviderDescription[] getProviderTypes() {
         return IdentityProviderDescription.getProviders();
     }

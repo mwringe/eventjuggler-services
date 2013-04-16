@@ -24,7 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
-import org.eventjuggler.services.simpleauth.TokenManager;
+import org.eventjuggler.services.utils.TokenService;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
@@ -37,7 +37,7 @@ public class AuthenticationResource implements Authentication {
     private IdentityManager identityManager;
 
     @EJB
-    private TokenManager tokenManager;
+    private TokenService tokenManager;
 
     @Override
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
