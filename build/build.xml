@@ -46,7 +46,7 @@
 
 	<target name="copy-deployments">
 		<copy file="${org.eventjuggler.services:ejs-admin:war}" tofile="${output.dir}/standalone/deployments/ejs-admin.war" overwrite="true" />
-		<copy file="${org.eventjuggler.services:ejs-identity-impl:war}" tofile="${output.dir}/standalone/deployments/ejs-identity-impl.war" overwrite="true" />
+		<copy file="${org.eventjuggler.services:ejs-identity-impl:war}" tofile="${output.dir}/standalone/deployments/ejs-identity.war" overwrite="true" />
 	</target>
 
 	<target name="extract-schemas">

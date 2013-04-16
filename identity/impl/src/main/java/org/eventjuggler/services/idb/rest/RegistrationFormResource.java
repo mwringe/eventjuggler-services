@@ -1,14 +1,11 @@
 package org.eventjuggler.services.idb.rest;
 
-import java.net.URISyntaxException;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -44,17 +41,17 @@ public class RegistrationFormResource {
     }
 
     @POST
-    @Path("/{appKey}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
-    public void register(@PathParam("appKey") String appKey, @FormParam("email") String email,
-            @FormParam("password") String password) throws URISyntaxException {
+    public String register(@FormParam("email") String email, @FormParam("password") String password) {
         if (identityManager.getUser(email) == null) {
             User user = new SimpleUser(email);
             user.setEmail(email);
 
             identityManager.add(user);
             identityManager.updateCredential(user, new Password(password));
+
+            return "<html><body><h1>Registered</h1></body></html>";
         } else {
             throw new WebApplicationException(Status.BAD_REQUEST);
         }

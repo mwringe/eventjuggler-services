@@ -3,7 +3,7 @@
 var eventjugglerServices = angular.module('eventjugglerAdminServices', [ 'ngResource' ]);
 
 eventjugglerServices.factory('Application', function($resource) {
-    return $resource('/identity-broker/admin/applications/:key', {
+    return $resource('/ejs-identity/admin/applications/:key', {
         key : '@key'
     }, {
         update : {
@@ -13,5 +13,5 @@ eventjugglerServices.factory('Application', function($resource) {
 });
 
 eventjugglerServices.factory('Provider', function($resource) {
-    return $resource('/identity-broker/admin/providers');
+    return $resource('/ejs-identity/admin/providers');
 });

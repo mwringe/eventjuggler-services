@@ -63,7 +63,7 @@ public class LoginFormResource {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/simple-auth");
+        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setUserId(email);
@@ -73,7 +73,7 @@ public class LoginFormResource {
         if (response.isLoggedIn()) {
             return Response.seeOther(new URI(application.getCallbackUrl() + "?token=" + response.getToken())).build();
         } else {
-            return Response.status(Status.FORBIDDEN).build();
+            return Response.status(Status.BAD_REQUEST).build();
         }
     }
 
