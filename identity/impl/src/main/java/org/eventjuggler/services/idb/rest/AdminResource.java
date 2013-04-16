@@ -24,7 +24,6 @@ package org.eventjuggler.services.idb.rest;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -44,7 +43,6 @@ import org.eventjuggler.services.idb.model.providers.IdentityProviderDescription
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Path("/admin")
-@Stateless
 public class AdminResource implements Admin {
 
     @EJB

@@ -25,8 +25,8 @@ import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
 import org.jboss.resteasy.client.ProxyFactory;
 
-@Path("/login/{appKey}")
-public class LoginFormResource {
+@Path("/dummysocial/{appKey}")
+public class DummySocialResource {
 
     @Inject
     private ApplicationService service;
@@ -42,6 +42,7 @@ public class LoginFormResource {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append("<body>");
+        sb.append("<h1>Welcome to Dummy Social</h1>");
         sb.append("<form action='#' method='post'>");
         sb.append("<input type='text' name='email' placeholder='Email' />");
         sb.append("<input type='text' name='password' placeholder='Password' />");
@@ -50,7 +51,6 @@ public class LoginFormResource {
         sb.append("</form>");
 
         sb.append("<ul>");
-        sb.append("<li><a href='/ejs-identity/dummysocial/" + appKey + "'>Dummy Social</a></li>");
         for (IdentityProvider provider : application.getProviders()) {
             sb.append("<li><a href='#'>" + provider.getProvider() + "</a></li>");
         }
@@ -80,7 +80,8 @@ public class LoginFormResource {
 
         AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
-            return Response.seeOther(new URI(application.getCallbackUrl() + "?token=" + response.getToken())).build();
+            return Response.seeOther(
+                    new URI("http://localhost:8080/ejs-identity/callback/" + appKey + "?token=" + response.getToken())).build();
         } else {
             return Response.status(Status.BAD_REQUEST).build();
         }
