@@ -27,7 +27,7 @@ import javax.ws.rs.core.Application;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@ApplicationPath("/")
+@ApplicationPath("/api")
 public class IdentityApplication extends Application {
 
 }

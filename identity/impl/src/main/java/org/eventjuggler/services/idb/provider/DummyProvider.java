@@ -28,8 +28,7 @@ public class DummyProvider implements IdentityProvider {
 
     @Override
     public URI getLoginUrl(Application application, IdentityProviderConfig provider) {
-        UriBuilder builder = UriBuilder.fromUri("http://localhost:8080/ejs-identity/dummysocial/" + application.getKey());
-        return builder.build();
+        return UriBuilder.fromUri("http://localhost:8080/ejs-identity/api/dummysocial/" + application.getKey()).build();
     }
 
     @Override
@@ -41,7 +40,7 @@ public class DummyProvider implements IdentityProvider {
     public User getUser(HttpHeaders headers, UriInfo info) {
         String token = info.getQueryParameters().getFirst("token");
 
-        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity");
+        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
         UserInfo userInfo = auth.getInfo(token);
 
         User user = new SimpleUser(userInfo.getUserId());
