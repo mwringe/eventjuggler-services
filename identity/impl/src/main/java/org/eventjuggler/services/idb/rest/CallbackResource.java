@@ -49,8 +49,8 @@ public class CallbackResource {
         }
 
         for (IdentityProvider provider : providers) {
-            if (provider.isCallbackHandler(headers, info)) {
-                User user = provider.getUser(headers, info);
+            if (provider.isCallbackHandler(headers.getRequestHeaders(), info.getQueryParameters())) {
+                User user = provider.getUser(headers.getRequestHeaders(), info.getQueryParameters());
                 String token = tokenManager.put(user);
 
                 return Response.seeOther(new URI(application.getCallbackUrl() + "?token=" + token)).build();

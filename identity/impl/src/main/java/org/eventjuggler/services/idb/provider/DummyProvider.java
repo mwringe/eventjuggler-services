@@ -1,10 +1,10 @@
 package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
@@ -37,8 +37,8 @@ public class DummyProvider implements IdentityProvider {
     }
 
     @Override
-    public User getUser(HttpHeaders headers, UriInfo info) {
-        String token = info.getQueryParameters().getFirst("token");
+    public User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
+        String token = queryParameters.get("token").get(0);
 
         Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
         UserInfo userInfo = auth.getInfo(token);
@@ -51,8 +51,8 @@ public class DummyProvider implements IdentityProvider {
     }
 
     @Override
-    public boolean isCallbackHandler(HttpHeaders headers, UriInfo info) {
-        return info.getQueryParameters().containsKey("token");
+    public boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
+        return queryParameters.containsKey("token");
     }
 
 }

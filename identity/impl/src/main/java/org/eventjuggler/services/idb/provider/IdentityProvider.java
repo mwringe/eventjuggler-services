@@ -1,9 +1,8 @@
 package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
+import java.util.List;
+import java.util.Map;
 
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
@@ -19,8 +18,8 @@ public interface IdentityProvider {
 
     String getName();
 
-    User getUser(HttpHeaders headers, UriInfo info);
+    User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters);
 
-    boolean isCallbackHandler(HttpHeaders headers, UriInfo info);
+    boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters);
 
 }

@@ -1,10 +1,10 @@
 package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
@@ -35,12 +35,12 @@ public class GoogleProvider implements IdentityProvider {
     }
 
     @Override
-    public User getUser(HttpHeaders headers, UriInfo info) {
+    public User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
         return null; // TODO
     }
 
     @Override
-    public boolean isCallbackHandler(HttpHeaders headers, UriInfo info) {
+    public boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
         return false; // TODO
 
     }
