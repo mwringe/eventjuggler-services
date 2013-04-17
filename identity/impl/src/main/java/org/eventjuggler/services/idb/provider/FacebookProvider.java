@@ -1,4 +1,4 @@
-package org.eventjuggler.services.idb.social;
+package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
 

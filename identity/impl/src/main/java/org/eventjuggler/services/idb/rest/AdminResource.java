@@ -40,7 +40,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.social.IdentityProvider;
+import org.eventjuggler.services.idb.provider.IdentityProvider;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
