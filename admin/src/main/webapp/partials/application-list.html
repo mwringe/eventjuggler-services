@@ -10,11 +10,13 @@
             <tr>
                 <th>Application</th>
                 <th>Key</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
         <tr ng-repeat="application in applications">
             <td><a href="#/applications/{{application.key}}">{{application.name}}</a></td>
             <td><a href="#/applications/{{application.key}}">{{application.key}}</a></td>
+            <td><a href="/ejs-identity/login/?key={{application.key}}">Login</a></td>            
         </tr>
     </table>
 </div>
