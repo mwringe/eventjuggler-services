@@ -19,7 +19,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
@@ -44,18 +43,11 @@ public class DummySocialResource {
         sb.append("<body>");
         sb.append("<h1>Welcome to Dummy Social</h1>");
         sb.append("<form action='#' method='post'>");
-        sb.append("<input type='text' name='email' placeholder='Email' />");
+        sb.append("<input type='text' name='username' placeholder='Username' />");
         sb.append("<input type='text' name='password' placeholder='Password' />");
         sb.append("<input type='hidden' name='appkey' value='" + appKey + "' />");
         sb.append("<button type='submit'>Login</button>");
         sb.append("</form>");
-
-        sb.append("<ul>");
-        for (IdentityProviderConfig provider : application.getProviders()) {
-            sb.append("<li><a href='#'>" + provider.getProviderId() + "</a></li>");
-        }
-        sb.append("</ul>");
-
         sb.append("</body>");
         sb.append("</html>");
 
@@ -65,23 +57,24 @@ public class DummySocialResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
-    public Response login(@PathParam("appKey") String appKey, @FormParam("email") String email,
+    public Response login(@PathParam("appKey") String appKey, @FormParam("username") String username,
             @FormParam("password") String password) throws URISyntaxException {
         Application application = service.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity");
+        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setUserId(email);
+        request.setUserId(username);
         request.setPassword(password);
 
         AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
             return Response.seeOther(
-                    new URI("http://localhost:8080/ejs-identity/callback/" + appKey + "?token=" + response.getToken())).build();
+                    new URI("http://localhost:8080/ejs-identity/api/callback/" + appKey + "?token=" + response.getToken()))
+           .build();
         } else {
             return Response.status(Status.BAD_REQUEST).build();
         }
