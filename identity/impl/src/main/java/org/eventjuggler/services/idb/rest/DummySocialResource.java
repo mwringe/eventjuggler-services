@@ -42,11 +42,12 @@ public class DummySocialResource {
         sb.append("<html>");
         sb.append("<body>");
         sb.append("<h1>Welcome to Dummy Social</h1>");
+        sb.append(application.getName() + " is requesting to authenticate using your account");
         sb.append("<form action='#' method='post'>");
         sb.append("<input type='text' name='username' placeholder='Username' />");
         sb.append("<input type='text' name='password' placeholder='Password' />");
         sb.append("<input type='hidden' name='appkey' value='" + appKey + "' />");
-        sb.append("<button type='submit'>Login</button>");
+        sb.append("<button type='submit'>Accept</button>");
         sb.append("</form>");
         sb.append("</body>");
         sb.append("</html>");
@@ -74,7 +75,7 @@ public class DummySocialResource {
         if (response.isLoggedIn()) {
             return Response.seeOther(
                     new URI("http://localhost:8080/ejs-identity/api/callback/" + appKey + "?token=" + response.getToken()))
-           .build();
+                    .build();
         } else {
             return Response.status(Status.BAD_REQUEST).build();
         }
