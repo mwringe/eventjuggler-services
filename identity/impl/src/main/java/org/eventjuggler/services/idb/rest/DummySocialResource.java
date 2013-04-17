@@ -19,7 +19,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.IdentityProvider;
+import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
@@ -51,8 +51,8 @@ public class DummySocialResource {
         sb.append("</form>");
 
         sb.append("<ul>");
-        for (IdentityProvider provider : application.getProviders()) {
-            sb.append("<li><a href='#'>" + provider.getProvider() + "</a></li>");
+        for (IdentityProviderConfig provider : application.getProviders()) {
+            sb.append("<li><a href='#'>" + provider.getProviderId() + "</a></li>");
         }
         sb.append("</ul>");
 

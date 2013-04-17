@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-public class IdentityProvider {
+public class IdentityProviderConfig {
 
     @Id
     @GeneratedValue
@@ -39,7 +39,7 @@ public class IdentityProvider {
 
     private String key;
 
-    private String provider;
+    private String providerId;
 
     private String secret;
 
@@ -51,8 +51,8 @@ public class IdentityProvider {
         return key;
     }
 
-    public String getProvider() {
-        return provider;
+    public String getProviderId() {
+        return providerId;
     }
 
     public String getSecret() {
@@ -63,8 +63,8 @@ public class IdentityProvider {
         this.key = key;
     }
 
-    public void setProvider(String provider) {
-        this.provider = provider;
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     public void setSecret(String secret) {

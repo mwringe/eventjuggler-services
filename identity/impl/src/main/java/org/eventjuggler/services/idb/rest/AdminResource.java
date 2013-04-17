@@ -21,8 +21,11 @@
  */
 package org.eventjuggler.services.idb.rest;
 
+import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -37,7 +40,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.providers.IdentityProviderDescription;
+import org.eventjuggler.services.idb.social.IdentityProvider;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -45,15 +48,18 @@ import org.eventjuggler.services.idb.model.providers.IdentityProviderDescription
 @Path("/admin")
 public class AdminResource implements Admin {
 
+    @Inject
+    @Any
+    private Instance<IdentityProvider> providers;
+
     @EJB
     private ApplicationService service;
 
-    @Inject
-    @Any
-    private Instance<IdentityProviderDescription> providerDescriptions;
+    @Context
+    private UriInfo uriInfo;
 
     @Override
-    public Response createApplication(Application application, @Context UriInfo uriInfo) {
+    public Response createApplication(Application application) {
         if (application.getKey() != null || application.getSecret() != null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
@@ -86,13 +92,23 @@ public class AdminResource implements Admin {
     }
 
     @Override
-    public void updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
-        service.update(application);
+    public List<IdentityProviderDescription> getProviderTypes() {
+        List<IdentityProviderDescription> descriptions = new LinkedList<>();
+        for (IdentityProvider provider : providers) {
+            URI icon = uriInfo.getBaseUri().resolve("/icon/" + provider.getIcon());
+            descriptions.add(new IdentityProviderDescription(provider.getId(), provider.getName(), icon));
+        }
+        return descriptions;
+    }
+
+    @PostConstruct
+    private void loadProviderDescriptions() {
+
     }
 
     @Override
-    public IdentityProviderDescription[] getProviderTypes() {
-        return IdentityProviderDescription.getProviders();
+    public void updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
+        service.update(application);
     }
 
 }

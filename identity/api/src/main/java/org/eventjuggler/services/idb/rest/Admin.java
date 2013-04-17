@@ -10,20 +10,17 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.providers.IdentityProviderDescription;
 
 public interface Admin {
 
     @POST
     @Path("/applications")
     @Consumes(MediaType.APPLICATION_JSON)
-    Response createApplication(Application application, @Context UriInfo uriInfo);
+    Response createApplication(Application application);
 
     @DELETE
     @Path("/applications/{applicationKey}")
@@ -47,6 +44,6 @@ public interface Admin {
     @GET
     @Path("/providers")
     @Produces(MediaType.APPLICATION_JSON)
-    IdentityProviderDescription[] getProviderTypes();
+    List<IdentityProviderDescription> getProviderTypes();
 
 }

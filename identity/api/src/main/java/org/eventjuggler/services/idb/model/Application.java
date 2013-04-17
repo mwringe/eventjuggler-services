@@ -45,7 +45,7 @@ public class Application {
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<IdentityProvider> providers;
+    private List<IdentityProviderConfig> providers;
 
     private String secret;
 
@@ -61,7 +61,7 @@ public class Application {
         return name;
     }
 
-    public List<IdentityProvider> getProviders() {
+    public List<IdentityProviderConfig> getProviders() {
         return providers;
     }
 
@@ -81,7 +81,7 @@ public class Application {
         this.name = name;
     }
 
-    public void setProviders(List<IdentityProvider> providers) {
+    public void setProviders(List<IdentityProviderConfig> providers) {
         this.providers = providers;
     }
 

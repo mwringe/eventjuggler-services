@@ -81,15 +81,10 @@ public class AuthenticationResource implements Authentication {
         if (token != null && tokenManager.valid(token)) {
             User user = tokenManager.get(token);
 
-            String fullName = user.getFirstName();
-            if (user.getFirstName() != null) {
-                fullName = user.getLastName() != null ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
-            } else {
-                fullName = user.getLastName();
-            }
-
             UserInfo userInfo = new UserInfo();
-            userInfo.setFullName(fullName);
+            userInfo.setEmail(user.getEmail());
+            userInfo.setFirstName(user.getFirstName());
+            userInfo.setLastName(user.getLastName());
             userInfo.setUserId(user.getLoginName());
 
             return userInfo;

@@ -42,10 +42,10 @@
     <hr />
 
     <div class="input-append">
-        <select ng-model="newProvider">
-            <option ng-repeat="provider in providers">{{provider.name}}</option>
+        <select ng-model="newProviderId">
+            <option ng-repeat="p in providers" value="{{p.id}}">{{p.name}}</option>
         </select>
-        <button class="btn" ng-click="addProvider()">Add Provider</button>
+        <button class="btn" ng-click="addProvider(newProviderId)">Add Provider</button>
     </div>
 
     <table class="table table-striped table-bordered margin-top">
@@ -58,12 +58,10 @@
             </tr>
         </thead>
         <tr ng-repeat="provider in application.providers">
-            <td><select ng-model="provider.provider">
-                    <option ng-repeat="provider in providers">{{provider.name}}</option>
-            </select></td>
+            <td><input type="text" placeholder="Key" value="{{getProviderDescription(provider.providerId).name}}" readonly="readonly"></td>
             <td><input type="text" placeholder="Key" ng-model="provider.key" required></td>
             <td><input type="text" placeholder="Secret" ng-model="provider.secret" required></td>
-            <td><button class="btn" ng-click="removeProvider(provider)">Remove</button></td>
+            <td><button class="btn" ng-click="removeProvider($index)">Remove</button></td>
         </tr>
     </table>
 </div>

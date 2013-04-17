@@ -12,7 +12,7 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     var navigationToApplications = function() {
         $location.url("/applications");
     };
-
+    
     if ($routeParams.key == "new") {
         $scope.application = {};
     } else {
@@ -20,20 +20,28 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
             "key" : $routeParams.key
         });
     }
-    
+
     $scope.providers = Provider.query();
 
-    $scope.addProvider = function() {
+    $scope.addProvider = function(providerId) {
         if (!$scope.application.providers) {
             $scope.application.providers = [];
         }
+
         $scope.application.providers.push({
-            "provider" : $scope.newProvider
+            "providerId" : providerId
         });
     }
 
-    $scope.removeProvider = function(provider) {
-        var i = $scope.application.providers.indexOf(provider);
+    $scope.getProviderDescription = function(providerId) {
+        for ( var i = 0; i < $scope.providers.length; i++) {
+            if ($scope.providers[i].id == providerId) {
+                return $scope.providers[i];
+            }
+        }
+    }
+
+    $scope.removeProvider = function(i) {
         $scope.application.providers.splice(i, 1);
     }
 
@@ -46,7 +54,7 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
             "key" : $scope.application.key
         }, $scope.application, navigationToApplications);
     }
-    
+
     $scope.cancel = function() {
         navigationToApplications();
     }
