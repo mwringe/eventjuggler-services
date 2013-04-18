@@ -13,50 +13,51 @@
 
     function LoginCtrl($scope, $resource) {
         var query = location.search.substring(1).split("&");
-        for (var i = 0; i < query.length; i++) {
+        for ( var i = 0; i < query.length; i++) {
             var p = query[i].split("=");
             if (p[0] == "key") {
-                $scope.appKey = p[1];   
+                $scope.appKey = p[1];
             } else if (p[0] == "error") {
-                $scope.error = p[1];
+                $scope.invalidCredentials = true;
             }
         }
 
         var configRes = $resource('/ejs-identity/api/login/' + $scope.appKey);
-        $scope.config = configRes.get();
+        $scope.config = configRes.get(function() {
+        }, function(response) {
+            $scope.configError = response.status;
+        });
     }
 </script>
 </head>
 <body ng-app="login" ng-controller="LoginCtrl" style="background-color: #333;">
     <div class="modal">
-        <div class="modal-body">
+        <div class="modal-body" ng-hide="configError">
             <fieldset>
                 <legend>Login to {{config.name}}</legend>
-                <div>
-                    <div class="alert alert-error" ng-show="error">Invalid username or password</div>
-                    
-                    <div style="width: 60%; float: left;">
-                        <form action="/ejs-identity/api/login/{{appKey}}" method="post">
-                            <label for="username">Username</label>
-                            <input type="text" name="username" placeholder="Username" required />
+                <div class="alert" ng-show="invalidCredentials">Invalid username or password</div>
 
-                            <label for="password">Password</label>
-                            <input type="password" name="password" placeholder="Password" required />
+                <div style="width: 60%; float: left;">
+                    <form action="/ejs-identity/api/login/{{appKey}}" method="post">
+                        <label for="username">Username</label> <input type="text" name="username" placeholder="Username" required />
+                        <label for="password">Password</label> <input type="password" name="password" placeholder="Password"
+                            required />
 
-                            <div style="margin-top: 1em;">
-                                <button type="submit" class="btn">Login</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div style="width: 40%; float: left;">
-                        <div ng-repeat="provider in config.providerConfigs"
-                            style="float: left; margin-right: 1em; margin-top: 1em;">
-                            <a ng-href="{{provider.loginUri}}"><img ng-src="{{provider.icon}}" /></a>
+                        <div style="margin-top: 1em;">
+                            <button type="submit" class="btn">Login</button>
                         </div>
+                    </form>
+                </div>
+                <div style="width: 40%; float: left;">
+                    <div ng-repeat="provider in config.providerConfigs" style="float: left; margin-right: 1em; margin-top: 1em;">
+                        <a ng-href="{{provider.loginUri}}"><img ng-src="{{provider.icon}}" /></a>
                     </div>
+                </div>
             </fieldset>
         </div>
-    </div>
+        <div class="modal-body" ng-show="configError">
+            <div class="alert alert-error"><strong>{{configError}}</strong> Failed to load login configuration</div>
+        </div>
     </div>
 </body>
 </html>

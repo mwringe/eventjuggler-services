@@ -26,7 +26,6 @@ eventjugglerModule.factory('errorInterceptor', function($q, $window, $rootScope)
             return response;
         }, function(response) {
             $rootScope.httpProviderError = response.status;
-            console.debug("error: " + $rootScope.httpProviderError);
             return $q.reject(response);
         });
     };
