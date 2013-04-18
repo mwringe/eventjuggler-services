@@ -41,6 +41,7 @@ import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.utils.TokenService;
+import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.model.User;
 
 /**
@@ -55,6 +56,9 @@ public class CallbackResource {
     @Inject
     @Any
     private Instance<IdentityProvider> providers;
+
+    @Inject
+    private IdentityManager identityManager;
 
     @Context
     private UriInfo info;
@@ -75,8 +79,12 @@ public class CallbackResource {
         for (IdentityProvider provider : providers) {
             if (provider.isCallbackHandler(headers.getRequestHeaders(), info.getQueryParameters())) {
                 User user = provider.getUser(headers.getRequestHeaders(), info.getQueryParameters());
-                String token = tokenManager.put(user);
 
+                if (identityManager.getUser(user.getLoginName()) != null) {
+                    identityManager.add(user);
+                }
+
+                String token = tokenManager.put(user);
                 return Response.seeOther(new URI(application.getCallbackUrl() + "?token=" + token)).build();
             }
         }
