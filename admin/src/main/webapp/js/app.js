@@ -14,3 +14,20 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
         controller : WelcomeCtrl
     });
 } ]);
+
+eventjugglerModule.config(function($httpProvider) {
+    $httpProvider.responseInterceptors.push('errorInterceptor');
+});
+
+eventjugglerModule.factory('errorInterceptor', function($q, $window, $rootScope) {
+    return function(promise) {
+        return promise.then(function(response) {
+            $rootScope.httpProviderError = null;
+            return response;
+        }, function(response) {
+            $rootScope.httpProviderError = response.status;
+            console.debug("error: " + $rootScope.httpProviderError);
+            return $q.reject(response);
+        });
+    };
+});
