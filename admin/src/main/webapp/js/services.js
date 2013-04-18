@@ -25,3 +25,32 @@ eventjugglerServices.factory('User', function($resource) {
         }
     });
 });
+
+eventjugglerServices.service('Auth', function($resource, $http, $location) {
+    var token = $location.search().token;
+    if (!token) {
+        token = localStorage.getItem("token");
+    }
+
+    console.debug("token = " + token);
+
+    var user;
+
+    if (!user && token) {
+        console.debug("loading user");
+
+        var userInfoRes = $resource('/ejs-identity/api/auth/userinfo');
+        user = userInfoRes.get({
+            token : token
+        }, function() {
+            $http.defaults.headers.common['token'] = token;
+            console.debug("logged in");
+        }, function() {
+            console.debug("logged out");
+            localStorage.removeItem("token");
+            $http.defaults.headers.common['token'] = null;
+        });
+    }
+
+    return user;
+});

@@ -4,6 +4,10 @@ function WelcomeCtrl($scope) {
     $scope.message = "Hello world";
 }
 
+function UserCtrl($scope, Auth) {
+    $scope.user = Auth; 
+}
+
 function ApplicationListCtrl($scope, Application, $routeParams) {
     $scope.applications = Application.query();
 }

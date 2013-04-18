@@ -44,6 +44,8 @@ public class Application {
 
     private String name;
 
+    private String owner;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<IdentityProviderConfig> providers;
 
@@ -59,6 +61,10 @@ public class Application {
 
     public String getName() {
         return name;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public List<IdentityProviderConfig> getProviders() {
@@ -79,6 +85,10 @@ public class Application {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public void setProviders(List<IdentityProviderConfig> providers) {

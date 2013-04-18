@@ -27,7 +27,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.PathParam;
 
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.utils.KeyGenerator;
@@ -44,34 +43,34 @@ public class ApplicationService {
     @Inject
     private KeyGenerator keyGenerator;
 
-    public void create(Application application) {
+    public void create(String username, Application application) {
         application.setKey(keyGenerator.createApplicationKey());
         application.setSecret(keyGenerator.createApplicationSecret());
+        application.setOwner(username);
 
         em.persist(application);
     }
 
-    public boolean remove(String applicationKey) {
-        Application application = em.find(Application.class, applicationKey);
-        if (application == null) {
-            return false;
-        }
-
+    public void remove(Application application) {
         em.remove(application);
-        return true;
     }
 
     public Application update(Application application) {
         return em.merge(application);
     }
 
-    public Application getApplication(@PathParam("applicationKey") String applicationKey) {
+    public Application getApplication(String applicationKey) {
         Application application = em.find(Application.class, applicationKey);
         return application;
     }
 
     public List<Application> getApplications() {
         return em.createQuery("from Application", Application.class).getResultList();
+    }
+
+    public List<Application> getApplications(String username) {
+        return em.createQuery("from Application a where a.owner = :owner", Application.class).setParameter("owner", username)
+                .getResultList();
     }
 
 }
