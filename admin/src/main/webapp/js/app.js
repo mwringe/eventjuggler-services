@@ -9,6 +9,12 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
     }).when('/applications', {
         templateUrl : 'partials/application-list.html',
         controller : ApplicationListCtrl
+    }).when('/users/:userId', {
+        templateUrl : 'partials/user-detail.html',
+        controller : UserDetailCtrl
+    }).when('/users', {
+        templateUrl : 'partials/user-list.html',
+        controller : UserListCtrl
     }).otherwise({
         templateUrl : 'partials/home.html',
         controller : WelcomeCtrl

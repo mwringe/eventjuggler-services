@@ -17,18 +17,39 @@
  */
 package org.eventjuggler.services.simpleim.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/im/accregister")
-public interface AccountRegistration {
+import org.eventjuggler.services.simpleauth.rest.UserInfo;
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+@Path("/im")
+public interface IdentityManagement {
+
+    @GET
+    @Path("/users/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    void register(AccountRegistrationRequest request);
+    UserInfo getUser(@PathParam("username") String username);
+
+    @GET
+    @Path("/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    List<UserInfo> getUsers();
+
+    @PUT
+    @Path("/users/{username}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    void saveUser(@PathParam("username") String username, User user);
+
+    @DELETE
+    @Path("/users/{username}")
+    void deleteUser(@PathParam("username") String username);
 
 }

@@ -19,31 +19,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.services.idb.provider;
+package org.eventjuggler.services.utils;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
-import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.IdentityProviderConfig;
+import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.picketlink.idm.model.User;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public interface IdentityProvider {
+public class UserFactory {
 
-    String getId();
-
-    URI getLoginUrl(Application application, IdentityProviderConfig provider);
-
-    String getIcon();
-
-    String getName();
-
-    User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters);
-
-    boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters);
+    public static UserInfo createUserInfo(User user) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setEmail(user.getEmail());
+        userInfo.setFirstName(user.getFirstName());
+        userInfo.setLastName(user.getLastName());
+        userInfo.setUserId(user.getLoginName());
+        return userInfo;
+    }
 
 }

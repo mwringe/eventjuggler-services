@@ -25,12 +25,16 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import org.eventjuggler.services.utils.TokenService;
+import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.credential.UsernamePasswordCredentials;
 import org.picketlink.idm.model.User;
 
+/**
+ * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
+ */
 public class AuthenticationResource implements Authentication {
 
     @Inject
@@ -80,14 +84,7 @@ public class AuthenticationResource implements Authentication {
     public UserInfo getInfo(@QueryParam("token") String token) {
         if (token != null && tokenManager.valid(token)) {
             User user = tokenManager.get(token);
-
-            UserInfo userInfo = new UserInfo();
-            userInfo.setEmail(user.getEmail());
-            userInfo.setFirstName(user.getFirstName());
-            userInfo.setLastName(user.getLastName());
-            userInfo.setUserId(user.getLoginName());
-
-            return userInfo;
+            return UserFactory.createUserInfo(user);
         } else {
             throw new WebApplicationException(Status.FORBIDDEN);
         }

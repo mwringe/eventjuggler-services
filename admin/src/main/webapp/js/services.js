@@ -15,3 +15,13 @@ eventjugglerServices.factory('Application', function($resource) {
 eventjugglerServices.factory('Provider', function($resource) {
     return $resource('/ejs-identity/api/admin/providers');
 });
+
+eventjugglerServices.factory('User', function($resource) {
+    return $resource('/ejs-identity/api/im/users/:userId', {
+        userId : '@userId'
+    }, {
+        save : {
+            method : 'PUT'
+        }
+    });
+});

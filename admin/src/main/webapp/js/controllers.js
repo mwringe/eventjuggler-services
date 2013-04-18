@@ -15,6 +15,7 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     
     if ($routeParams.key == "new") {
         $scope.application = {};
+        $scope.create = true; 
     } else {
         $scope.application = Application.get({
             "key" : $routeParams.key
@@ -46,14 +47,14 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     }
 
     $scope.save = function() {
-        Application.save($scope.application, navigationToApplications);
+        if ($scope.create) {
+            Application.save($scope.application, navigationToApplications);
+        } else {
+            Application.update({
+                "key" : $scope.application.key
+            }, $scope.application, navigationToApplications);
+        }
     };
-
-    $scope.update = function() {
-        Application.update({
-            "key" : $scope.application.key
-        }, $scope.application, navigationToApplications);
-    }
 
     $scope.cancel = function() {
         navigationToApplications();
@@ -61,5 +62,38 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
 
     $scope.remove = function() {
         $scope.application.$remove(navigationToApplications);
+    }
+}
+
+function UserListCtrl($scope, User) {
+    $scope.users = User.query();
+}
+
+function UserDetailCtrl($scope, User, $routeParams, $location) {
+    var navigationToUsers = function() {
+        $location.url("/users");
+    };
+
+    if ($routeParams.userId == "new") {
+        $scope.user = {};
+        $scope.create = true; 
+    } else {
+        $scope.user = User.get({
+            "userId" : $routeParams.userId
+        });
+    }
+
+    $scope.save = function() {
+        User.save({
+            "userId" : $scope.user.userId
+        }, $scope.user, navigationToUsers);
+    };
+
+    $scope.cancel = function() {
+        navigationToUsers();
+    }
+
+    $scope.remove = function() {
+        $scope.user.$remove(navigationToUsers);
     }
 }
