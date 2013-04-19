@@ -43,19 +43,27 @@ public class ApplicationService {
     @Inject
     private KeyGenerator keyGenerator;
 
-    public void create(String username, Application application) {
-        application.setKey(keyGenerator.createApplicationKey());
-        application.setSecret(keyGenerator.createApplicationSecret());
-        application.setOwner(username);
+    public void create(Application application) {
+        if (application.getKey() == null) {
+            application.setKey(keyGenerator.createApplicationKey());
+        }
+
+        if (application.getSecret() == null) {
+            application.setSecret(keyGenerator.createApplicationSecret());
+        }
 
         em.persist(application);
     }
 
     public void remove(Application application) {
-        em.remove(application);
+        em.remove(em.merge(application));
     }
 
     public Application update(Application application) {
+        if (application.getSecret() == null) {
+            application.setSecret(keyGenerator.createApplicationSecret());
+        }
+
         return em.merge(application);
     }
 

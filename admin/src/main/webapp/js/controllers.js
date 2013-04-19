@@ -51,7 +51,7 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     }
 
     $scope.save = function() {
-        if ($scope.create) {
+        if (!$scope.application.key) {
             Application.save($scope.application, navigationToApplications);
         } else {
             Application.update({

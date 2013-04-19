@@ -29,33 +29,47 @@ public class Auth {
 
     public static final ThreadLocal<User> instances = new ThreadLocal<>();
 
-    public static User get() {
-        User user = instances.get();
-        if (user == null) {
-            throw new WebApplicationException(Status.FORBIDDEN);
-        }
-        return user;
+    private static User get() {
+        return instances.get();
     }
 
     public static String getUserId() {
-        return get().getLoginName();
+        return isUser() ? get().getLoginName() : null;
     }
 
-    public static void requireUser(String requiredUser) {
-        String userId = getUserId();
-        if (!userId.equals(requiredUser)) {
-            requireSuper();
-        }
+    public static boolean isSuper() {
+        return isUser() ? get().getLoginName().equals("root") : false;
     }
 
-    public static void requireSuper() {
-        if (!getUserId().equals("root")) {
-            throw new WebApplicationException(Status.FORBIDDEN);
-        }
+    public static boolean isUser() {
+        return get() != null;
     }
 
     public static void remove() {
         instances.remove();
+    }
+
+    public static void requireSuper() {
+        if (!isSuper()) {
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }
+    }
+
+    public static void requireUser() {
+        if (!isUser()) {
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }
+    }
+
+    public static void requireUser(String requiredUser) {
+        String userId = getUserId();
+        if (userId == null) {
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }
+
+        if (!userId.equals(requiredUser)) {
+            requireSuper();
+        }
     }
 
     public static void set(User user) {

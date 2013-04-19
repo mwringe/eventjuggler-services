@@ -20,16 +20,16 @@ public interface Admin {
     @POST
     @Path("/applications")
     @Consumes(MediaType.APPLICATION_JSON)
-    Response createApplication(Application application);
+    Response save(Application application);
 
     @DELETE
-    @Path("/applications/{applicationKey}")
-    void deleteApplication(@PathParam("applicationKey") String applicationKey);
+    @Path("/applications/{key}")
+    void delete(@PathParam("key") String applicationKey);
 
     @GET
-    @Path("/applications/{applicationKey}")
+    @Path("/applications/{key}")
     @Produces(MediaType.APPLICATION_JSON)
-    Application getApplication(@PathParam("applicationKey") String applicationKey);
+    Application getApplication(@PathParam("key") String applicationKey);
 
     @GET
     @Path("/applications")
@@ -37,9 +37,9 @@ public interface Admin {
     List<Application> getApplications();
 
     @PUT
-    @Path("/applications/{applicationKey}")
+    @Path("/applications/{key}")
     @Consumes(MediaType.APPLICATION_JSON)
-    void updateApplication(@PathParam("applicationKey") String applicationKey, Application application);
+    void save(@PathParam("key") String applicationKey, Application application);
 
     @GET
     @Path("/providers")

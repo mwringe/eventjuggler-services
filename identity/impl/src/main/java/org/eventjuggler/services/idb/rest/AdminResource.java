@@ -29,7 +29,6 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -59,19 +58,8 @@ public class AdminResource implements Admin {
     private UriInfo uriInfo;
 
     @Override
-    public Response createApplication(Application application) {
-        if (application.getKey() != null || application.getSecret() != null || application.getOwner() != null) {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
-
-        service.create(Auth.getUserId(), application);
-
-        return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
-    }
-
-    @Override
-    public void deleteApplication(@PathParam("applicationKey") String applicationKey) {
-        Application application = getApplication(applicationKey);
+    public void delete(String key) {
+        Application application = getApplication(key);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
@@ -82,8 +70,8 @@ public class AdminResource implements Admin {
     }
 
     @Override
-    public Application getApplication(@PathParam("applicationKey") String applicationKey) {
-        Application application = service.getApplication(applicationKey);
+    public Application getApplication(String key) {
+        Application application = service.getApplication(key);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
@@ -95,7 +83,13 @@ public class AdminResource implements Admin {
 
     @Override
     public List<Application> getApplications() {
-        return service.getApplications(Auth.getUserId());
+        Auth.requireUser();
+
+        if (Auth.isSuper()) {
+            return service.getApplications();
+        } else {
+            return service.getApplications(Auth.getUserId());
+        }
     }
 
     @Override
@@ -111,17 +105,57 @@ public class AdminResource implements Admin {
     }
 
     @Override
-    public void updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
-        Application a = getApplication(applicationKey);
+    public Response save(Application application) {
+        Auth.requireUser();
 
-        if (!a.getKey().equals(application.getKey()) || !a.getSecret().equals(application.getSecret())
-                || !a.getOwner().equals(application.getOwner())) {
-            throw new WebApplicationException(Status.FORBIDDEN);
+        if (application.getKey() != null) {
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
-        Auth.requireUser(application.getOwner());
+        if (!Auth.isSuper() && application.getSecret() != null) {
+            return Response.status(Status.FORBIDDEN).build();
+        }
 
-        service.update(application);
+        if (application.getOwner() == null) {
+            application.setOwner(Auth.getUserId());
+        } else {
+            Auth.requireUser(application.getOwner());
+        }
+
+        service.create(application);
+
+        return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
+    }
+
+    @Override
+    public void save(String key, Application application) {
+        Application a = service.getApplication(key);
+
+        if (a == null) {
+            if (Auth.isSuper()) {
+                if (application.getOwner() == null) {
+                    application.setOwner(Auth.getUserId());
+                }
+
+                service.create(application);
+            } else {
+                throw new WebApplicationException(Status.FORBIDDEN);
+            }
+        } else {
+            if (!a.getKey().equals(application.getKey())) {
+                throw new WebApplicationException(Status.BAD_REQUEST);
+            }
+
+            if (!Auth.isSuper()) {
+                if (!a.getSecret().equals(application.getSecret())) {
+                    throw new WebApplicationException(Status.FORBIDDEN);
+                }
+            }
+
+            Auth.requireUser(application.getOwner());
+
+            service.update(application);
+        }
     }
 
 }

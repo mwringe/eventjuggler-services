@@ -10,12 +10,14 @@
             <tr>
                 <th>Application</th>
                 <th>Key</th>
+                <th ng-show="auth.root">Owner</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
         <tr ng-repeat="application in applications">
             <td><a href="#/applications/{{application.key}}">{{application.name}}</a></td>
             <td><a href="#/applications/{{application.key}}">{{application.key}}</a></td>
+            <td ng-show="auth.root">{{application.owner}}</td>
             <td><a href="/ejs-identity/login/?key={{application.key}}">Login</a></td>            
         </tr>
     </table>
