@@ -1,7 +1,6 @@
 package org.eventjuggler.services.idb.auth;
 
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.Provider;
 
@@ -13,15 +12,11 @@ import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PostProcessInterceptor;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.model.User;
 
 @Provider
 @ServerInterceptor
 public class AuthInterceptor implements PreProcessInterceptor, PostProcessInterceptor {
-
-    @Inject
-    private IdentityManager identityManager;
 
     @EJB
     private TokenService tokenService;

@@ -24,7 +24,7 @@ package org.eventjuggler.services.idb.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -51,7 +51,7 @@ import org.jboss.resteasy.client.ProxyFactory;
 @Path("/dummysocial/{appKey}")
 public class DummySocialResource {
 
-    @Inject
+    @EJB
     private ApplicationService service;
 
     @GET

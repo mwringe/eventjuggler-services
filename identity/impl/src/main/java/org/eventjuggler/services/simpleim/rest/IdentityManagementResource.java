@@ -20,7 +20,7 @@ package org.eventjuggler.services.simpleim.rest;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.annotation.Resource;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
@@ -29,6 +29,7 @@ import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.SimpleUser;
 
@@ -37,26 +38,30 @@ import org.picketlink.idm.model.SimpleUser;
  */
 public class IdentityManagementResource implements IdentityManagement {
 
-    @Inject
-    private IdentityManager identityManager;
+    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    private IdentityManagerFactory imf;
 
     @Override
     public void deleteUser(@PathParam("username") String username) {
         Auth.requireUser(username);
 
-        org.picketlink.idm.model.User user = identityManager.getUser(username);
+        IdentityManager im = imf.createIdentityManager();
+
+        org.picketlink.idm.model.User user = im.getUser(username);
         if (user == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
 
-        identityManager.remove(user);
+        im.remove(user);
     }
 
     @Override
     public UserInfo getUser(@PathParam("username") String username) {
         Auth.requireUser(username);
 
-        org.picketlink.idm.model.User user = identityManager.getUser(username);
+        IdentityManager im = imf.createIdentityManager();
+
+        org.picketlink.idm.model.User user = im.getUser(username);
         if (user == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
@@ -68,7 +73,9 @@ public class IdentityManagementResource implements IdentityManagement {
     public List<UserInfo> getUsers() {
         Auth.requireSuper();
 
-        List<org.picketlink.idm.model.User> users = identityManager.createIdentityQuery(org.picketlink.idm.model.User.class)
+        IdentityManager im = imf.createIdentityManager();
+
+        List<org.picketlink.idm.model.User> users = im.createIdentityQuery(org.picketlink.idm.model.User.class)
                 .getResultList();
         List<UserInfo> userInfos = new LinkedList<>();
         for (org.picketlink.idm.model.User u : users) {
@@ -79,7 +86,9 @@ public class IdentityManagementResource implements IdentityManagement {
 
     @Override
     public void saveUser(String username, User user) {
-        org.picketlink.idm.model.User u = identityManager.getUser(username);
+        IdentityManager im = imf.createIdentityManager();
+
+        org.picketlink.idm.model.User u = im.getUser(username);
         boolean userExists = u != null;
 
         if (userExists) {
@@ -99,13 +108,13 @@ public class IdentityManagementResource implements IdentityManagement {
         // user.setAttribute(new Attribute<String>("country", request.getCountry()));
 
         if (userExists) {
-            identityManager.update(u);
+            im.update(u);
         } else {
-            identityManager.add(u);
+            im.add(u);
         }
 
         if (user.getPassword() != null) {
-            identityManager.updateCredential(u, new Password(user.getPassword()));
+            im.updateCredential(u, new Password(user.getPassword()));
         }
     }
 

@@ -18,8 +18,8 @@
 
 package org.eventjuggler.services.simpleauth.rest;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eventjuggler.services.utils.TokenService;
 import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.credential.UsernamePasswordCredentials;
@@ -37,14 +38,16 @@ import org.picketlink.idm.model.User;
  */
 public class AuthenticationResource implements Authentication {
 
-    @Inject
-    private IdentityManager identityManager;
+    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    private IdentityManagerFactory imf;
 
     @EJB
     private TokenService tokenManager;
 
     @Override
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
+        IdentityManager im = imf.createIdentityManager();
+
         User user = null;
         String token = null;
 
@@ -52,10 +55,10 @@ public class AuthenticationResource implements Authentication {
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(authcRequest.getUserId(), new Password(
                     authcRequest.getPassword()));
 
-            identityManager.validateCredentials(credentials);
+            im.validateCredentials(credentials);
 
             if (Credentials.Status.VALID.equals(credentials.getStatus())) {
-                user = identityManager.getUser(credentials.getUsername());
+                user = im.getUser(credentials.getUsername());
                 token = tokenManager.put(user);
             }
         } else if (authcRequest.getToken() != null) {

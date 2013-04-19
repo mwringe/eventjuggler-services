@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -66,7 +67,7 @@ public class LoginResource {
     @Any
     private Instance<IdentityProvider> providers;
 
-    @Inject
+    @EJB
     private ApplicationService service;
 
     @Context

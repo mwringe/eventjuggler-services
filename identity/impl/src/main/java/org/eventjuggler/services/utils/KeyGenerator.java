@@ -23,23 +23,20 @@ package org.eventjuggler.services.utils;
 
 import java.util.UUID;
 
-import javax.enterprise.inject.Default;
-
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@Default
 public class KeyGenerator {
 
-    public String createApplicationKey() {
+    public static String createApplicationKey() {
         return UUID.randomUUID().toString();
     }
 
-    public String createApplicationSecret() {
+    public static String createApplicationSecret() {
         return UUID.randomUUID().toString();
     }
 
-    public String createToken() {
+    public static String createToken() {
         return UUID.randomUUID().toString();
     }
 

@@ -24,7 +24,6 @@ package org.eventjuggler.services.idb;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -40,16 +39,13 @@ public class ApplicationService {
     @PersistenceContext(unitName = "idb")
     private EntityManager em;
 
-    @Inject
-    private KeyGenerator keyGenerator;
-
     public void create(Application application) {
         if (application.getKey() == null) {
-            application.setKey(keyGenerator.createApplicationKey());
+            application.setKey(KeyGenerator.createApplicationKey());
         }
 
         if (application.getSecret() == null) {
-            application.setSecret(keyGenerator.createApplicationSecret());
+            application.setSecret(KeyGenerator.createApplicationSecret());
         }
 
         em.persist(application);
@@ -61,7 +57,7 @@ public class ApplicationService {
 
     public Application update(Application application) {
         if (application.getSecret() == null) {
-            application.setSecret(keyGenerator.createApplicationSecret());
+            application.setSecret(KeyGenerator.createApplicationSecret());
         }
 
         return em.merge(application);

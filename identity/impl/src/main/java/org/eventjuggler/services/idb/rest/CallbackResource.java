@@ -24,6 +24,7 @@ package org.eventjuggler.services.idb.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -42,6 +43,7 @@ import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.utils.TokenService;
 import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.User;
 
 /**
@@ -50,15 +52,15 @@ import org.picketlink.idm.model.User;
 @Path("/callback/{appKey}")
 public class CallbackResource {
 
-    @Inject
+    @EJB
     private ApplicationService service;
 
     @Inject
     @Any
     private Instance<IdentityProvider> providers;
 
-    @Inject
-    private IdentityManager identityManager;
+    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    private IdentityManagerFactory imf;
 
     @Context
     private UriInfo info;
@@ -71,6 +73,8 @@ public class CallbackResource {
 
     @GET
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {
+        IdentityManager im = imf.createIdentityManager();
+
         Application application = service.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -80,8 +84,8 @@ public class CallbackResource {
             if (provider.isCallbackHandler(headers.getRequestHeaders(), info.getQueryParameters())) {
                 User user = provider.getUser(headers.getRequestHeaders(), info.getQueryParameters());
 
-                if (identityManager.getUser(user.getLoginName()) != null) {
-                    identityManager.add(user);
+                if (im.getUser(user.getLoginName()) != null) {
+                    im.add(user);
                 }
 
                 String token = tokenManager.put(user);

@@ -2,9 +2,7 @@
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
 	<deployment>
 		<dependencies>
-            <module name="org.picketlink"  />
-            <module name="org.picketlink.core" />
-            <module name="org.picketlink.idm" services="import" meta-inf="import"/>
+            <module name="org.picketlink.idm" />
 		</dependencies>
 	</deployment>
 </jboss-deployment-structure>
