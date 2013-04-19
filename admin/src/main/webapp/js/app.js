@@ -28,7 +28,7 @@ eventjugglerModule.config(function($httpProvider) {
     $httpProvider.responseInterceptors.push('errorInterceptor');
 });
 
-eventjugglerModule.factory('errorInterceptor', function($q, $window, $rootScope) {
+eventjugglerModule.factory('errorInterceptor', function($q, $window, $rootScope, $location) {
     return function(promise) {
         return promise.then(function(response) {
             $rootScope.httpProviderError = null;

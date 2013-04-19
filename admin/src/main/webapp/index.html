@@ -21,12 +21,14 @@
 <body ng-controller="UserCtrl">
     <div ng-include src="'partials/menu.html'"></div>
 
-    <div class="container-fluid">
+    <div class="container-fluid" ng-hide="httpProviderError">
         <div ng-view id="content"></div>
     </div>
 
     <div id="httpProviderError" ng-show="httpProviderError">
-        <button class="btn btn-danger" ng-click="httpProviderError=null"><strong>Error</strong> {{httpProviderError}}</button>
+        <button class="btn btn-danger" ng-click="httpProviderError=null">
+            <strong>Error</strong> {{httpProviderError}}
+        </button>
     </div>
 </body>
 </html>
