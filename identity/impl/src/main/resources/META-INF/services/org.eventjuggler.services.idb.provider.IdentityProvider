@@ -1,0 +1,3 @@
+org.eventjuggler.services.idb.provider.DummyProvider
+org.eventjuggler.services.idb.provider.FacebookProvider
+org.eventjuggler.services.idb.provider.GoogleProvider

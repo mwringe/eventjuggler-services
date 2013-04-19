@@ -20,6 +20,7 @@ package org.eventjuggler.services.simpleauth.rest;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
@@ -36,6 +37,7 @@ import org.picketlink.idm.model.User;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
+@Stateless
 public class AuthenticationResource implements Authentication {
 
     @Resource(lookup = "java:/picketlink/ExampleIMF")

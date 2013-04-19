@@ -27,9 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -50,6 +48,7 @@ import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
+import org.eventjuggler.services.idb.provider.IdentityProviderService;
 import org.eventjuggler.services.idb.rest.LoginConfig.ProviderLoginConfig;
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
@@ -61,11 +60,11 @@ import org.jboss.resteasy.client.ProxyFactory;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Path("/login/{appKey}")
+@Stateless
 public class LoginResource {
 
-    @Inject
-    @Any
-    private Instance<IdentityProvider> providers;
+    @EJB
+    private IdentityProviderService providerService;
 
     @EJB
     private ApplicationService service;
@@ -84,15 +83,6 @@ public class LoginResource {
         return application;
     }
 
-    private IdentityProvider getIdentityProvider(String id) {
-        for (IdentityProvider p : providers) {
-            if (p.getId().equals(id)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public LoginConfig getLoginConfig(@PathParam("appKey") String appKey) {
@@ -105,7 +95,7 @@ public class LoginResource {
         List<ProviderLoginConfig> providerLoginConfigs = new LinkedList<>();
 
         for (IdentityProviderConfig c : application.getProviders()) {
-            IdentityProvider provider = getIdentityProvider(c.getProviderId());
+            IdentityProvider provider = providerService.getProvider(c.getProviderId());
 
             URI loginUri = provider.getLoginUrl(application, c);
 

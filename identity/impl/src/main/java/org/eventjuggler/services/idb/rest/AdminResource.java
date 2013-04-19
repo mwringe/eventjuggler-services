@@ -25,9 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -39,23 +36,27 @@ import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
+import org.eventjuggler.services.idb.provider.IdentityProviderService;
 import org.eventjuggler.services.utils.UriHelper;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Path("/admin")
+
 public class AdminResource implements Admin {
 
-    @Inject
-    @Any
-    private Instance<IdentityProvider> providers;
+    @EJB
+    private ApplicationService applicationService;
 
     @EJB
-    private ApplicationService service;
+    private IdentityProviderService providerService;
 
     @Context
     private UriInfo uriInfo;
+
+    public AdminResource() {
+    }
 
     @Override
     public void delete(String key) {
@@ -66,12 +67,12 @@ public class AdminResource implements Admin {
 
         Auth.requireUser(application.getOwner());
 
-        service.remove(application);
+        applicationService.remove(application);
     }
 
     @Override
     public Application getApplication(String key) {
-        Application application = service.getApplication(key);
+        Application application = applicationService.getApplication(key);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
@@ -86,9 +87,9 @@ public class AdminResource implements Admin {
         Auth.requireUser();
 
         if (Auth.isSuper()) {
-            return service.getApplications();
+            return applicationService.getApplications();
         } else {
-            return service.getApplications(Auth.getUserId());
+            return applicationService.getApplications(Auth.getUserId());
         }
     }
 
@@ -97,7 +98,7 @@ public class AdminResource implements Admin {
         UriHelper uriHelper = new UriHelper(uriInfo);
 
         List<IdentityProviderDescription> descriptions = new LinkedList<>();
-        for (IdentityProvider provider : providers) {
+        for (IdentityProvider provider : providerService.getProviders()) {
             descriptions.add(new IdentityProviderDescription(provider.getId(), provider.getName(), uriHelper.getIcon(provider
                     .getIcon())));
         }
@@ -122,14 +123,14 @@ public class AdminResource implements Admin {
             Auth.requireUser(application.getOwner());
         }
 
-        service.create(application);
+        applicationService.create(application);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
     }
 
     @Override
     public void save(String key, Application application) {
-        Application a = service.getApplication(key);
+        Application a = applicationService.getApplication(key);
 
         if (a == null) {
             if (Auth.isSuper()) {
@@ -137,7 +138,7 @@ public class AdminResource implements Admin {
                     application.setOwner(Auth.getUserId());
                 }
 
-                service.create(application);
+                applicationService.create(application);
             } else {
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
@@ -154,7 +155,7 @@ public class AdminResource implements Admin {
 
             Auth.requireUser(application.getOwner());
 
-            service.update(application);
+            applicationService.update(application);
         }
     }
 

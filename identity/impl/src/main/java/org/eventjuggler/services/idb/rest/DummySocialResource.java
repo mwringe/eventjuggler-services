@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -49,6 +50,7 @@ import org.jboss.resteasy.client.ProxyFactory;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Path("/dummysocial/{appKey}")
+@Stateless
 public class DummySocialResource {
 
     @EJB

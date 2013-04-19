@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.ejb.Stateless;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
@@ -36,6 +37,7 @@ import org.picketlink.idm.model.SimpleUser;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
+@Stateless
 public class IdentityManagementResource implements IdentityManagement {
 
     @Resource(lookup = "java:/picketlink/ExampleIMF")

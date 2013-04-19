@@ -26,9 +26,7 @@ import java.net.URISyntaxException;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
+import org.eventjuggler.services.idb.provider.IdentityProviderService;
 import org.eventjuggler.services.utils.TokenService;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
@@ -50,14 +49,14 @@ import org.picketlink.idm.model.User;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Path("/callback/{appKey}")
+@Stateless
 public class CallbackResource {
 
     @EJB
-    private ApplicationService service;
+    private ApplicationService applicationService;
 
-    @Inject
-    @Any
-    private Instance<IdentityProvider> providers;
+    @Context
+    private HttpHeaders headers;
 
     @Resource(lookup = "java:/picketlink/ExampleIMF")
     private IdentityManagerFactory imf;
@@ -65,8 +64,8 @@ public class CallbackResource {
     @Context
     private UriInfo info;
 
-    @Context
-    private HttpHeaders headers;
+    @EJB
+    private IdentityProviderService providerService;
 
     @EJB
     private TokenService tokenManager;
@@ -75,12 +74,12 @@ public class CallbackResource {
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {
         IdentityManager im = imf.createIdentityManager();
 
-        Application application = service.getApplication(appKey);
+        Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        for (IdentityProvider provider : providers) {
+        for (IdentityProvider provider : providerService.getProviders()) {
             if (provider.isCallbackHandler(headers.getRequestHeaders(), info.getQueryParameters())) {
                 User user = provider.getUser(headers.getRequestHeaders(), info.getQueryParameters());
 
