@@ -27,15 +27,18 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     }
 
     $scope.providers = Provider.query();
+    $scope.availableProviders = [];
 
-    $scope.addProvider = function(providerId) {
+    $scope.addProvider = function() {
         if (!$scope.application.providers) {
             $scope.application.providers = [];
         }
 
         $scope.application.providers.push({
-            "providerId" : providerId
+            "providerId" : $scope.newProviderId
         });
+        
+        $scope.newProviderId = null;
     }
 
     $scope.getProviderDescription = function(providerId) {
@@ -67,6 +70,30 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     $scope.remove = function() {
         $scope.application.$remove(navigationToApplications);
     }
+
+    var updateAvailableProviders = function() {
+        $scope.availableProviders.splice(0, $scope.availableProviders.length);
+
+        for (var i in $scope.providers) {
+            var add = true;
+            for (var j in $scope.application.providers) {
+                console.debug("already added " + $scope.application.providers[j].providerId)
+                
+                if ($scope.application.providers[j].providerId == $scope.providers[i].id) {
+                    add = false;
+                    break;
+                }
+            }
+
+            if (add) {
+                $scope.availableProviders.push($scope.providers[i]);
+            }
+        }
+
+        console.debug($scope.availableProviders.length)
+    }
+
+    $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
 }
 
 function UserListCtrl($scope, User) {
