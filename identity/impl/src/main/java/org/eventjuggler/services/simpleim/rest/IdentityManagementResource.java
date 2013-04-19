@@ -25,9 +25,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
+import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.eventjuggler.services.utils.UserFactory;
-import org.picketlink.Identity;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.SimpleUser;
@@ -38,23 +38,12 @@ import org.picketlink.idm.model.SimpleUser;
 public class IdentityManagementResource implements IdentityManagement {
 
     @Inject
-    private Identity identity;
-
-    @Inject
     private IdentityManager identityManager;
-
-    // TODO Admin should also be allowed
-    private void checkAccessToUser(String username) {
-        if (identity.isLoggedIn() && identity.getUser().getLoginName().equals(username)) {
-            return;
-        }
-
-        // TODO Throw forbidden
-        // throw new WebApplicationException(Status.FORBIDDEN);
-    }
 
     @Override
     public void deleteUser(@PathParam("username") String username) {
+        Auth.requireUser(username);
+
         org.picketlink.idm.model.User user = identityManager.getUser(username);
         if (user == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
@@ -65,19 +54,19 @@ public class IdentityManagementResource implements IdentityManagement {
 
     @Override
     public UserInfo getUser(@PathParam("username") String username) {
+        Auth.requireUser(username);
+
         org.picketlink.idm.model.User user = identityManager.getUser(username);
         if (user == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
-        } else {
-            checkAccessToUser(username);
         }
 
         return UserFactory.createUserInfo(user);
     }
 
     @Override
-    // TODO Only admin should be allowed to do this!
     public List<UserInfo> getUsers() {
+        Auth.requireSuper();
 
         List<org.picketlink.idm.model.User> users = identityManager.createIdentityQuery(org.picketlink.idm.model.User.class)
                 .getResultList();
@@ -94,7 +83,7 @@ public class IdentityManagementResource implements IdentityManagement {
         boolean userExists = u != null;
 
         if (userExists) {
-            checkAccessToUser(username);
+            Auth.requireUser(username);
         } else {
             u = new SimpleUser(username);
         }

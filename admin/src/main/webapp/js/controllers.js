@@ -5,7 +5,7 @@ function WelcomeCtrl($scope) {
 }
 
 function UserCtrl($scope, Auth) {
-    $scope.user = Auth; 
+    $scope.auth = Auth;
 }
 
 function ApplicationListCtrl($scope, Application, $routeParams) {
@@ -16,10 +16,10 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
     var navigationToApplications = function() {
         $location.url("/applications");
     };
-    
+
     if ($routeParams.key == "new") {
         $scope.application = {};
-        $scope.create = true; 
+        $scope.create = true;
     } else {
         $scope.application = Application.get({
             "key" : $routeParams.key
@@ -73,14 +73,18 @@ function UserListCtrl($scope, User) {
     $scope.users = User.query();
 }
 
-function UserDetailCtrl($scope, User, $routeParams, $location) {
+function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
     var navigationToUsers = function() {
-        $location.url("/users");
+        if (Auth.loggedIn) {
+            $location.url("/users");
+        } else {
+            $location.url("/");
+        }
     };
 
     if ($routeParams.userId == "new") {
         $scope.user = {};
-        $scope.create = true; 
+        $scope.create = true;
     } else {
         $scope.user = User.get({
             "userId" : $routeParams.userId

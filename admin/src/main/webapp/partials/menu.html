@@ -6,13 +6,19 @@
             </button>
             <span class="brand">Admin</span>
             <div class="nav-collapse collapse">
-            
-                <p class="navbar-text pull-right" ng-show="user.userId">{{user.userId}}</p>
-                <p class="navbar-text pull-right" ng-hide="user.userId"><a href="http://localhost:8080/ejs-identity/login/?key=system">Login</a></p>
                 <ul class="nav">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#/applications">Applications</a></li>
-                    <li><a href="#/users">Users</a></li>
+                    <li ng-show="auth.loggedIn"><a href="#/applications">Applications</a></li>
+                    <li ng-show="auth.root"><a href="#/users">Users</a></li>
+                </ul>
+                            
+                <ul class="nav pull-right" ng-show="auth.loggedIn">
+                    <li><a href="#/users/{{auth.user.userId}}">{{auth.user.userId}}</a></li>
+                    <li><a href="" ng-click="auth.logout()">Logout</a></li>
+                </ul>
+                <ul class="nav pull-right" ng-hide="auth.loggedIn">
+                    <li><a href="http://localhost:8080/ejs-identity/login/?key=system">Login</a></li>
+                    <li><a href="#/users/new">Register</a></li>
                 </ul>
             </div>
         </div>

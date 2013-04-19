@@ -37,11 +37,10 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
-import org.eventjuggler.services.idb.rest.auth.LoggedIn;
 import org.eventjuggler.services.utils.UriHelper;
-import org.picketlink.Identity;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -59,51 +58,44 @@ public class AdminResource implements Admin {
     @Context
     private UriInfo uriInfo;
 
-    @Inject
-    private Identity identity;
-
     @Override
-    @LoggedIn
     public Response createApplication(Application application) {
         if (application.getKey() != null || application.getSecret() != null || application.getOwner() != null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        service.create(identity.getUser().getLoginName(), application);
+        service.create(Auth.getUserId(), application);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
     }
 
     @Override
-    @LoggedIn
     public void deleteApplication(@PathParam("applicationKey") String applicationKey) {
         Application application = getApplication(applicationKey);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
 
-        hasAccess(application);
+        Auth.requireUser(application.getOwner());
 
         service.remove(application);
     }
 
     @Override
-    @LoggedIn
     public Application getApplication(@PathParam("applicationKey") String applicationKey) {
         Application application = service.getApplication(applicationKey);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
 
-        hasAccess(application);
+        Auth.requireUser(application.getOwner());
 
         return application;
     }
 
     @Override
-    @LoggedIn
     public List<Application> getApplications() {
-        return service.getApplications(identity.getUser().getLoginName());
+        return service.getApplications(Auth.getUserId());
     }
 
     @Override
@@ -119,7 +111,6 @@ public class AdminResource implements Admin {
     }
 
     @Override
-    @LoggedIn
     public void updateApplication(@PathParam("applicationKey") String applicationKey, Application application) {
         Application a = getApplication(applicationKey);
 
@@ -128,15 +119,9 @@ public class AdminResource implements Admin {
             throw new WebApplicationException(Status.FORBIDDEN);
         }
 
-        hasAccess(application);
+        Auth.requireUser(application.getOwner());
 
         service.update(application);
-    }
-
-    private void hasAccess(Application application) {
-        if (!identity.getUser().getLoginName().equals(application.getOwner())) {
-            throw new WebApplicationException(Status.FORBIDDEN);
-        }
     }
 
 }
