@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.eventjuggler.services.idb.model.Application;
+import org.eventjuggler.services.utils.KeyGenerator;
 import org.jboss.logging.Logger;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
@@ -45,7 +46,7 @@ public class InitialConfig {
             application = new Application();
             application.setName(APPLICATION_NAME);
             application.setKey(APPLICATION_KEY);
-            application.setSecret(APPLICATION_SECRET);
+            application.setSecret(KeyGenerator.createApplicationSecret());
             application.setOwner(ROOT_USERNAME);
             application.setCallbackUrl("http://localhost:8080/ejs-admin/#");
 
