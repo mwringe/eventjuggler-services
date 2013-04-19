@@ -47,7 +47,7 @@ public class InitialConfig {
             application.setKey(APPLICATION_KEY);
             application.setSecret(APPLICATION_SECRET);
             application.setOwner(ROOT_USERNAME);
-            application.setCallbackUrl("http://localhost:8080/ej-admin/#");
+            application.setCallbackUrl("http://localhost:8080/ejs-admin/#");
 
             em.persist(application);
 
