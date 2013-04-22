@@ -77,8 +77,6 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
         for (var i in $scope.providers) {
             var add = true;
             for (var j in $scope.application.providers) {
-                console.debug("already added " + $scope.application.providers[j].providerId)
-                
                 if ($scope.application.providers[j].providerId == $scope.providers[i].id) {
                     add = false;
                     break;
@@ -89,8 +87,6 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
                 $scope.availableProviders.push($scope.providers[i]);
             }
         }
-
-        console.debug($scope.availableProviders.length)
     }
 
     $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
