@@ -30,8 +30,7 @@ import javax.naming.InitialContext;
 
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
+import org.eventjuggler.services.idb.rest.DummySocialResource;
 import org.picketlink.idm.model.User;
 
 /**
@@ -66,13 +65,12 @@ public class DummyProvider implements IdentityProvider {
 
     @Override
     public User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        String username = queryParameters.get("dummyu").get(0);
+        String dummytoken = queryParameters.get("dummytoken").get(0);
 
         try {
-            IdentityManagerFactory imf = (IdentityManagerFactory) new InitialContext().lookup("java:/picketlink/ExampleIMF");
-            IdentityManager im = imf.createIdentityManager();
-
-            return im.getUser(username);
+            DummySocialResource dummySocialResource = (DummySocialResource) new InitialContext()
+                    .lookup("java:global/ejs-identity/DummySocialResource");
+            return dummySocialResource.getUser(dummytoken);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -81,7 +79,7 @@ public class DummyProvider implements IdentityProvider {
 
     @Override
     public boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        return queryParameters.containsKey("dummyu");
+        return queryParameters.containsKey("dummytoken");
     }
 
 }

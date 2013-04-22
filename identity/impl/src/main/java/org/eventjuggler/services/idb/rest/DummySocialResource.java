@@ -23,10 +23,13 @@ package org.eventjuggler.services.idb.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -42,18 +45,20 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
+import org.eventjuggler.services.utils.KeyGenerator;
 import org.eventjuggler.services.utils.UriHelper;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.credential.UsernamePasswordCredentials;
+import org.picketlink.idm.model.User;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Path("/dummysocial/{appKey}")
-@Stateless
+@Singleton
 public class DummySocialResource {
 
     @EJB
@@ -64,6 +69,8 @@ public class DummySocialResource {
 
     @Context
     private UriInfo uriInfo;
+
+    private final Map<String, User> loggedInUsers = Collections.synchronizedMap(new HashMap<String, User>());
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -80,7 +87,7 @@ public class DummySocialResource {
         sb.append(application.getName() + " is requesting to authenticate using your account");
         sb.append("<form action='#' method='post'>");
         sb.append("<input type='text' name='username' placeholder='Username' />");
-        sb.append("<input type='text' name='password' placeholder='Password' />");
+        sb.append("<input type='password' name='password' placeholder='Password' />");
         sb.append("<input type='hidden' name='appkey' value='" + appKey + "' />");
         sb.append("<button type='submit'>Accept</button>");
         sb.append("</form>");
@@ -106,11 +113,19 @@ public class DummySocialResource {
         im.validateCredentials(credentials);
 
         if (Credentials.Status.VALID.equals(credentials.getStatus())) {
-            URI uri = new UriHelper(uriInfo).getCallback("/ejs-identity/api/callback/" + appKey + "?dummyu=" + username);
+            User user = im.getUser(username);
+            String token = KeyGenerator.createToken();
+            loggedInUsers.put(token, user);
+
+            URI uri = new UriHelper(uriInfo).getCallback("/ejs-identity/api/callback/" + appKey + "?dummytoken=" + token);
             return Response.seeOther(uri).build();
         } else {
             return Response.status(Status.BAD_REQUEST).build();
         }
+    }
+
+    public User getUser(String dummytoken) {
+        return loggedInUsers.get(dummytoken);
     }
 
 }
