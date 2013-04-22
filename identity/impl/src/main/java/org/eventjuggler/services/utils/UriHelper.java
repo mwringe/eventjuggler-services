@@ -22,6 +22,7 @@
 package org.eventjuggler.services.utils;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.core.UriInfo;
 
@@ -42,6 +43,15 @@ public class UriHelper {
 
     public URI getIcon(String icon) {
         return contextRoot.resolve("icons/" + icon);
+    }
+
+    public URI getCallback(String str) throws URISyntaxException {
+        URI uri = new URI(str);
+        if (uri.isAbsolute()) {
+            return uri;
+        } else {
+            return getContextRoot().resolve(uri);
+        }
     }
 
 }

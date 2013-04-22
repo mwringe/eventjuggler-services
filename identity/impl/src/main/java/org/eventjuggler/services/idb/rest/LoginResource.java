@@ -127,7 +127,8 @@ public class LoginResource {
 
         AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
-            return Response.seeOther(new URI(application.getCallbackUrl() + "?token=" + response.getToken())).build();
+            URI uri = new UriHelper(uriInfo).getCallback(application.getCallbackUrl() + "?token=" + response.getToken());
+            return Response.seeOther(uri).build();
         } else {
             URI uri = UriBuilder.fromUri(headers.getRequestHeader("referer").get(0)).replaceQueryParam("error", "invalid")
                     .build();

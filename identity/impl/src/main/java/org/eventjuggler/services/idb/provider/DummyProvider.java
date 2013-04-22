@@ -22,17 +22,16 @@
 package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.UriBuilder;
+import javax.naming.InitialContext;
 
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
-import org.eventjuggler.services.simpleauth.rest.Authentication;
-import org.eventjuggler.services.simpleauth.rest.UserInfo;
-import org.jboss.resteasy.client.ProxyFactory;
-import org.picketlink.idm.model.SimpleUser;
+import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.User;
 
 /**
@@ -52,7 +51,12 @@ public class DummyProvider implements IdentityProvider {
 
     @Override
     public URI getLoginUrl(Application application, IdentityProviderConfig provider) {
-        return UriBuilder.fromUri("http://localhost:8080/ejs-identity/api/dummysocial/" + application.getKey()).build();
+        try {
+            return new URI("/ejs-identity/api/dummysocial/" + application.getKey());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -62,21 +66,22 @@ public class DummyProvider implements IdentityProvider {
 
     @Override
     public User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        String token = queryParameters.get("token").get(0);
+        String username = queryParameters.get("dummyu").get(0);
 
-        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
-        UserInfo userInfo = auth.getInfo(token);
+        try {
+            IdentityManagerFactory imf = (IdentityManagerFactory) new InitialContext().lookup("java:/picketlink/ExampleIMF");
+            IdentityManager im = imf.createIdentityManager();
 
-        User user = new SimpleUser(userInfo.getUserId());
-        user.setEmail(userInfo.getEmail());
-        user.setFirstName(userInfo.getFirstName());
-        user.setLastName(userInfo.getLastName());
-        return user;
+            return im.getUser(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        return queryParameters.containsKey("token");
+        return queryParameters.containsKey("dummyu");
     }
 
 }

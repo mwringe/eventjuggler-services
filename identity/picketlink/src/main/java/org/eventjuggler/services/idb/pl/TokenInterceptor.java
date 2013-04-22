@@ -1,7 +1,5 @@
 package org.eventjuggler.services.idb.pl;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.Provider;
@@ -26,14 +24,19 @@ public class TokenInterceptor implements PreProcessInterceptor {
 
     @Override
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException {
-        List<String> tokenParam = request.getHttpHeaders().getRequestHeader("token");
+        String t = request.getHttpHeaders().getRequestHeaders().getFirst("token");
+
         synchronized (identity) {
-            if (!identity.isLoggedIn() && tokenParam != null && !tokenParam.isEmpty()) {
-                String t = tokenParam.get(0);
+            if (!identity.isLoggedIn() && t != null) {
                 token.setToken(t);
                 identity.login();
+            } else if (identity.isLoggedIn()) {
+                if (t == null || !t.equals(token.getValue())) {
+                    identity.logout();
+                }
             }
         }
+
         return null;
     }
 

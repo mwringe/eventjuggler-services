@@ -2,6 +2,7 @@ package org.eventjuggler.services.idb.pl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
 
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
@@ -18,10 +19,13 @@ public class TokenAuthenticator extends BaseAuthenticator {
 
     @Override
     public void authenticate() {
-        String t = token.getToken();
+        String t = token.getValue();
         if (t != null) {
-            Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
-            UserInfo info = auth.getInfo(t);
+            UserInfo info;
+
+            Authentication authentication = getAuthentication();
+            info = authentication.getInfo(t);
+
             if (info != null) {
                 User user = new SimpleUser(info.getUserId());
                 user.setEmail(info.getEmail());
@@ -36,6 +40,20 @@ public class TokenAuthenticator extends BaseAuthenticator {
         } else {
             setStatus(AuthenticationStatus.DEFERRED);
         }
+    }
+
+    private Authentication getAuthentication() {
+        try {
+            InitialContext ctx = new InitialContext();
+            Authentication authentication = (Authentication) ctx.lookup("java:global/ejs-identity/AuthenticationResource");
+            if (authentication != null) {
+                return authentication;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
     }
 
 }

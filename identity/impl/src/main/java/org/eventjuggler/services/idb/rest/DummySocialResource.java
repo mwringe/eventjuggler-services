@@ -24,6 +24,7 @@ package org.eventjuggler.services.idb.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -41,10 +42,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.simpleauth.rest.Authentication;
-import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
-import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
-import org.jboss.resteasy.client.ProxyFactory;
+import org.eventjuggler.services.utils.UriHelper;
+import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.IdentityManagerFactory;
+import org.picketlink.idm.credential.Credentials;
+import org.picketlink.idm.credential.Password;
+import org.picketlink.idm.credential.UsernamePasswordCredentials;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -54,12 +57,18 @@ import org.jboss.resteasy.client.ProxyFactory;
 public class DummySocialResource {
 
     @EJB
-    private ApplicationService service;
+    private ApplicationService applicationService;
+
+    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    private IdentityManagerFactory imf;
+
+    @Context
+    private UriInfo uriInfo;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getForm(@PathParam("appKey") String appKey, @Context UriInfo uri) {
-        Application application = service.getApplication(appKey);
+        Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
@@ -86,22 +95,19 @@ public class DummySocialResource {
     @Produces(MediaType.TEXT_HTML)
     public Response login(@PathParam("appKey") String appKey, @FormParam("username") String username,
             @FormParam("password") String password) throws URISyntaxException {
-        Application application = service.getApplication(appKey);
+        Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        Authentication auth = ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
+        IdentityManager im = imf.createIdentityManager();
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, new Password(password));
 
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setUserId(username);
-        request.setPassword(password);
+        im.validateCredentials(credentials);
 
-        AuthenticationResponse response = auth.login(request);
-        if (response.isLoggedIn()) {
-            return Response.seeOther(
-                    new URI("http://localhost:8080/ejs-identity/api/callback/" + appKey + "?token=" + response.getToken()))
-                    .build();
+        if (Credentials.Status.VALID.equals(credentials.getStatus())) {
+            URI uri = new UriHelper(uriInfo).getCallback("/ejs-identity/api/callback/" + appKey + "?dummyu=" + username);
+            return Response.seeOther(uri).build();
         } else {
             return Response.status(Status.BAD_REQUEST).build();
         }

@@ -1,13 +1,15 @@
 package org.eventjuggler.services.idb.pl;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
 
-@RequestScoped
-public class Token {
+import javax.enterprise.context.SessionScoped;
+
+@SessionScoped
+public class Token implements Serializable {
 
     private String token;
 
-    public String getToken() {
+    public String getValue() {
         return token;
     }
 
