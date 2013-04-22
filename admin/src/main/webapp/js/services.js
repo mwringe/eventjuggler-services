@@ -36,6 +36,8 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
     auth.user;
 
     auth.logout = function() {
+        $resource('/ejs-identity/api/auth/logout').get();
+        
         localStorage.removeItem("token");
         $http.defaults.headers.common['token'] = null;
         console.debug("logged out");
@@ -43,24 +45,26 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
         auth.loggedIn = false;
         auth.root = false;
     }
-    
+
     if (!auth.user && token) {
-        var userInfoRes = $resource('/ejs-identity/api/auth/userinfo');
-        auth.user = userInfoRes.get({
+        auth.user = $resource('/ejs-identity/api/auth/userinfo').get({
             token : token
         }, function() {
-            localStorage.setItem("token", token);
-            $http.defaults.headers.common['token'] = token;
+            if (auth.user.userId) {
+                localStorage.setItem("token", token);
+                $http.defaults.headers.common['token'] = token;
 
-            auth.loggedIn = true;
-            auth.root = auth.user.userId == "root";
+                auth.loggedIn = true;
+                auth.root = auth.user.userId == "root";
 
-            console.debug("logged in " + (auth.root ? "root" : "user"));
+                console.debug("logged in " + (auth.root ? "root" : "user"));
+            } else {
+                auth.logout();
+            }
         }, function() {
             auth.logout();
         });
     }
-
 
     return auth;
 });
