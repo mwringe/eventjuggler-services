@@ -22,8 +22,6 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
 
 import org.eventjuggler.services.utils.TokenService;
 import org.eventjuggler.services.utils.UserFactory;
@@ -91,7 +89,7 @@ public class AuthenticationResource implements Authentication {
             User user = tokenManager.get(token);
             return UserFactory.createUserInfo(user);
         } else {
-            throw new WebApplicationException(Status.FORBIDDEN);
+            return new UserInfo();
         }
     }
 
