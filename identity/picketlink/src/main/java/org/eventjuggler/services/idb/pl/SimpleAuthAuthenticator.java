@@ -6,24 +6,30 @@ import javax.naming.InitialContext;
 
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
-import org.jboss.resteasy.client.ProxyFactory;
 import org.picketlink.authentication.BaseAuthenticator;
 import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
 
 @ApplicationScoped
-public class TokenAuthenticator extends BaseAuthenticator {
+public class SimpleAuthAuthenticator extends BaseAuthenticator {
 
     @Inject
-    private Token token;
+    private SimpleAuthToken token;
 
     @Override
     public void authenticate() {
         String t = token.getValue();
         if (t != null) {
             UserInfo info;
+            Authentication authentication;
 
-            Authentication authentication = getAuthentication();
+            try {
+                authentication = (Authentication) new InitialContext()
+                        .lookup("java:global/ejs-identity/AuthenticationResource");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             info = authentication.getInfo(t);
 
             if (info != null) {
@@ -40,20 +46,6 @@ public class TokenAuthenticator extends BaseAuthenticator {
         } else {
             setStatus(AuthenticationStatus.DEFERRED);
         }
-    }
-
-    private Authentication getAuthentication() {
-        try {
-            InitialContext ctx = new InitialContext();
-            Authentication authentication = (Authentication) ctx.lookup("java:global/ejs-identity/AuthenticationResource");
-            if (authentication != null) {
-                return authentication;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return ProxyFactory.create(Authentication.class, "http://localhost:8080/ejs-identity/api");
     }
 
 }

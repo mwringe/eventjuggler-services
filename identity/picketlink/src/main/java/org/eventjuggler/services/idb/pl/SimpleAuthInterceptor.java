@@ -14,10 +14,10 @@ import org.picketlink.Identity;
 
 @Provider
 @ServerInterceptor
-public class TokenInterceptor implements PreProcessInterceptor {
+public class SimpleAuthInterceptor implements PreProcessInterceptor {
 
     @Inject
-    private Token token;
+    private SimpleAuthToken token;
 
     @Inject
     private Identity identity;

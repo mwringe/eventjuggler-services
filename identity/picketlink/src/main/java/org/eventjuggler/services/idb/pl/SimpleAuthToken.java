@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 
 @SessionScoped
-public class Token implements Serializable {
+public class SimpleAuthToken implements Serializable {
 
     private String token;
 
