@@ -16,7 +16,7 @@
 
             <label class="control-label" for="email">Email</label>
             <div class="controls">
-                <input type="text" id="email" placeholder="Email" ng-model="user.email" required>
+                <input type="email" id="email" placeholder="Email" ng-model="user.email">
             </div>
 
             <label class="control-label" for="firstName">Firstname</label>
@@ -35,4 +35,19 @@
             </div>
         </div>
     </form>
+
+    <hr />
+
+    <table class="table table-striped table-bordered margin-top">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tr ng-repeat="attribute in user.attributes">
+            <td><input type="text" placeholder="Name" value="{{attribute.name}}" readonly></td>
+            <td><input type="text" placeholder="Value" value="{{attribute.value}}" readonly></td>
+        </tr>
+    </table>
 </div>

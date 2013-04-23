@@ -21,8 +21,10 @@
  */
 package org.eventjuggler.services.idb.rest;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -44,6 +46,8 @@ import org.eventjuggler.services.simpleauth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.utils.UriHelper;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
+import org.picketlink.idm.model.Attribute;
+import org.picketlink.idm.model.IdentityType;
 import org.picketlink.idm.model.User;
 
 /**
@@ -81,7 +85,28 @@ public class CallbackResource {
             if (provider.isCallbackHandler(headers.getRequestHeaders(), uriInfo.getQueryParameters())) {
                 User user = provider.getUser(headers.getRequestHeaders(), uriInfo.getQueryParameters());
 
-                if (im.getUser(user.getLoginName()) == null) {
+                String providerUsername = user.getLoginName();
+                String providerUsernameKey = provider.getId() + ".username";
+
+                user.setAttribute(new Attribute<String>(providerUsernameKey, user.getLoginName()));
+
+                List<User> l = im.createIdentityQuery(User.class)
+                        .setParameter(IdentityType.ATTRIBUTE.byName(providerUsernameKey), providerUsername).getResultList();
+
+                if (!l.isEmpty()) {
+                    User existingUser = l.get(0);
+                    updateUser(user, existingUser);
+                    im.update(existingUser);
+                } else {
+                    if (im.getUser(user.getLoginName()) != null) {
+                        for (int i = 0;; i++) {
+                            if (im.getUser(providerUsername + i) == null) {
+                                user.setLoginName(providerUsername + i);
+                                break;
+                            }
+                        }
+                    }
+
                     im.add(user);
                 }
 
@@ -93,6 +118,24 @@ public class CallbackResource {
         }
 
         return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    private void updateUser(User source, User destination) {
+        if (source.getEmail() != null) {
+            destination.setEmail(source.getEmail());
+        }
+
+        if (source.getFirstName() != null) {
+            destination.setFirstName(source.getFirstName());
+        }
+
+        if (source.getLastName() != null) {
+            destination.setLastName(source.getLastName());
+        }
+
+        for (Attribute<? extends Serializable> attribute : source.getAttributes()) {
+            destination.setAttribute(attribute);
+        }
     }
 
 }

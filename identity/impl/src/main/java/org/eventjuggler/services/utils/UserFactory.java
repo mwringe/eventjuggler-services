@@ -21,6 +21,10 @@
  */
 package org.eventjuggler.services.utils;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eventjuggler.services.simpleauth.rest.Attribute;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.picketlink.idm.model.User;
 
@@ -35,6 +39,17 @@ public class UserFactory {
         userInfo.setFirstName(user.getFirstName());
         userInfo.setLastName(user.getLastName());
         userInfo.setUserId(user.getLoginName());
+
+        if (!user.getAttributes().isEmpty()) {
+            List<Attribute> attributes = new LinkedList<>();
+            for (org.picketlink.idm.model.Attribute<?> a : user.getAttributes()) {
+                if (a.getValue() instanceof String) {
+                    attributes.add(new Attribute(a.getName(), (String) a.getValue()));
+                }
+            }
+            userInfo.setAttributes(attributes);
+        }
+
         return userInfo;
     }
 
