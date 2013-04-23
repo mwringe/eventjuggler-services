@@ -80,11 +80,19 @@ public class DummySocialResource {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
+        StringBuilder sb = getHtmlForm(appKey, application, null);
+        return Response.ok(sb.toString()).build();
+    }
+
+    private StringBuilder getHtmlForm(String appKey, Application application, String errorMessage) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append("<body>");
         sb.append("<h1>Welcome to Dummy Social</h1>");
-        sb.append(application.getName() + " is requesting to authenticate using your account");
+        sb.append("<p>" + application.getName() + " is requesting to authenticate using your account </p>");
+        if (errorMessage != null) {
+            sb.append("<p>" + errorMessage + "</p>");
+        }
         sb.append("<form action='#' method='post'>");
         sb.append("<input type='text' name='username' placeholder='Username' />");
         sb.append("<input type='password' name='password' placeholder='Password' />");
@@ -93,8 +101,7 @@ public class DummySocialResource {
         sb.append("</form>");
         sb.append("</body>");
         sb.append("</html>");
-
-        return Response.ok(sb.toString()).build();
+        return sb;
     }
 
     @POST
@@ -120,7 +127,8 @@ public class DummySocialResource {
             URI uri = new UriHelper(uriInfo).getCallback("/ejs-identity/api/callback/" + appKey + "?dummytoken=" + token);
             return Response.seeOther(uri).build();
         } else {
-            return Response.status(Status.BAD_REQUEST).build();
+            StringBuilder sb = getHtmlForm(appKey, application, "Invalid username or password");
+            return Response.ok(sb.toString()).build();
         }
     }
 
