@@ -19,12 +19,11 @@
 package org.eventjuggler.services.simpleauth.rest;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ws.rs.QueryParam;
 
-import org.eventjuggler.services.utils.TokenService;
+import org.eventjuggler.services.simpleauth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
@@ -43,12 +42,10 @@ public class AuthenticationResource implements Authentication {
     @Resource(lookup = "java:/picketlink/ExampleIMF")
     private IdentityManagerFactory imf;
 
-    @EJB
-    private TokenService tokenManager;
-
     @Override
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
         IdentityManager im = imf.createIdentityManager();
+        SimpleAuthIdmUtil idmUtil = new SimpleAuthIdmUtil(im);
 
         User user = null;
         String token = null;
@@ -61,10 +58,10 @@ public class AuthenticationResource implements Authentication {
 
             if (Credentials.Status.VALID.equals(credentials.getStatus())) {
                 user = im.getUser(credentials.getUsername());
-                token = tokenManager.put(user);
+                token = idmUtil.setToken(user);
             }
         } else if (authcRequest.getToken() != null) {
-            user = tokenManager.get(authcRequest.getToken());
+            user = idmUtil.getUser(authcRequest.getToken());
             token = authcRequest.getToken();
         }
 
@@ -80,19 +77,19 @@ public class AuthenticationResource implements Authentication {
 
     @Override
     public void logout(@QueryParam("token") String token) {
-        if (token != null && tokenManager.valid(token)) {
-            tokenManager.remove(token);
-        }
+        new SimpleAuthIdmUtil(imf.createIdentityManager()).removeToken(token);
     }
 
     @Override
     public UserInfo getInfo(@QueryParam("token") String token) {
-        if (token != null && tokenManager.valid(token)) {
-            User user = tokenManager.get(token);
-            return UserFactory.createUserInfo(user);
-        } else {
-            return new UserInfo();
+        if (token != null) {
+            User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(token);
+            if (user != null) {
+                return UserFactory.createUserInfo(user);
+            }
         }
+
+        return new UserInfo();
     }
 
 }

@@ -40,7 +40,7 @@ import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
-import org.eventjuggler.services.utils.TokenService;
+import org.eventjuggler.services.simpleauth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.utils.UriHelper;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
@@ -68,9 +68,6 @@ public class CallbackResource {
     @EJB
     private IdentityProviderService providerService;
 
-    @EJB
-    private TokenService tokenManager;
-
     @GET
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {
         IdentityManager im = imf.createIdentityManager();
@@ -88,7 +85,7 @@ public class CallbackResource {
                     im.add(user);
                 }
 
-                String token = tokenManager.put(user);
+                String token = new SimpleAuthIdmUtil(im).setToken(user);
 
                 URI uri = new UriHelper(uriInfo).getCallback(application.getCallbackUrl() + "?token=" + token);
                 return Response.seeOther(uri).build();
