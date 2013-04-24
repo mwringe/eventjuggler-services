@@ -56,6 +56,18 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
 
                 auth.loggedIn = true;
                 auth.root = auth.user.userId == "root";
+                
+                var displayName;
+                if (auth.user.firstName || auth.user.lastName) {
+                    displayName = auth.user.firstName;
+                    if (auth.user.lastName) {
+                        displayName = displayName ? displayName + " " + auth.user.lastName : auth.user.lastName
+                    }
+                } else {
+                    displayName = auth.user.userId;
+                }
+                
+                auth.user.displayName = displayName;
 
                 console.debug("logged in " + (auth.root ? "root" : "user"));
             } else {
