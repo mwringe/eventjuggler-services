@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -76,17 +75,6 @@ public class CallbackResource {
     @GET
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {
         IdentityManager im = imf.createIdentityManager();
-
-        System.out.println("QUERY PARAMS:");
-        for (Entry<String, List<String>> e : uriInfo.getQueryParameters().entrySet()) {
-            System.out.println(e.getKey() + "-->" + e.getValue().get(0));
-
-        }
-
-        System.out.println("HEADERS:");
-        for (Entry<String, List<String>> e : headers.getRequestHeaders().entrySet()) {
-            System.out.println(e.getKey() + "-->" + e.getValue().get(0));
-        }
 
         Application application = applicationService.getApplication(appKey);
         if (application == null) {

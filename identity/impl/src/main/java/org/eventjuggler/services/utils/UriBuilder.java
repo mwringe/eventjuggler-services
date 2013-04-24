@@ -22,7 +22,9 @@
 package org.eventjuggler.services.utils;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -32,17 +34,30 @@ public class UriBuilder {
 
     private final javax.ws.rs.core.UriBuilder b;
 
-    public UriBuilder(UriInfo uriInfo, String path) {
+    public UriBuilder(HttpHeaders headers, UriInfo uriInfo, String path) {
         if (path.contains("://")) {
             b = javax.ws.rs.core.UriBuilder.fromUri(path);
-        } else if (path.startsWith("/")) {
-            b = javax.ws.rs.core.UriBuilder.fromUri(uriInfo.getAbsolutePath().resolve(path));
         } else {
-            URI uri = uriInfo.getAbsolutePath();
-            String p = uri.getPath();
-            p = p.substring(0, p.indexOf('/', 1) + 1);
-            uri = uri.resolve(p + path);
-            b = javax.ws.rs.core.UriBuilder.fromUri(uri);
+            URI absolutePath = uriInfo.getAbsolutePath();
+
+            if (headers.getRequestHeaders().containsKey("x-forwarded-proto")) {
+                String scheme = headers.getRequestHeaders().get("x-forwarded-proto").get(0);
+                try {
+                    absolutePath = new URI(absolutePath.toString().replaceFirst(".*://", scheme + "://"));
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (path.startsWith("/")) {
+                b = javax.ws.rs.core.UriBuilder.fromUri(absolutePath.resolve(path));
+            } else {
+                URI uri = absolutePath;
+                String p = uri.getPath();
+                p = p.substring(0, p.indexOf('/', 1) + 1);
+                uri = uri.resolve(p + path);
+                b = javax.ws.rs.core.UriBuilder.fromUri(uri);
+            }
         }
     }
 

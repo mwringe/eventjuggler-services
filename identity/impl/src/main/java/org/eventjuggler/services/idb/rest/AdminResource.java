@@ -29,6 +29,7 @@ import javax.ejb.EJB;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -55,6 +56,9 @@ public class AdminResource implements Admin {
 
     @Context
     private UriInfo uriInfo;
+
+    @Context
+    private HttpHeaders headers;
 
     public AdminResource() {
     }
@@ -98,7 +102,7 @@ public class AdminResource implements Admin {
     public List<IdentityProviderDescription> getProviderTypes() {
         List<IdentityProviderDescription> descriptions = new LinkedList<>();
         for (IdentityProvider provider : providerService.getProviders()) {
-            URI icon = new UriBuilder(uriInfo, "icons/" + provider.getIcon()).build();
+            URI icon = new UriBuilder(headers, uriInfo, "icons/" + provider.getIcon()).build();
             descriptions.add(new IdentityProviderDescription(provider.getId(), provider.getName(), icon));
         }
         return descriptions;

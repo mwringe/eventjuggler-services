@@ -38,6 +38,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -69,6 +70,9 @@ public class DummySocialResource {
 
     @Context
     private UriInfo uriInfo;
+
+    @Context
+    private HttpHeaders headers;
 
     private final Map<String, User> loggedInUsers = Collections.synchronizedMap(new HashMap<String, User>());
 
@@ -124,7 +128,7 @@ public class DummySocialResource {
             String token = KeyGenerator.createToken();
             loggedInUsers.put(token, user);
 
-            URI uri = new UriBuilder(uriInfo, "api/callback/" + appKey + "?dummytoken=" + token).build();
+            URI uri = new UriBuilder(headers, uriInfo, "api/callback/" + appKey + "?dummytoken=" + token).build();
             return Response.seeOther(uri).build();
         } else {
             StringBuilder sb = getHtmlForm(appKey, application, "Invalid username or password");

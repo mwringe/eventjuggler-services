@@ -53,7 +53,7 @@ public class IdentityProviderCallback {
     }
 
     public UriBuilder createUri(String path) {
-        return new UriBuilder(uriInfo, path);
+        return new UriBuilder(headers, uriInfo, path);
     }
 
     public String getApplicationKey() {
@@ -63,6 +63,7 @@ public class IdentityProviderCallback {
     public URI getBrokerCallbackUrl() {
         return createUri("api/callback/" + application.getKey()).build();
     }
+
     private IdentityProviderConfig getConfig() {
         for (IdentityProviderConfig c : application.getProviders()) {
             if (c.getProviderId().equals(provider.getId())) {

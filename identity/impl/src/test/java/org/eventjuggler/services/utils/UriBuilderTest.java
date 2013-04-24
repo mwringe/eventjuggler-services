@@ -22,7 +22,10 @@
 package org.eventjuggler.services.utils;
 
 import java.net.URI;
+import java.util.Collections;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.junit.Assert;
@@ -36,31 +39,55 @@ import org.mockito.Mockito;
 public class UriBuilderTest {
 
     private UriInfo uriInfo;
+    private HttpHeaders httpHeaders;
+    private MultivaluedMap<String, String> requestHeaders;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void before() throws Exception {
         uriInfo = Mockito.mock(UriInfo.class);
+        httpHeaders = Mockito.mock(HttpHeaders.class);
+        requestHeaders = Mockito.mock(MultivaluedMap.class);
 
         Mockito.when(uriInfo.getAbsolutePath()).thenReturn(new URI("http://localhost:8080/ejs-identity/api/test"));
+        Mockito.when(httpHeaders.getRequestHeaders()).thenReturn(requestHeaders);
+        Mockito.when(requestHeaders.containsKey("x-forwarded-proto")).thenReturn(false);
     }
 
     @Test
     public void absolute() {
-        URI uri = new UriBuilder(uriInfo, "http://www.somedomain.com/test").setQueryParam("test", "value")
+        URI uri = new UriBuilder(httpHeaders, uriInfo, "http://www.somedomain.com/test").setQueryParam("test", "value")
                 .setQueryParam("test2", "value2").build();
         Assert.assertEquals("http://www.somedomain.com/test?test=value&test2=value2", uri.toString());
     }
 
     @Test
+    public void xForwardedProto() {
+        Mockito.when(requestHeaders.containsKey("x-forwarded-proto")).thenReturn(true);
+        Mockito.when(requestHeaders.get("x-forwarded-proto")).thenReturn(Collections.singletonList("https"));
+
+        URI uri = new UriBuilder(httpHeaders, uriInfo, "/test").build();
+        Assert.assertEquals("https://localhost:8080/test", uri.toString());
+    }
+
+    @Test
+    public void absoluteHttps() {
+        URI uri = new UriBuilder(httpHeaders, uriInfo, "https://www.somedomain.com/test").setQueryParam("test", "value")
+                .setQueryParam("test2", "value2").build();
+        Assert.assertEquals("https://www.somedomain.com/test?test=value&test2=value2", uri.toString());
+    }
+
+    @Test
     public void relativeToHost() {
-        URI uri = new UriBuilder(uriInfo, "/test").setQueryParam("test", "value")
+        URI uri = new UriBuilder(httpHeaders, uriInfo, "/test").setQueryParam("test", "value")
                 .setQueryParam("test2", "value2").build();
         Assert.assertEquals("http://localhost:8080/test?test=value&test2=value2", uri.toString());
     }
 
     @Test
     public void relativeToApp() {
-        URI uri = new UriBuilder(uriInfo, "test").setQueryParam("test", "value").setQueryParam("test2", "value2").build();
+        URI uri = new UriBuilder(httpHeaders, uriInfo, "test").setQueryParam("test", "value").setQueryParam("test2", "value2")
+                .build();
         Assert.assertEquals("http://localhost:8080/ejs-identity/test?test=value&test2=value2", uri.toString());
     }
 

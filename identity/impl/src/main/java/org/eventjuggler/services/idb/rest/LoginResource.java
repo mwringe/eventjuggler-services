@@ -103,7 +103,7 @@ public class LoginResource {
             callback.setProvider(provider);
 
             URI loginUri = provider.getLoginUrl(callback);
-            URI iconUri = new UriBuilder(uriInfo, "icons/" + provider.getIcon()).build();
+            URI iconUri = new UriBuilder(headers, uriInfo, "icons/" + provider.getIcon()).build();
 
             ProviderLoginConfig providerLoginConfig = new ProviderLoginConfig();
             providerLoginConfig.setName(provider.getName());
@@ -133,10 +133,11 @@ public class LoginResource {
 
         AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
-            URI uri = new UriBuilder(uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
+            URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
-            URI uri = new UriBuilder(uriInfo, headers.getRequestHeader("referer").get(0)).setQueryParam("error", "invalid")
+            URI uri = new UriBuilder(headers, uriInfo, headers.getRequestHeader("referer").get(0)).setQueryParam("error",
+                    "invalid")
                     .build();
             return Response.seeOther(uri).build();
         }
