@@ -21,6 +21,7 @@
  */
 package org.eventjuggler.services.idb.rest;
 
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
-import org.eventjuggler.services.utils.UriHelper;
+import org.eventjuggler.services.utils.UriBuilder;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -95,12 +96,10 @@ public class AdminResource implements Admin {
 
     @Override
     public List<IdentityProviderDescription> getProviderTypes() {
-        UriHelper uriHelper = new UriHelper(uriInfo);
-
         List<IdentityProviderDescription> descriptions = new LinkedList<>();
         for (IdentityProvider provider : providerService.getProviders()) {
-            descriptions.add(new IdentityProviderDescription(provider.getId(), provider.getName(), uriHelper.getIcon(provider
-                    .getIcon())));
+            URI icon = new UriBuilder(uriInfo, "icons/" + provider.getIcon()).build();
+            descriptions.add(new IdentityProviderDescription(provider.getId(), provider.getName(), icon));
         }
         return descriptions;
     }

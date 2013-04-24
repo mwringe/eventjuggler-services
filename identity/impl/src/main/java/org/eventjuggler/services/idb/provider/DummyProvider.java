@@ -22,14 +22,9 @@
 package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
 
 import javax.naming.InitialContext;
 
-import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.idb.rest.DummySocialResource;
 import org.picketlink.idm.model.User;
 
@@ -49,13 +44,8 @@ public class DummyProvider implements IdentityProvider {
     }
 
     @Override
-    public URI getLoginUrl(Application application, IdentityProviderConfig provider) {
-        try {
-            return new URI("/ejs-identity/api/dummysocial/" + application.getKey());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public URI getLoginUrl(IdentityProviderCallback callback) {
+        return callback.createUri("api/dummysocial/" + callback.getApplicationKey()).build();
     }
 
     @Override
@@ -64,8 +54,8 @@ public class DummyProvider implements IdentityProvider {
     }
 
     @Override
-    public User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        String dummytoken = queryParameters.get("dummytoken").get(0);
+    public User getUser(IdentityProviderCallback callback) {
+        String dummytoken = callback.getQueryParam("dummytoken");
 
         try {
             DummySocialResource dummySocialResource = (DummySocialResource) new InitialContext()
@@ -78,8 +68,8 @@ public class DummyProvider implements IdentityProvider {
     }
 
     @Override
-    public boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        return queryParameters.containsKey("dummytoken");
+    public boolean isCallbackHandler(IdentityProviderCallback callback) {
+        return callback.containsQueryParam("dummytoken");
     }
 
 }

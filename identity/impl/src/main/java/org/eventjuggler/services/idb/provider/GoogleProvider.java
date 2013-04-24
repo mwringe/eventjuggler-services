@@ -22,19 +22,31 @@
 package org.eventjuggler.services.idb.provider;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
-import javax.ws.rs.core.UriBuilder;
-
-import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.idb.model.IdentityProviderConfig;
+import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.oauth2.Oauth2;
+import com.google.api.services.oauth2.model.Tokeninfo;
+import com.google.api.services.oauth2.model.Userinfo;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class GoogleProvider implements IdentityProvider {
+
+    private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
+
+    private static final NetHttpTransport TRANSPORT = new NetHttpTransport();
+
+    // TODO This needs to be unique per client
+    private static final String state = UUID.randomUUID().toString();
 
     @Override
     public String getIcon() {
@@ -47,10 +59,12 @@ public class GoogleProvider implements IdentityProvider {
     }
 
     @Override
-    public URI getLoginUrl(Application application, IdentityProviderConfig provider) {
-        UriBuilder builder = UriBuilder.fromUri("https://www.google.com");
-        builder.replaceQueryParam("key", provider.getKey());
-        return builder.build(); // TODO
+    public URI getLoginUrl(IdentityProviderCallback callback) {
+        return callback.createUri("https://accounts.google.com/o/oauth2/auth").setQueryParam("client_id", callback.getProviderKey())
+                .setQueryParam("response_type", "code")
+                .setQueryParam("scope", "https://www.googleapis.com/auth/userinfo.profile")
+                .setQueryParam("redirect_uri", callback.getBrokerCallbackUrl().toString()).setQueryParam("state", state)
+                .build();
     }
 
     @Override
@@ -59,14 +73,39 @@ public class GoogleProvider implements IdentityProvider {
     }
 
     @Override
-    public User getUser(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        return null; // TODO
+    public User getUser(IdentityProviderCallback callback) {
+        String code = callback.getQueryParam("code");
+
+        try {
+            GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
+                    callback.getProviderKey(), callback.getProviderSecret(), code, callback.getBrokerCallbackUrl().toString()).execute();
+
+            GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(JSON_FACTORY).setTransport(TRANSPORT)
+                    .setClientSecrets(callback.getProviderKey(), callback.getProviderSecret()).build().setFromTokenResponse(tokenResponse);
+
+            Oauth2 oauth2 = new Oauth2.Builder(TRANSPORT, JSON_FACTORY, credential).build();
+
+            Tokeninfo tokenInfo = oauth2.tokeninfo().setAccessToken(credential.getAccessToken()).execute();
+
+            if (tokenInfo.containsKey("error")) {
+                throw new RuntimeException("error");
+            }
+
+            Userinfo userInfo = oauth2.userinfo().get().execute();
+            User user = new SimpleUser(userInfo.getId());
+            user.setFirstName(userInfo.getGivenName());
+            user.setLastName(userInfo.getFamilyName());
+            user.setEmail(userInfo.getEmail());
+
+            return user;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public boolean isCallbackHandler(Map<String, List<String>> headers, Map<String, List<String>> queryParameters) {
-        return false; // TODO
-
+    public boolean isCallbackHandler(IdentityProviderCallback callback) {
+        return callback.containsQueryParam("state") && callback.getQueryParam("state").equals(state);
     }
 
 }

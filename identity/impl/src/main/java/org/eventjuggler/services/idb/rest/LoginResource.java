@@ -41,19 +41,19 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
+import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
 import org.eventjuggler.services.idb.rest.LoginConfig.ProviderLoginConfig;
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
-import org.eventjuggler.services.utils.UriHelper;
+import org.eventjuggler.services.utils.UriBuilder;
 import org.jboss.resteasy.client.ProxyFactory;
 
 /**
@@ -87,22 +87,28 @@ public class LoginResource {
     @Produces(MediaType.APPLICATION_JSON)
     public LoginConfig getLoginConfig(@PathParam("appKey") String appKey) {
         Application application = getApplication(appKey);
-        UriHelper uriHelper = new UriHelper(uriInfo);
 
         LoginConfig loginConfig = new LoginConfig();
         loginConfig.setName(application.getName());
 
         List<ProviderLoginConfig> providerLoginConfigs = new LinkedList<>();
 
+        IdentityProviderCallback callback = new IdentityProviderCallback();
+        callback.setApplication(application);
+        callback.setHeaders(headers);
+        callback.setUriInfo(uriInfo);
+
         for (IdentityProviderConfig c : application.getProviders()) {
             IdentityProvider provider = providerService.getProvider(c.getProviderId());
+            callback.setProvider(provider);
 
-            URI loginUri = provider.getLoginUrl(application, c);
+            URI loginUri = provider.getLoginUrl(callback);
+            URI iconUri = new UriBuilder(uriInfo, "icons/" + provider.getIcon()).build();
 
             ProviderLoginConfig providerLoginConfig = new ProviderLoginConfig();
             providerLoginConfig.setName(provider.getName());
             providerLoginConfig.setLoginUri(loginUri);
-            providerLoginConfig.setIcon(uriHelper.getIcon(provider.getIcon()));
+            providerLoginConfig.setIcon(iconUri);
 
             providerLoginConfigs.add(providerLoginConfig);
         }
@@ -127,10 +133,10 @@ public class LoginResource {
 
         AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
-            URI uri = new UriHelper(uriInfo).getCallback(application.getCallbackUrl() + "?token=" + response.getToken());
+            URI uri = new UriBuilder(uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
-            URI uri = UriBuilder.fromUri(headers.getRequestHeader("referer").get(0)).replaceQueryParam("error", "invalid")
+            URI uri = new UriBuilder(uriInfo, headers.getRequestHeader("referer").get(0)).setQueryParam("error", "invalid")
                     .build();
             return Response.seeOther(uri).build();
         }

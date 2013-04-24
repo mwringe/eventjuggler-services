@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -41,9 +42,9 @@ import javax.ws.rs.core.UriInfo;
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
+import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
 import org.eventjuggler.services.simpleauth.SimpleAuthIdmUtil;
-import org.eventjuggler.services.utils.UriHelper;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.Attribute;
@@ -76,14 +77,32 @@ public class CallbackResource {
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {
         IdentityManager im = imf.createIdentityManager();
 
+        System.out.println("QUERY PARAMS:");
+        for (Entry<String, List<String>> e : uriInfo.getQueryParameters().entrySet()) {
+            System.out.println(e.getKey() + "-->" + e.getValue().get(0));
+
+        }
+
+        System.out.println("HEADERS:");
+        for (Entry<String, List<String>> e : headers.getRequestHeaders().entrySet()) {
+            System.out.println(e.getKey() + "-->" + e.getValue().get(0));
+        }
+
         Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
+        IdentityProviderCallback callback = new IdentityProviderCallback();
+        callback.setApplication(application);
+        callback.setHeaders(headers);
+        callback.setUriInfo(uriInfo);
+
         for (IdentityProvider provider : providerService.getProviders()) {
-            if (provider.isCallbackHandler(headers.getRequestHeaders(), uriInfo.getQueryParameters())) {
-                User user = provider.getUser(headers.getRequestHeaders(), uriInfo.getQueryParameters());
+            callback.setProvider(provider);
+
+            if (provider.isCallbackHandler(callback)) {
+                User user = provider.getUser(callback);
 
                 String providerUsername = user.getLoginName();
                 String providerUsernameKey = provider.getId() + ".username";
@@ -96,7 +115,9 @@ public class CallbackResource {
                 if (!l.isEmpty()) {
                     User existingUser = l.get(0);
                     updateUser(user, existingUser);
-                    im.update(existingUser);
+                    user = existingUser;
+
+                    im.update(user);
                 } else {
                     if (im.getUser(user.getLoginName()) != null) {
                         for (int i = 0;; i++) {
@@ -112,7 +133,7 @@ public class CallbackResource {
 
                 String token = new SimpleAuthIdmUtil(im).setToken(user);
 
-                URI uri = new UriHelper(uriInfo).getCallback(application.getCallbackUrl() + "?token=" + token);
+                URI uri = callback.createUri(application.getCallbackUrl() + "?token=" + token).build();
                 return Response.seeOther(uri).build();
             }
         }

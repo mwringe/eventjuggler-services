@@ -46,7 +46,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.utils.KeyGenerator;
-import org.eventjuggler.services.utils.UriHelper;
+import org.eventjuggler.services.utils.UriBuilder;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Credentials;
@@ -124,7 +124,7 @@ public class DummySocialResource {
             String token = KeyGenerator.createToken();
             loggedInUsers.put(token, user);
 
-            URI uri = new UriHelper(uriInfo).getCallback("/ejs-identity/api/callback/" + appKey + "?dummytoken=" + token);
+            URI uri = new UriBuilder(uriInfo, "api/callback/" + appKey + "?dummytoken=" + token).build();
             return Response.seeOther(uri).build();
         } else {
             StringBuilder sb = getHtmlForm(appKey, application, "Invalid username or password");

@@ -22,36 +22,37 @@
 package org.eventjuggler.services.utils;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.ws.rs.core.UriInfo;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class UriHelper {
+public class UriBuilder {
 
-    private final URI contextRoot;
+    private final javax.ws.rs.core.UriBuilder b;
 
-    public UriHelper(UriInfo uriInfo) {
-        contextRoot = uriInfo.getBaseUri().resolve("../");
-    }
-
-    public URI getContextRoot() {
-        return contextRoot;
-    }
-
-    public URI getIcon(String icon) {
-        return contextRoot.resolve("icons/" + icon);
-    }
-
-    public URI getCallback(String str) throws URISyntaxException {
-        URI uri = new URI(str);
-        if (uri.isAbsolute()) {
-            return uri;
+    public UriBuilder(UriInfo uriInfo, String path) {
+        if (path.contains("://")) {
+            b = javax.ws.rs.core.UriBuilder.fromUri(path);
+        } else if (path.startsWith("/")) {
+            b = javax.ws.rs.core.UriBuilder.fromUri(uriInfo.getAbsolutePath().resolve(path));
         } else {
-            return getContextRoot().resolve(uri);
+            URI uri = uriInfo.getAbsolutePath();
+            String p = uri.getPath();
+            p = p.substring(0, p.indexOf('/', 1) + 1);
+            uri = uri.resolve(p + path);
+            b = javax.ws.rs.core.UriBuilder.fromUri(uri);
         }
+    }
+
+    public UriBuilder setQueryParam(String name, String value) {
+        b.replaceQueryParam(name, value);
+        return this;
+    }
+
+    public URI build() {
+        return b.build();
     }
 
 }
