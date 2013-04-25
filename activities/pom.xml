@@ -18,15 +18,14 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ejs-identity-parent</artifactId>
+    <artifactId>ejs-activities-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Identity Parent</name>
+    <name>Activites Parent</name>
 
     <modules>
         <module>api</module>
-        <module>ear</module>
-        <module>picketlink</module>
         <module>impl</module>
+        <module>ear</module>
     </modules>
 
 </project>

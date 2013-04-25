@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+    <sub-deployment name="ejs-identity-impl.war">
+        <dependencies>
+            <module name="org.picketlink.idm" />
+        </dependencies>
+    </sub-deployment>
+</jboss-deployment-structure>
