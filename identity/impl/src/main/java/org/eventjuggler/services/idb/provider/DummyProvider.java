@@ -54,7 +54,7 @@ public class DummyProvider implements IdentityProvider {
     }
 
     @Override
-    public User getUser(IdentityProviderCallback callback) {
+    public User processCallback(IdentityProviderCallback callback) {
         String dummytoken = callback.getQueryParam("dummytoken");
 
         try {

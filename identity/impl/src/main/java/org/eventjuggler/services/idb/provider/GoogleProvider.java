@@ -73,7 +73,7 @@ public class GoogleProvider implements IdentityProvider {
     }
 
     @Override
-    public User getUser(IdentityProviderCallback callback) {
+    public User processCallback(IdentityProviderCallback callback) {
         String code = callback.getQueryParam("code");
 
         try {

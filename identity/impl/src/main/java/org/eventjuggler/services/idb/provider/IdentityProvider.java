@@ -38,7 +38,7 @@ public interface IdentityProvider {
 
     String getName();
 
-    User getUser(IdentityProviderCallback callback);
+    User processCallback(IdentityProviderCallback callback);
 
     boolean isCallbackHandler(IdentityProviderCallback callback);
 

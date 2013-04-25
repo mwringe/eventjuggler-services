@@ -90,7 +90,7 @@ public class CallbackResource {
             callback.setProvider(provider);
 
             if (provider.isCallbackHandler(callback)) {
-                User user = provider.getUser(callback);
+                User user = provider.processCallback(callback);
 
                 String providerUsername = user.getLoginName();
                 String providerUsernameKey = provider.getId() + ".username";
