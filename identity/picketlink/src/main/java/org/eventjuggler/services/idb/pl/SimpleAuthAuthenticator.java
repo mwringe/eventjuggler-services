@@ -1,8 +1,8 @@
 package org.eventjuggler.services.idb.pl;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
 
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
@@ -16,22 +16,14 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
     @Inject
     private SimpleAuthToken token;
 
+    @Resource(lookup = "java:global/ejs/Authentication")
+    private Authentication authentication;
+
     @Override
     public void authenticate() {
         String t = token.getValue();
         if (t != null) {
-            UserInfo info;
-            Authentication authentication;
-
-            try {
-                authentication = (Authentication) new InitialContext()
-                        .lookup("java:global/ejs-identity/AuthenticationResource");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            info = authentication.getInfo(t);
-
+            UserInfo info = authentication.getInfo(t);
             if (info != null) {
                 User user = new SimpleUser(info.getUserId());
                 user.setEmail(info.getEmail());

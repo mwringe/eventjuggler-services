@@ -270,7 +270,6 @@
                     <version>${version.ear.plugin}</version>
                     <configuration>
                         <defaultLibBundleDir>lib</defaultLibBundleDir>
-                        <skinnyWars>true</skinnyWars>
                         <fileNameMapping>no-version</fileNameMapping>
                         <applicationName>${project.artifactId}</applicationName>
                         <version>6</version>

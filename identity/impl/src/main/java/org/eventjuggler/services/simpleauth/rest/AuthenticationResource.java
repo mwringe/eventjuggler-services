@@ -19,7 +19,7 @@
 package org.eventjuggler.services.simpleauth.rest;
 
 import javax.annotation.Resource;
-import javax.ejb.Remote;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.QueryParam;
 
@@ -36,7 +36,7 @@ import org.picketlink.idm.model.User;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Stateless
-@Remote
+@EJB(name = "java:global/ejs/Authentication", beanInterface = Authentication.class)
 public class AuthenticationResource implements Authentication {
 
     @Resource(lookup = "java:/picketlink/ExampleIMF")

@@ -39,6 +39,7 @@
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
             <artifactId>ejs-activities-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
