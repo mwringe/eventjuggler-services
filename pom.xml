@@ -31,6 +31,8 @@
     <modules>
         <module>admin</module>
         <module>activities</module>
+        <module>build</module>
+        <module>dist</module>
         <module>identity</module>
         <module>testsuite</module>
     </modules>
@@ -123,9 +125,15 @@
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
-                <artifactId>ejs-activities-ear</artifactId>
+                <artifactId>ejs-activities</artifactId>
                 <version>${project.version}</version>
                 <type>ear</type>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-build</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
@@ -140,26 +148,14 @@
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-identity</artifactId>
+                <version>${project.version}</version>
+                <type>ear</type>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
                 <artifactId>ejs-identity-picketlink</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.org.jboss.arquillian}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.as</groupId>
-                <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                <version>${version.org.jboss.as}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.as</groupId>
-                <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                <version>${version.org.jboss.as}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.as</groupId>
