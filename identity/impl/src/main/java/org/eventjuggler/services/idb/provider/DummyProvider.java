@@ -59,7 +59,7 @@ public class DummyProvider implements IdentityProvider {
 
         try {
             DummySocialResource dummySocialResource = (DummySocialResource) new InitialContext()
-                    .lookup("java:global/ejs-identity/DummySocialResource");
+                    .lookup("java:global/ejs/DummySocialResource");
             return dummySocialResource.getUser(dummytoken);
         } catch (Exception e) {
             e.printStackTrace();

@@ -60,6 +60,7 @@ import org.picketlink.idm.model.User;
  */
 @Path("/dummysocial/{appKey}")
 @Singleton
+@EJB(name = "java:global/ejs/DummySocialResource", beanInterface = DummySocialResource.class)
 public class DummySocialResource {
 
     @EJB
