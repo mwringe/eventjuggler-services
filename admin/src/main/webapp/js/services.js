@@ -44,7 +44,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
 
         auth.loggedIn = false;
         auth.root = false;
-    }
+    };
 
     if (!auth.user && token) {
         auth.user = $resource('/ejs-identity/api/auth/userinfo').get({
@@ -61,7 +61,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
                 if (auth.user.firstName || auth.user.lastName) {
                     displayName = auth.user.firstName;
                     if (auth.user.lastName) {
-                        displayName = displayName ? displayName + " " + auth.user.lastName : auth.user.lastName
+                        displayName = displayName ? displayName + " " + auth.user.lastName : auth.user.lastName;
                     }
                 } else {
                     displayName = auth.user.userId;
