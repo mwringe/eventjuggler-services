@@ -1,0 +1,3 @@
+<jboss-web>
+    <context-root>ejs-examples-jsf</context-root>
+</jboss-web>
