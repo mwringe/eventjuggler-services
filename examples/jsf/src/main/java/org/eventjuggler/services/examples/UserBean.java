@@ -19,44 +19,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.services.idb.pl;
+package org.eventjuggler.services.examples;
 
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
-import org.picketlink.authentication.BaseAuthenticator;
-import org.picketlink.idm.IdentityManagerFactory;
+import org.picketlink.Identity;
 import org.picketlink.idm.model.User;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@ApplicationScoped
-public class SimpleAuthAuthenticator extends BaseAuthenticator {
+@ManagedBean
+@Named("userBean")
+public class UserBean {
 
     @Inject
-    private SimpleAuthToken token;
+    private Identity identity;
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
-    private IdentityManagerFactory imf;
-
-    @Override
-    public void authenticate() {
-        String t = token.getValue();
-        if (t != null) {
-            User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(t);
-            if (user != null) {
-                setUser(user);
-
-                setStatus(AuthenticationStatus.SUCCESS);
-            } else {
-                setStatus(AuthenticationStatus.FAILURE);
-            }
-        } else {
-            setStatus(AuthenticationStatus.DEFERRED);
-        }
+    public User getUser() {
+        return identity.isLoggedIn() ? (User) identity.getUser() : null;
     }
 
 }
