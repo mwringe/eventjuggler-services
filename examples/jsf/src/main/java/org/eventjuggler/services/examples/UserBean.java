@@ -38,6 +38,10 @@ public class UserBean {
     @Inject
     private Identity identity;
 
+    public boolean isLoggedIn() {
+        return identity.isLoggedIn();
+    }
+
     public User getUser() {
         return identity.isLoggedIn() ? (User) identity.getUser() : null;
     }

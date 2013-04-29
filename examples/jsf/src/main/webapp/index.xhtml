@@ -7,10 +7,21 @@
     <title>JSF Example</title>
 </h:head>
 <h:body>
-    <h3>
-        <h:outputText value="User: #{userBean.user.loginName}" />
-    </h3>
+    <h:panelGroup rendered="#{!userBean.loggedIn}">
+        <p>
+            <a href="/ejs-identity/login?key=ejs-examples-jsf">Login</a>
+        </p>
+    </h:panelGroup>
 
-    <a href="/ejs-identity/login?key=ejs-examples-jsf">Login</a>
+    <h:panelGroup rendered="#{userBean.loggedIn}">
+        <p>
+            Logged in
+            <h:outputText value="#{userBean.user.loginName}" />
+        </p>
+
+        <p>
+            <a href="index.jsf?token=logout">Logout</a>
+        </p>
+    </h:panelGroup>
 </h:body>
 </html>
