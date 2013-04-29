@@ -8,6 +8,7 @@
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     <li><a href="#">Home</a></li>
+                    <li ng-show="auth.loggedIn"><a href="#/activities">Activities</a></li>
                     <li ng-show="auth.loggedIn"><a href="#/applications">Applications</a></li>
                     <li ng-show="auth.root"><a href="#/users">Users</a></li>
                 </ul>

@@ -38,6 +38,10 @@
     <dependencies>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
+            <artifactId>ejs-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eventjuggler.services</groupId>
             <artifactId>ejs-identity-api</artifactId>
         </dependency>
         <dependency>

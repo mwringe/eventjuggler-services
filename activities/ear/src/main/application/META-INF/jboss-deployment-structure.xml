@@ -5,7 +5,7 @@
             <module name="org.picketlink.idm" />
         </dependencies>
     </deployment>
-    <sub-deployment name="ejs-identity-impl.war">
+    <sub-deployment name="ejs-activities-impl.war">
         <dependencies>
             <module name="org.picketlink.idm" />
         </dependencies>

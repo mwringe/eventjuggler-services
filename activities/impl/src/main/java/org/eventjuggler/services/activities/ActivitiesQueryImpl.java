@@ -104,6 +104,12 @@ public class ActivitiesQueryImpl implements ActivitiesQuery {
 
     @Override
     public List<Event> getResults() {
+        CriteriaBuilder builder = qb.getBuilder();
+        CriteriaQuery<String> criteria = qb.getCriteria();
+        Root<EventImpl> root = qb.getRoot();
+
+        criteria.orderBy(builder.desc(root.get(EventImpl_.time)));
+
         return qb.getResults();
     }
 

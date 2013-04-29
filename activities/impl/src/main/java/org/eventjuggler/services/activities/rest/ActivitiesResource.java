@@ -24,7 +24,7 @@ package org.eventjuggler.services.activities.rest;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Path;
+import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -32,11 +32,12 @@ import javax.ws.rs.core.UriInfo;
 import org.eventjuggler.services.activities.ActivitiesQuery;
 import org.eventjuggler.services.activities.Event;
 import org.eventjuggler.services.activities.Statistics;
+import org.eventjuggler.services.common.auth.Auth;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@Path("/")
+@Stateless
 public class ActivitiesResource implements Activities {
 
     @EJB
@@ -47,6 +48,8 @@ public class ActivitiesResource implements Activities {
 
     @Override
     public Response addEvent(Event event) {
+        Auth.requireUser();
+
         activities.addEvent(event);
         return Response.created(uriInfo.getAbsolutePathBuilder().build(event.getId())).build();
     }
@@ -75,22 +78,30 @@ public class ActivitiesResource implements Activities {
 
     @Override
     public List<Event> getEvents(Integer firstResult, Integer maxResult, String context, String pagePattern) {
+        Auth.requireSuper();
+
         return createQuery(firstResult, maxResult, context, pagePattern).getResults();
     }
 
     @Override
     public List<String> getPopular(Integer firstResult, Integer maxResult, String context, String pagePattern) {
+        Auth.requireSuper();
+
         return createQuery(firstResult, maxResult, context, pagePattern).maxResult(10).getPopularPages();
     }
 
     @Override
     public List<String> getRelated(String page, Integer firstResult, Integer maxResult, String context,
             String pagePattern) {
+        Auth.requireSuper();
+
         return createQuery(firstResult, maxResult, context, pagePattern).getRelatedPages(page);
     }
 
     @Override
     public Statistics getStatistics(Integer firstResult, Integer maxResult, String context, String pagePattern) {
+        Auth.requireSuper();
+
         return createQuery(firstResult, maxResult, context, pagePattern).getStatistics();
     }
 

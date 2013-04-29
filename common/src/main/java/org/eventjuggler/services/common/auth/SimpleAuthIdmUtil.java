@@ -1,8 +1,8 @@
-package org.eventjuggler.services.simpleauth;
+package org.eventjuggler.services.common.auth;
 
 import java.util.List;
 
-import org.eventjuggler.services.utils.KeyGenerator;
+import org.eventjuggler.services.common.KeyGenerator;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.model.Attribute;
 import org.picketlink.idm.model.IdentityType;

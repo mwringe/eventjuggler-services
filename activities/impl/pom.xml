@@ -41,6 +41,11 @@
             <artifactId>ejs-activities-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eventjuggler.services</groupId>
+            <artifactId>ejs-common</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>javax.enterprise</groupId>

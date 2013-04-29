@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Path;
+import javax.ejb.Stateless;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -34,8 +34,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.eventjuggler.services.common.auth.Auth;
 import org.eventjuggler.services.idb.ApplicationService;
-import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
@@ -44,8 +44,7 @@ import org.eventjuggler.services.utils.UriBuilder;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@Path("/admin")
-
+@Stateless
 public class AdminResource implements Admin {
 
     @EJB

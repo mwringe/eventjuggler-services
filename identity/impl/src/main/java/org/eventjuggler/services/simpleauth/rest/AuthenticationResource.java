@@ -19,11 +19,10 @@
 package org.eventjuggler.services.simpleauth.rest;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.QueryParam;
 
-import org.eventjuggler.services.simpleauth.SimpleAuthIdmUtil;
+import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
@@ -36,7 +35,6 @@ import org.picketlink.idm.model.User;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Stateless
-@EJB(name = "java:global/ejs/Authentication", beanInterface = Authentication.class)
 public class AuthenticationResource implements Authentication {
 
     @Resource(lookup = "java:/picketlink/ExampleIMF")

@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import org.eventjuggler.services.idb.model.Application;
 
+@Path("/admin")
 public interface Admin {
 
     @POST

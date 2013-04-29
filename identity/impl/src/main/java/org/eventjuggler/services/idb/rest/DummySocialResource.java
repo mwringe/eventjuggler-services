@@ -44,9 +44,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.eventjuggler.services.common.KeyGenerator;
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.utils.KeyGenerator;
 import org.eventjuggler.services.utils.UriBuilder;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;

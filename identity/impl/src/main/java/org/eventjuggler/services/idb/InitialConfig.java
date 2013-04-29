@@ -9,8 +9,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.eventjuggler.services.common.KeyGenerator;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.utils.KeyGenerator;
 import org.jboss.logging.Logger;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;

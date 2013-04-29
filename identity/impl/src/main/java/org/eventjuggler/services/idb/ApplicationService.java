@@ -27,8 +27,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.eventjuggler.services.common.KeyGenerator;
 import org.eventjuggler.services.idb.model.Application;
-import org.eventjuggler.services.utils.KeyGenerator;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>

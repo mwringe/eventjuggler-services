@@ -38,12 +38,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.idb.ApplicationService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
-import org.eventjuggler.services.simpleauth.SimpleAuthIdmUtil;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.Attribute;

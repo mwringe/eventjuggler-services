@@ -26,7 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
-import org.eventjuggler.services.idb.auth.Auth;
+import org.eventjuggler.services.common.auth.Auth;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;

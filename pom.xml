@@ -32,6 +32,7 @@
         <module>admin</module>
         <module>activities</module>
         <module>build</module>
+        <module>common</module>
         <module>dist</module>
         <module>identity</module>
         <module>testsuite</module>
@@ -134,6 +135,11 @@
                 <artifactId>ejs-build</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.eventjuggler.services</groupId>
+                <artifactId>ejs-common</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>

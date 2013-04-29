@@ -26,6 +26,13 @@ eventjugglerServices.factory('User', function($resource) {
     });
 });
 
+eventjugglerServices.factory('Activities', function($resource) {
+    var activities = {};
+    activities.events = $resource('/ejs-activities/api/events');
+    activities.statistics = $resource('/ejs-activities/api/statistics');
+    return activities;
+});
+
 eventjugglerServices.service('Auth', function($resource, $http, $location) {
     var token = $location.search().token;
     if (!token) {

@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import org.eventjuggler.services.activities.Event;
 import org.eventjuggler.services.activities.Statistics;
 
+@Path("/")
 public interface Activities {
 
     @POST

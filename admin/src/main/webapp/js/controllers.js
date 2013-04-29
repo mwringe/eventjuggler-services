@@ -8,6 +8,13 @@ function UserCtrl($scope, Auth) {
     $scope.auth = Auth;
 }
 
+function ActivitiesCtrl($scope, Activities) {
+    $scope.events = Activities.events.query({
+        "max" : 10
+    });
+    $scope.statistics = Activities.statistics.get();
+}
+
 function ApplicationListCtrl($scope, Application, $routeParams) {
     $scope.applications = Application.query();
 }
@@ -37,9 +44,9 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
         $scope.application.providers.push({
             "providerId" : $scope.newProviderId
         });
-        
+
         $scope.newProviderId = null;
-    }
+    };
 
     $scope.getProviderDescription = function(providerId) {
         for ( var i = 0; i < $scope.providers.length; i++) {
@@ -47,11 +54,11 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
                 return $scope.providers[i];
             }
         }
-    }
+    };
 
     $scope.removeProvider = function(i) {
         $scope.application.providers.splice(i, 1);
-    }
+    };
 
     $scope.save = function() {
         if (!$scope.application.key) {
@@ -65,18 +72,18 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
 
     $scope.cancel = function() {
         navigationToApplications();
-    }
+    };
 
     $scope.remove = function() {
         $scope.application.$remove(navigationToApplications);
-    }
+    };
 
     var updateAvailableProviders = function() {
         $scope.availableProviders.splice(0, $scope.availableProviders.length);
 
-        for (var i in $scope.providers) {
+        for ( var i in $scope.providers) {
             var add = true;
-            for (var j in $scope.application.providers) {
+            for ( var j in $scope.application.providers) {
                 if ($scope.application.providers[j].providerId == $scope.providers[i].id) {
                     add = false;
                     break;
@@ -87,7 +94,7 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
                 $scope.availableProviders.push($scope.providers[i]);
             }
         }
-    }
+    };
 
     $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
 }
@@ -122,9 +129,9 @@ function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
 
     $scope.cancel = function() {
         navigationToUsers();
-    }
+    };
 
     $scope.remove = function() {
         $scope.user.$remove(navigationToUsers);
-    }
+    };
 }
