@@ -22,8 +22,7 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
         templateUrl : 'partials/user-list.html',
         controller : UserListCtrl
     }).otherwise({
-        templateUrl : 'partials/home.html',
-        controller : WelcomeCtrl
+        templateUrl : 'partials/home.html'
     });
 } ]);
 

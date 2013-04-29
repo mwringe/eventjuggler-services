@@ -1,9 +1,5 @@
 'use strict';
 
-function WelcomeCtrl($scope) {
-    $scope.message = "Hello world";
-}
-
 function UserCtrl($scope, Auth) {
     $scope.auth = Auth;
 }

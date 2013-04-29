@@ -34,33 +34,23 @@ eventjugglerServices.factory('Activities', function($resource) {
 });
 
 eventjugglerServices.service('Auth', function($resource, $http, $location) {
-    var token = $location.search().token;
-    if (!token) {
-        token = localStorage.getItem("token");
-    }
-
     var auth = {};
-    auth.user;
+    auth.user = {};
+    
+    auth.token = $location.search().token;
+    if (auth.token) {
+        localStorage.setItem("token", token);
+    } else {
+        auth.token = localStorage.getItem("token");
+    }
+    
+    if (auth.token) {
+        $http.defaults.headers.common['token'] = auth.token;
 
-    auth.logout = function() {
-        $resource('/ejs-identity/api/auth/logout').get();
-        
-        localStorage.removeItem("token");
-        $http.defaults.headers.common['token'] = null;
-        console.debug("logged out");
-
-        auth.loggedIn = false;
-        auth.root = false;
-    };
-
-    if (!auth.user && token) {
         auth.user = $resource('/ejs-identity/api/auth/userinfo').get({
-            token : token
+            token : auth.token
         }, function() {
             if (auth.user.userId) {
-                localStorage.setItem("token", token);
-                $http.defaults.headers.common['token'] = token;
-
                 auth.loggedIn = true;
                 auth.root = auth.user.userId == "root";
                 
@@ -75,8 +65,6 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
                 }
                 
                 auth.user.displayName = displayName;
-
-                console.debug("logged in " + (auth.root ? "root" : "user"));
             } else {
                 auth.logout();
             }
@@ -84,6 +72,16 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
             auth.logout();
         });
     }
+
+    auth.logout = function() {
+        $resource('/ejs-identity/api/auth/logout').get();
+        
+        localStorage.removeItem("token");
+        $http.defaults.headers.common['token'] = null;
+
+        auth.loggedIn = false;
+        auth.root = false;
+    };
 
     return auth;
 });
