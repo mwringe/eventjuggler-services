@@ -8,8 +8,7 @@ Prerequisites
 - Java Development Kit 7
 - Recent Git client
 - Recent Maven 3
-- JBoss EAP 6.1.0.Alpha
-
+- JBoss EAP 6.1.0.Alpha or 6.1.0.Beta
 
 
 Installation
@@ -29,6 +28,17 @@ Alternatively create a full package with:
     mvn clean install -Djboss.zip=<JBOSS EAP ZIP>
 
 
+Distribution
+============
+
+A distribution can be created with the 'release' profile. This creates zip and tar.gz archives. When releasing make sure you don't
+specify '-Djboss.zip' as we should only release the overlay when using EAP.
+
+To create a distribution run:
+
+    mvn clean install -Prelease
+
+
 Testsuite
 =========
 
@@ -41,7 +51,7 @@ To run the testsuite in managed mode, run:
 
 In managed mode you have to provide "-Djboss.zip" as it requires a full package (see the installation section).
 
-To run the testsuite in remote mode, first start a JBoss EAP with the EventJuggler Services sub-systems enabled, and run:
+To run the testsuite in remote mode, first start a JBoss EAP with EventJuggler Services installed, and run:
 
     mvn -Pit-remote clean install
 

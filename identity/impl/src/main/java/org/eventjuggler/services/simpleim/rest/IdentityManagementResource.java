@@ -40,7 +40,7 @@ import org.picketlink.idm.model.SimpleUser;
 @Stateless
 public class IdentityManagementResource implements IdentityManagement {
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
     @Override

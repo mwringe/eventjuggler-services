@@ -37,7 +37,7 @@ import org.picketlink.idm.model.User;
 @Stateless
 public class AuthenticationResource implements Authentication {
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
     @Override

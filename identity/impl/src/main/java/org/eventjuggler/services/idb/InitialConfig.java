@@ -33,7 +33,7 @@ public class InitialConfig {
     @PersistenceContext(unitName = "idb")
     private EntityManager em;
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
     private final Logger log = Logger.getLogger(InitialConfig.class);

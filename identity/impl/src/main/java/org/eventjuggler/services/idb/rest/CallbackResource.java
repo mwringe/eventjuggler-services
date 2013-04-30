@@ -63,7 +63,7 @@ public class CallbackResource {
     @Context
     private HttpHeaders headers;
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
     @Context

@@ -39,7 +39,7 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
     @Inject
     private SimpleAuthToken token;
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
     @Override

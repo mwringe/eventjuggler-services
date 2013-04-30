@@ -66,7 +66,7 @@ public class DummySocialResource {
     @EJB
     private ApplicationService applicationService;
 
-    @Resource(lookup = "java:/picketlink/ExampleIMF")
+    @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
     @Context

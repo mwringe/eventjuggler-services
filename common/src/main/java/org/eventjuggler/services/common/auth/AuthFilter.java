@@ -46,7 +46,7 @@ public class AuthFilter implements Filter {
     @Override
     public void init(FilterConfig arg0) throws ServletException {
         try {
-            imf = (IdentityManagerFactory) new InitialContext().lookup("java:/picketlink/ExampleIMF");
+            imf = (IdentityManagerFactory) new InitialContext().lookup("java:comp/env/IdentityManagerFactory");
         } catch (NamingException e) {
             throw new ServletException(e);
         }
