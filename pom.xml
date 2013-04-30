@@ -14,7 +14,7 @@
 
     <groupId>org.eventjuggler.services</groupId>
     <artifactId>ejs-parent</artifactId>
-    <version>0.1.0.20130430-2</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>EventJuggler Services Parent</name>
     <description>EventJuggler Services Parent</description>
@@ -71,7 +71,7 @@
         <connection>scm:git:https://github.com/eventjuggler/eventjuggler-services.git</connection>
         <developerConnection>scm:git:https://github.com/eventjuggler/eventjuggler-services.git</developerConnection>
         <url>https://github.com/eventjuggler/eventjuggler-services.git</url>
-        <tag>0.1.0.20130430-2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
