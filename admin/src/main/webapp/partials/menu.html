@@ -8,11 +8,11 @@
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     <li><a href="#">Home</a></li>
-                    <li ng-show="auth.loggedIn"><a href="#/activities">Activities</a></li>
+                    <li ng-show="auth.root"><a href="#/activities">Activities</a></li>
                     <li ng-show="auth.loggedIn"><a href="#/applications">Applications</a></li>
                     <li ng-show="auth.root"><a href="#/users">Users</a></li>
                 </ul>
-                            
+
                 <ul class="nav pull-right" ng-show="auth.loggedIn">
                     <li><a href="#/users/{{auth.user.userId}}">{{auth.user.displayName}}</a></li>
                     <li><a href="" ng-click="auth.logout()">Logout</a></li>
