@@ -6,22 +6,17 @@
 <h:head>
     <title>JSF Example</title>
 </h:head>
+
 <h:body>
-    <h:panelGroup rendered="#{!userBean.loggedIn}">
-        <p>
-            <a href="/ejs-identity/login?key=ejs-examples-jsf">Login</a>
-        </p>
+    <h:panelGroup rendered="#{!user.loggedIn}">
+        <p><a href="/ejs-identity/login?key=#{initParam['ejs.appKey']}">Login</a></p>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{userBean.loggedIn}">
-        <p>
-            Logged in
-            <h:outputText value="#{userBean.user.loginName}" />
-        </p>
+    <h:panelGroup rendered="#{user.loggedIn}">
+        <p>Logged in #{user.name}</p>
 
-        <p>
-            <a href="index.jsf?token=logout">Logout</a>
-        </p>
+        <p><a href="index.jsf?token=logout">Logout</a></p>
     </h:panelGroup>
 </h:body>
+
 </html>

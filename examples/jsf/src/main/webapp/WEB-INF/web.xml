@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--~ ~ JBoss, Home of Professional Open Source ~ Copyright Red Hat, Inc., 
 	and individual contributors ~ by the @authors tag. See the copyright.txt 
 	in the distribution for a ~ full listing of individual contributors. ~ ~ 
@@ -8,18 +9,22 @@
 	under the License is distributed on an "AS IS" BASIS, ~ WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. ~ See the License for 
 	the specific language governing permissions and ~ limitations under the License. -->
-<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <module-name>ejs-examples-jsf</module-name>
+    
+    <context-param>
+        <param-name>ejs.appKey</param-name>
+        <param-value>INSERT APPLICATION KEY</param-value>
+    </context-param>
+    <context-param>
+        <param-name>ejs.appSecret</param-name>
+        <param-value>INSERT APPLICATION SECRET</param-value>
+    </context-param>
 
-<context-param>
-    <param-name>javax.faces.PROJECT_STAGE</param-name>    
-    <param-value>Development</param-value>
-</context-param>
-
-	<resource-ref>
-		<res-ref-name>java:picketlink/ExampleIMF</res-ref-name>
-		<res-type>org.picketlink.idm.IdentityManager</res-type>
-	</resource-ref>
-
+    <resource-ref>
+        <res-ref-name>IdentityManagerFactory</res-ref-name>
+        <res-type>org.picketlink.idm.IdentityManager</res-type>
+        <lookup-name>java:/picketlink/ExampleIMF</lookup-name>
+    </resource-ref>
 </web-app>

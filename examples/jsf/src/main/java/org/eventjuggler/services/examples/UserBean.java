@@ -32,7 +32,7 @@ import org.picketlink.idm.model.User;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @ManagedBean
-@Named("userBean")
+@Named("user")
 public class UserBean {
 
     @Inject
@@ -42,8 +42,21 @@ public class UserBean {
         return identity.isLoggedIn();
     }
 
-    public User getUser() {
-        return identity.isLoggedIn() ? (User) identity.getUser() : null;
+    public String getName() {
+        if (!identity.isLoggedIn()) {
+            return null;
+        }
+
+        User user = (User) identity.getUser();
+
+        String name = user.getFirstName();
+        name = name != null ? name + " " + user.getLastName() : name;
+
+        if (name == null) {
+            name = user.getLoginName();
+        }
+
+        return name;
     }
 
 }
