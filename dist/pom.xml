@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.eventjuggler.services</groupId>
         <artifactId>ejs-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0.20130430-2</version>
     </parent>
 
     <artifactId>ejs-dist</artifactId>
@@ -94,7 +94,7 @@
                 </property>
             </activation>
             <properties>
-                <archive.directory></archive.directory>
+                <archive.directory />
             </properties>
         </profile>
     </profiles>
