@@ -35,6 +35,10 @@
     <name>Dist</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <archive.directory>jboss-ejs-${project.version}</archive.directory>
+    </properties>
+
     <dependencies>
         <dependency>
         <groupId>org.eventjuggler.services</groupId>
@@ -80,6 +84,18 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>overlay</id>
+            <activation>
+                <property>
+                    <name>!jboss.zip</name>
+                </property>
+            </activation>
+            <properties>
+                <archive.directory></archive.directory>
+            </properties>
         </profile>
     </profiles>
 </project>
