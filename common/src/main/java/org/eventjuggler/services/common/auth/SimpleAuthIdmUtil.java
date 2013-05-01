@@ -1,13 +1,11 @@
 package org.eventjuggler.services.common.auth;
 
-import java.util.List;
-
 import org.eventjuggler.services.common.KeyGenerator;
 import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.model.Agent;
 import org.picketlink.idm.model.Attribute;
-import org.picketlink.idm.model.IdentityType;
+import org.picketlink.idm.model.SimpleAgent;
 import org.picketlink.idm.model.User;
-import org.picketlink.idm.query.IdentityQuery;
 
 public class SimpleAuthIdmUtil {
 
@@ -19,30 +17,32 @@ public class SimpleAuthIdmUtil {
 
     public String setToken(User user) {
         String token = KeyGenerator.createToken();
-        user.setAttribute(new Attribute<String>("simpleAuthToken", token));
-        im.update(user);
+
+        Agent tokenAgent = new SimpleAgent(token);
+        tokenAgent.setAttribute(new Attribute<String>("loginName", user.getLoginName()));
+        im.add(tokenAgent);
+
         return token;
     }
 
     public User getUser(String token) {
-        IdentityQuery<User> query = im.createIdentityQuery(User.class);
-        query.setParameter(IdentityType.ATTRIBUTE.byName("simpleAuthToken"), token);
-
-        List<User> users = query.getResultList();
-        if (users.isEmpty()) {
+        Agent tokenAgent = im.getAgent(token);
+        if (tokenAgent == null) {
             return null;
-        } else {
-            return users.get(0);
         }
+
+        String loginName = (String) tokenAgent.getAttribute("loginName").getValue();
+        if (loginName == null) {
+            return null;
+        }
+
+        return im.getUser(loginName);
     }
 
     public void removeToken(String token) {
-        if (token != null) {
-            User user = getUser(token);
-            if (user != null) {
-                user.removeAttribute("simpleAuthToken");
-                im.update(user);
-            }
+        Agent tokenAgent = im.getAgent(token);
+        if (tokenAgent != null) {
+            im.remove(tokenAgent);
         }
     }
 
