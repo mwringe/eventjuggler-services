@@ -12,6 +12,32 @@ eventjugglerServices.factory('Application', function($resource) {
     });
 });
 
+eventjugglerServices.factory('ApplicationListLoader', [ 'Application', '$q', function(Application, $q) {
+    return function() {
+        var delay = $q.defer();
+        Application.query(function(applications) {
+            delay.resolve(applications);
+        }, function() {
+            delay.reject('Unable to fetch applications');
+        });
+        return delay.promise;
+    };
+} ]);
+
+eventjugglerServices.factory('ApplicationLoader', [ 'Application', '$route', '$q', function(Application, $route, $q) {
+    return function() {
+        var delay = $q.defer();
+        Application.get({
+            key : $route.current.params.key
+        }, function(application) {
+            delay.resolve(application);
+        }, function() {
+            delay.reject('Unable to fetch application ' + $route.current.params.recipeId);
+        });
+        return delay.promise;
+    };
+} ]);
+
 eventjugglerServices.factory('Provider', function($resource) {
     return $resource('/ejs-identity/api/admin/providers');
 });
@@ -36,14 +62,14 @@ eventjugglerServices.factory('Activities', function($resource) {
 eventjugglerServices.service('Auth', function($resource, $http, $location) {
     var auth = {};
     auth.user = {};
-    
+
     auth.token = $location.search().token;
     if (auth.token) {
         localStorage.setItem("token", auth.token);
     } else {
         auth.token = localStorage.getItem("token");
     }
-    
+
     if (auth.token) {
         $http.defaults.headers.common['token'] = auth.token;
 
@@ -53,7 +79,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
             if (auth.user.userId) {
                 auth.loggedIn = true;
                 auth.root = auth.user.userId == "root";
-                
+
                 var displayName;
                 if (auth.user.firstName || auth.user.lastName) {
                     displayName = auth.user.firstName;
@@ -63,7 +89,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
                 } else {
                     displayName = auth.user.userId;
                 }
-                
+
                 auth.user.displayName = displayName;
             } else {
                 auth.logout();
@@ -75,7 +101,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
 
     auth.logout = function() {
         $resource('/ejs-identity/api/auth/logout').get();
-        
+
         localStorage.removeItem("token");
         $http.defaults.headers.common['token'] = null;
 

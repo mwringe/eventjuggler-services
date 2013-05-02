@@ -17,22 +17,25 @@
         <div class="control-group">
             <label class="control-label" for="callbackUrl">Callback URL</label>
             <div class="controls">
-                <input class="input-xxlarge" type="text" id="callbackUrl" placeholder="Callback URL" ng-model="application.callbackUrl" required>
+                <input class="input-xxlarge" type="text" id="callbackUrl" placeholder="Callback URL"
+                    ng-model="application.callbackUrl" required>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="key">Key</label>
             <div class="controls">
-                <input class="input-xxlarge" type="text" id="name" placeholder="Name" ng-model="application.key" ng-show="auth.root && create">
-                <input class="input-xxlarge" type="text" id="name" placeholder="Name" ng-model="application.key" readonly ng-show="!(auth.root && create)">
+                <input class="input-xxlarge" type="text" id="name" placeholder="Name" ng-model="application.key"
+                    ng-show="auth.root && create"> <input class="input-xxlarge" type="text" id="name" placeholder="Name"
+                    ng-model="application.key" readonly ng-show="!(auth.root && create)">
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label" for="secret">Secret</label>
             <div class="controls">
-                <input class="input-xxlarge" type="text" id="name" placeholder="Name" ng-model="application.secret" ng-show="auth.root">
-                <input class="input-xxlarge" type="text" id="name" placeholder="Name" ng-model="application.secret" ng-hide="auth.root" readonly>
+                <input class="input-xxlarge" type="text" id="name" placeholder="Name" ng-model="application.secret"
+                    ng-show="auth.root"> <input class="input-xxlarge" type="text" id="name" placeholder="Name"
+                    ng-model="application.secret" ng-hide="auth.root" readonly>
             </div>
         </div>
 
@@ -46,27 +49,30 @@
 
     <hr />
 
-    <div class="input-append">
-        <select ng-model="newProviderId">
-            <option ng-repeat="p in availableProviders" value="{{p.id}}">{{p.name}}</option>
-        </select>
-        <button class="btn" ng-click="addProvider()" ng-disabled="!newProviderId">Add Provider</button>
-    </div>
+    <div ng-controller="ApplicationProvidersCtrl">
+        <div class="input-append">
+            <select ng-model="newProviderId">
+                <option ng-repeat="p in availableProviders" value="{{p.id}}">{{p.name}}</option>
+            </select>
+            <button class="btn" ng-click="addProvider()" ng-disabled="!newProviderId">Add Provider</button>
+        </div>
 
-    <table class="table table-striped table-bordered margin-top">
-        <thead>
-            <tr>
-                <th>Provider</th>
-                <th>Key</th>
-                <th>Secret</th>
-                <th>&nbsp;</th>
+        <table class="table table-striped table-bordered margin-top">
+            <thead>
+                <tr>
+                    <th>Provider</th>
+                    <th>Key</th>
+                    <th>Secret</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="provider in application.providers">
+                <td><input type="text" placeholder="Key" value="{{getProviderDescription(provider.providerId).name}}"
+                    readonly></td>
+                <td><input type="text" placeholder="Key" ng-model="provider.key" required></td>
+                <td><input type="text" placeholder="Secret" ng-model="provider.secret" required></td>
+                <td><button class="btn" ng-click="removeProvider($index)">Remove</button></td>
             </tr>
-        </thead>
-        <tr ng-repeat="provider in application.providers">
-            <td><input type="text" placeholder="Key" value="{{getProviderDescription(provider.providerId).name}}" readonly></td>
-            <td><input type="text" placeholder="Key" ng-model="provider.key" required></td>
-            <td><input type="text" placeholder="Secret" ng-model="provider.secret" required></td>
-            <td><button class="btn" ng-click="removeProvider($index)">Remove</button></td>
-        </tr>
-    </table>
+        </table>
+    </div>
 </div>

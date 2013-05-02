@@ -11,24 +11,36 @@ function ActivitiesCtrl($scope, Activities) {
     $scope.statistics = Activities.statistics.get();
 }
 
-function ApplicationListCtrl($scope, Application, $routeParams) {
-    $scope.applications = Application.query();
+function ApplicationListCtrl($scope, applications) {
+    $scope.applications = applications;
 }
 
-function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $location) {
+function ApplicationDetailCtrl($scope, application, Application, $location) {
     var navigationToApplications = function() {
         $location.url("/applications");
     };
 
-    if ($routeParams.key == "new") {
-        $scope.application = {};
-        $scope.create = true;
-    } else {
-        $scope.application = Application.get({
-            "key" : $routeParams.key
-        });
-    }
+    $scope.application = application;
+    $scope.create = !$scope.application.key;
 
+    $scope.save = function() {
+        if (!$scope.application.key) {
+            Application.save($scope.application, navigationToApplications);
+        } else {
+            application.$update(navigationToApplications);
+        }
+    };
+
+    $scope.cancel = function() {
+        navigationToApplications();
+    };
+
+    $scope.remove = function() {
+        $scope.application.$remove(navigationToApplications);
+    };
+}
+
+function ApplicationProvidersCtrl($scope, Provider) {
     $scope.providers = Provider.query();
     $scope.availableProviders = [];
 
@@ -56,29 +68,12 @@ function ApplicationDetailCtrl($scope, Application, Provider, $routeParams, $loc
         $scope.application.providers.splice(i, 1);
     };
 
-    $scope.save = function() {
-        if (!$scope.application.key) {
-            Application.save($scope.application, navigationToApplications);
-        } else {
-            Application.update({
-                "key" : $scope.application.key
-            }, $scope.application, navigationToApplications);
-        }
-    };
-
-    $scope.cancel = function() {
-        navigationToApplications();
-    };
-
-    $scope.remove = function() {
-        $scope.application.$remove(navigationToApplications);
-    };
-
     var updateAvailableProviders = function() {
         $scope.availableProviders.splice(0, $scope.availableProviders.length);
 
         for ( var i in $scope.providers) {
             var add = true;
+
             for ( var j in $scope.application.providers) {
                 if ($scope.application.providers[j].providerId == $scope.providers[i].id) {
                     add = false;

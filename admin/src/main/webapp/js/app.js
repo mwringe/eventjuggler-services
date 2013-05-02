@@ -6,11 +6,29 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
     $routeProvider.when('/activities', {
         templateUrl : 'partials/activities.html',
         controller : ActivitiesCtrl
+    }).when('/applications/new', {
+        templateUrl : 'partials/application-detail.html',
+        resolve : {
+            application : function() {
+                return {};
+            }
+        },
+        controller : ApplicationDetailCtrl
     }).when('/applications/:key', {
         templateUrl : 'partials/application-detail.html',
+        resolve : {
+            application : function(ApplicationLoader) {
+                return ApplicationLoader();
+            }
+        },
         controller : ApplicationDetailCtrl
     }).when('/applications', {
         templateUrl : 'partials/application-list.html',
+        resolve : {
+            applications : function(ApplicationListLoader) {
+                return ApplicationListLoader();
+            }
+        },
         controller : ApplicationListCtrl
     }).when('/users/:userId', {
         templateUrl : 'partials/user-detail.html',
