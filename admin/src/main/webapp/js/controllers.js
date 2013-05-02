@@ -15,12 +15,14 @@ function ApplicationListCtrl($scope, applications) {
     $scope.applications = applications;
 }
 
-function ApplicationDetailCtrl($scope, application, Application, $location) {
+function ApplicationDetailCtrl($scope, application, providers, Application, $location) {
     var navigationToApplications = function() {
         $location.url("/applications");
     };
 
     $scope.application = application;
+    $scope.providers = providers;
+
     $scope.create = !$scope.application.key;
 
     $scope.save = function() {
@@ -38,10 +40,6 @@ function ApplicationDetailCtrl($scope, application, Application, $location) {
     $scope.remove = function() {
         $scope.application.$remove(navigationToApplications);
     };
-}
-
-function ApplicationProvidersCtrl($scope, Provider) {
-    $scope.providers = Provider.query();
     $scope.availableProviders = [];
 
     $scope.addProvider = function() {
@@ -90,11 +88,11 @@ function ApplicationProvidersCtrl($scope, Provider) {
     $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
 }
 
-function UserListCtrl($scope, User) {
-    $scope.users = User.query();
+function UserListCtrl($scope, users) {
+    $scope.users = users;
 }
 
-function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
+function UserDetailCtrl($scope, Auth, user, User, $routeParams, $location) {
     var navigationToUsers = function() {
         if (Auth.loggedIn) {
             $location.url("/users");
@@ -103,19 +101,11 @@ function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
         }
     };
 
-    if ($routeParams.userId == "new") {
-        $scope.user = {};
-        $scope.create = true;
-    } else {
-        $scope.user = User.get({
-            "userId" : $routeParams.userId
-        });
-    }
+    $scope.user = user;
+    $scope.create = !user.userId;
 
     $scope.save = function() {
-        User.save({
-            "userId" : $scope.user.userId
-        }, $scope.user, navigationToUsers);
+        User.save($scope.user, navigationToUsers);
     };
 
     $scope.cancel = function() {

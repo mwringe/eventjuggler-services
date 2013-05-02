@@ -42,6 +42,18 @@ eventjugglerServices.factory('Provider', function($resource) {
     return $resource('/ejs-identity/api/admin/providers');
 });
 
+eventjugglerServices.factory('ProviderListLoader', [ 'Provider', '$q', function(Provider, $q) {
+    return function() {
+        var delay = $q.defer();
+        Provider.query(function(providers) {
+            delay.resolve(providers);
+        }, function() {
+            delay.reject('Unable to fetch providers');
+        });
+        return delay.promise;
+    };
+} ]);
+
 eventjugglerServices.factory('User', function($resource) {
     return $resource('/ejs-identity/api/im/users/:userId', {
         userId : '@userId'
@@ -51,6 +63,32 @@ eventjugglerServices.factory('User', function($resource) {
         }
     });
 });
+
+eventjugglerServices.factory('UserListLoader', [ 'User', '$q', function(User, $q) {
+    return function() {
+        var delay = $q.defer();
+        User.query(function(users) {
+            delay.resolve(users);
+        }, function() {
+            delay.reject('Unable to fetch users');
+        });
+        return delay.promise;
+    };
+} ]);
+
+eventjugglerServices.factory('UserLoader', [ 'User', '$route', '$q', function(User, $route, $q) {
+    return function() {
+        var delay = $q.defer();
+        User.get({
+            userId : $route.current.params.userId
+        }, function(user) {
+            delay.resolve(user);
+        }, function() {
+            delay.reject('Unable to fetch user ' + $route.current.params.userId);
+        });
+        return delay.promise;
+    };
+} ]);
 
 eventjugglerServices.factory('Activities', function($resource) {
     var activities = {};

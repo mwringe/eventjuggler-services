@@ -11,6 +11,9 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
         resolve : {
             application : function() {
                 return {};
+            },
+            providers : function(ProviderListLoader) {
+                return ProviderListLoader();
             }
         },
         controller : ApplicationDetailCtrl
@@ -19,6 +22,9 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
         resolve : {
             application : function(ApplicationLoader) {
                 return ApplicationLoader();
+            },
+            providers : function(ProviderListLoader) {
+                return ProviderListLoader();
             }
         },
         controller : ApplicationDetailCtrl
@@ -30,14 +36,29 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
             }
         },
         controller : ApplicationListCtrl
-    }).when('/users/:userId', {
+    }).when('/users/new', {
         templateUrl : 'partials/user-detail.html',
+        resolve : {
+            user : function() {
+                return {};
+            }
+        },
         controller : UserDetailCtrl
     }).when('/users/:userId', {
         templateUrl : 'partials/user-detail.html',
+        resolve : {
+            user : function(UserLoader) {
+                return UserLoader();
+            }
+        },
         controller : UserDetailCtrl
     }).when('/users', {
         templateUrl : 'partials/user-list.html',
+        resolve : {
+            users : function(UserListLoader) {
+                return UserListLoader();
+            }
+        },
         controller : UserListCtrl
     }).otherwise({
         templateUrl : 'partials/home.html'
