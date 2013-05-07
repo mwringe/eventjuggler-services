@@ -1,9 +1,9 @@
 <div class="row-fluid">
-    <div class="btn-group">
-        <button class="btn" ng-click="save()" ng-disabled="applicationForm.$invalid">Save</button>
+    <p>
+        <button class="btn" ng-class="applicationForm.$valid && 'btn-primary'" ng-click="save()" ng-disabled="applicationForm.$invalid">Save</button>
         <button class="btn" ng-click="cancel()">Cancel</button>
-        <button class="btn" ng-click="remove()" ng-hide="create">Delete</button>
-    </div>
+        <button class="btn btn-danger" ng-click="remove()" ng-hide="create">Delete</button>
+    </p>
 </div>
 
 <div class="row-fluid margin-top">

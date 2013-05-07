@@ -1,9 +1,9 @@
 <div class="row-fluid">
-    <div class="btn-group">
-        <button class="btn" ng-click="save()" ng-disabled="userForm.$invalid">Save</button>
+    <p>
+        <button class="btn" ng-class="userForm.$valid && 'btn-primary'" ng-click="save()" ng-disabled="userForm.$invalid">Save</button>
         <button class="btn" ng-click="cancel()">Cancel</button>
-        <button class="btn" ng-click="remove()" ng-hide="create">Delete</button>
-    </div>
+        <button class="btn btn-danger" ng-click="remove()" ng-hide="create">Delete</button>
+    </p>
 </div>
 
 <div class="row-fluid margin-top">
@@ -31,7 +31,7 @@
 
             <label class="control-label" for="password">Password</label>
             <div class="controls">
-                <input type="password" id="password" placeholder="Password" ng-model="user.password" required>
+                <input type="password" id="password" placeholder="Password" ng-model="user.password" ng-required="create">
             </div>
         </div>
     </form>
