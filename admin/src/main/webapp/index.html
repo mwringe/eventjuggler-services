@@ -16,6 +16,8 @@
 <script src="lib/angular/angular-resource.js"></script>
 <script src="lib/angular/ui-bootstrap-tpls-0.3.0.js"></script>
 
+<script src="lib/jquery/jquery-1.9.0.js"></script>
+
 <script src="js/app.js"></script>
 <script src="js/controllers.js"></script>
 <script src="js/services.js"></script>
@@ -32,6 +34,10 @@
             <button class="btn btn-danger" ng-click="httpProviderError=null">
                 <strong>Error</strong> {{httpProviderError}}
             </button>
+        </div>
+
+        <div id="loading">
+            <i class="icon-spinner icon-spin"></i> Loading...
         </div>
     </div>
 

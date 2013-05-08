@@ -1,6 +1,7 @@
 'use strict';
 
 var eventjugglerModule = angular.module('eventjugglerAdmin', [ 'eventjugglerAdminServices', 'ui.bootstrap' ]);
+var resourceRequests = 0;
 
 eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
     $routeProvider.when('/activities/events', {
@@ -94,6 +95,18 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
 
 eventjugglerModule.config(function($httpProvider) {
     $httpProvider.responseInterceptors.push('errorInterceptor');
+    
+    var spinnerFunction = function (data, headersGetter) {
+        if (resourceRequests == 0) {
+            $('#loading').show();
+        }
+        resourceRequests++;
+        return data;
+    };
+    $httpProvider.defaults.transformRequest.push(spinnerFunction);
+    
+    $httpProvider.responseInterceptors.push('spinnerInterceptor');
+
 });
 
 eventjugglerModule.factory('errorInterceptor', function($q, $window, $rootScope, $location) {
@@ -103,6 +116,25 @@ eventjugglerModule.factory('errorInterceptor', function($q, $window, $rootScope,
             return response;
         }, function(response) {
             $rootScope.httpProviderError = response.status;
+            return $q.reject(response);
+        });
+    };
+});
+
+eventjugglerModule.factory('spinnerInterceptor', function($q, $window, $rootScope, $location) {
+    return function(promise) {
+        return promise.then(function(response) {
+            resourceRequests--;
+            if (resourceRequests == 0) {
+                $('#loading').hide();
+            }
+            return response;
+        }, function(response) {
+            resourceRequests--;
+            if (resourceRequests == 0) {
+                $('#loading').hide();
+            }
+
             return $q.reject(response);
         });
     };
