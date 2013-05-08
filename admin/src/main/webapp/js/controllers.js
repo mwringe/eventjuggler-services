@@ -1,7 +1,13 @@
 'use strict';
 
-function UserCtrl($scope, Auth) {
+function GlobalCtrl($scope, Auth, $location) {
     $scope.auth = Auth;
+
+    $scope.$watch(function() {
+        return $location.path();
+    }, function() {
+        $scope.path = $location.path().substring(1).split("/");
+    });
 }
 
 function ActivitiesCtrl($scope, Activities) {
@@ -11,25 +17,32 @@ function ActivitiesCtrl($scope, Activities) {
     $scope.statistics = Activities.statistics.get();
 }
 
-function ApplicationListCtrl($scope, applications) {
-    $scope.applications = applications;
+function ApplicationListCtrl($scope, Application) {
+    $scope.applications = Application.query();
 }
 
-function ApplicationDetailCtrl($scope, application, providers, Application, $location) {
+function ApplicationDetailCtrl($scope, Application, Provider, $location, $routeParams) {
     var navigationToApplications = function() {
         $location.url("/applications");
     };
 
-    $scope.application = application;
-    $scope.providers = providers;
+    if ($routeParams.key != 'new') {
+        $scope.application = Application.get({
+            "key" : $routeParams.key
+        });
+        $scope.create = false;
+    } else {
+        $scope.application = {};
+        $scope.create = true;
+    }
 
-    $scope.create = !$scope.application.key;
+    $scope.providers = Provider.query();
 
     $scope.save = function() {
         if (!$scope.application.key) {
             Application.save($scope.application, navigationToApplications);
         } else {
-            application.$update(navigationToApplications);
+            Application.update($scope.application, navigationToApplications);
         }
     };
 
@@ -88,11 +101,11 @@ function ApplicationDetailCtrl($scope, application, providers, Application, $loc
     $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
 }
 
-function UserListCtrl($scope, users) {
-    $scope.users = users;
+function UserListCtrl($scope, User) {
+    $scope.users = User.query();
 }
 
-function UserDetailCtrl($scope, Auth, user, User, $routeParams, $location) {
+function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
     var navigationToUsers = function() {
         if (Auth.loggedIn) {
             $location.url("/users");
@@ -101,8 +114,15 @@ function UserDetailCtrl($scope, Auth, user, User, $routeParams, $location) {
         }
     };
 
-    $scope.user = user;
-    $scope.create = !user.userId;
+    if ($routeParams.userId != 'new') {
+        $scope.user = User.get({
+            "userId" : $routeParams.userId
+        });
+        $scope.create = false;
+    } else {
+        $scope.user = {};
+        $scope.create = true;
+    }
 
     $scope.save = function() {
         User.save($scope.user, navigationToUsers);

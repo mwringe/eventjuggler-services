@@ -1,0 +1,22 @@
+<nav id="local-nav" ng-controller="ApplicationListCtrl">
+    <ul class="nav nav-list">
+        <li>
+            <div>
+                <span class="toggle">Applications</span>
+            </div>
+            <ul>
+                <li ng-repeat="application in applications" ng-class="path[1] == application.key && 'active'"><a
+                    href="#/applications/{{application.key}}">{{application.name}}</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div class="actions">
+    <div class="btn-group">
+        <span data-toggle="dropdown" class="btn dropdown-toggle tooltipTrigger" title="Add Application"><i
+            class="icon-plus">Add...</i> <i class="caret caret-inverted"></i></span>
+        <ul class="dropdown-menu up">
+            <li><a href="#/applications/new">Add Application</a></li>
+        </ul>
+    </div>
+</div>

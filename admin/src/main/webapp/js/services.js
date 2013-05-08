@@ -12,47 +12,9 @@ eventjugglerServices.factory('Application', function($resource) {
     });
 });
 
-eventjugglerServices.factory('ApplicationListLoader', [ 'Application', '$q', function(Application, $q) {
-    return function() {
-        var delay = $q.defer();
-        Application.query(function(applications) {
-            delay.resolve(applications);
-        }, function() {
-            delay.reject('Unable to fetch applications');
-        });
-        return delay.promise;
-    };
-} ]);
-
-eventjugglerServices.factory('ApplicationLoader', [ 'Application', '$route', '$q', function(Application, $route, $q) {
-    return function() {
-        var delay = $q.defer();
-        Application.get({
-            key : $route.current.params.key
-        }, function(application) {
-            delay.resolve(application);
-        }, function() {
-            delay.reject('Unable to fetch application ' + $route.current.params.recipeId);
-        });
-        return delay.promise;
-    };
-} ]);
-
 eventjugglerServices.factory('Provider', function($resource) {
     return $resource('/ejs-identity/api/admin/providers');
 });
-
-eventjugglerServices.factory('ProviderListLoader', [ 'Provider', '$q', function(Provider, $q) {
-    return function() {
-        var delay = $q.defer();
-        Provider.query(function(providers) {
-            delay.resolve(providers);
-        }, function() {
-            delay.reject('Unable to fetch providers');
-        });
-        return delay.promise;
-    };
-} ]);
 
 eventjugglerServices.factory('User', function($resource) {
     return $resource('/ejs-identity/api/im/users/:userId', {
@@ -63,32 +25,6 @@ eventjugglerServices.factory('User', function($resource) {
         }
     });
 });
-
-eventjugglerServices.factory('UserListLoader', [ 'User', '$q', function(User, $q) {
-    return function() {
-        var delay = $q.defer();
-        User.query(function(users) {
-            delay.resolve(users);
-        }, function() {
-            delay.reject('Unable to fetch users');
-        });
-        return delay.promise;
-    };
-} ]);
-
-eventjugglerServices.factory('UserLoader', [ 'User', '$route', '$q', function(User, $route, $q) {
-    return function() {
-        var delay = $q.defer();
-        User.get({
-            userId : $route.current.params.userId
-        }, function(user) {
-            delay.resolve(user);
-        }, function() {
-            delay.reject('Unable to fetch user ' + $route.current.params.userId);
-        });
-        return delay.promise;
-    };
-} ]);
 
 eventjugglerServices.factory('Activities', function($resource) {
     var activities = {};
@@ -107,7 +43,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
     } else {
         auth.token = localStorage.getItem("token");
     }
-
+    
     if (auth.token) {
         $http.defaults.headers.common['token'] = auth.token;
 

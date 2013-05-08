@@ -1,24 +1,31 @@
-<div class="row-fluid">
-    <div class="btn-group">
-        <a href="#/users/new" class="btn">New User</a>
-    </div>
-</div>
+<div id="wrapper" class="container">
+    <div class="row">
+        <aside class="span3" ng-include src="'partials/user-menu.html'"></aside>
+        <div id="actions-bg"></div>
 
-<div class="row-fluid margin-top">
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Firstname</th>
-                <th>Lastname</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tr ng-repeat="user in users">
-            <td><a href="#/users/{{user.userId}}">{{user.userId}}</a></td>
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
-            <td>{{user.email}}</td>            
-        </tr>
-    </table>
+        <div id="container-right" class="span9">
+            <a class="btn btn-small pull-right" href="#/users/new">Add User</a>
+            <h1>
+                <span class="gray">Users</span>
+            </h1>
+
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Firstname</th>
+                        <th>Lastname</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="user in users">
+                    <td><a href="#/users/{{user.userId}}">{{user.userId}}</a></td>
+                    <td>{{user.firstName}}</td>
+                    <td>{{user.lastName}}</td>
+                    <td>{{user.email}}</td>
+                </tr>
+            </table>
+        </div>
+        <div id="container-right-bg"></div>
+    </div>
 </div>

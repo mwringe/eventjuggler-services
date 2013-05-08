@@ -1,27 +1,27 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
+<header class="navbar navbar-fixed-top">
     <div class="navbar-inner">
-        <div class="container-fluid">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-            </button>
-            <span class="brand">Admin</span>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li><a href="#">Home</a></li>
-                    <li ng-show="auth.root"><a href="#/activities">Activities</a></li>
-                    <li ng-show="auth.loggedIn"><a href="#/applications">Applications</a></li>
-                    <li ng-show="auth.root"><a href="#/users">Users</a></li>
-                </ul>
-
-                <ul class="nav pull-right" ng-show="auth.loggedIn">
-                    <li><a href="#/users/{{auth.user.userId}}">{{auth.user.displayName}}</a></li>
-                    <li><a href="" ng-click="auth.logout()">Logout</a></li>
-                </ul>
-                <ul class="nav pull-right" ng-hide="auth.loggedIn">
-                    <li><a href="/ejs-identity/login/?key=system">Login</a></li>
-                    <li><a href="#/users/new">Register</a></li>
-                </ul>
+        <div class="container">
+            <div class="nav-collapse">
+                <nav id="global-nav">
+                    <ul class="nav">
+                        <li class="divider-vertical-left" ng-class="path[0] == '' && 'active'"><a href="#">Home</a></li>
+                        <li class="divider-vertical-left" ng-class="path[0] == 'activities' && 'active'" ng-show="auth.root"><a href="#/activities">Activities</a></li>
+                        <li class="divider-vertical-left" ng-class="path[0] == 'applications' && 'active'" ng-show="auth.loggedIn"><a href="#/applications">Applications</a></li>
+                        <li class="divider-vertical-left" ng-class="path[0] == 'users' && 'active'" ng-show="auth.root"><a href="#/users">Users</a></li>
+                    </ul>
+                    <ul class="nav pull-right" ng-hide="auth.loggedIn">
+                        <li><a href="/ejs-identity/login/?key=system">Login</a></li>
+                        <li><a href="#/users/new">Register</a></li>
+                    </ul>
+                    <ul class="nav pull-right" ng-show="auth.loggedIn">
+                        <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#"><i
+                                class="icon-user icon-gray"></i> {{auth.user.displayName}} <i class="caret"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="" ng-click="auth.logout()">Sign Out</a></li>
+                            </ul></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
-</div>
+</header>
