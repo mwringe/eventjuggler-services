@@ -10,33 +10,28 @@ function GlobalCtrl($scope, Auth, $location) {
     });
 }
 
-function ActivitiesCtrl($scope, Activities) {
-    $scope.events = Activities.events.query({
-        "max" : 10
-    });
-    $scope.statistics = Activities.statistics.get();
+function ActivitiesEventsCtrl($scope, events) {
+    $scope.events = events;
 }
 
-function ApplicationListCtrl($scope, Application) {
-    $scope.applications = Application.query();
+function ActivitiesStatisticsCtrl($scope, statistics) {
+    $scope.statistics = statistics;
 }
 
-function ApplicationDetailCtrl($scope, Application, Provider, $location, $routeParams) {
+function ApplicationListCtrl($scope, applications) {
+    $scope.applications = applications;
+}
+
+function ApplicationDetailCtrl($scope, applications, application, Application, providers, $location) {
+    $scope.application = application;
+    $scope.applications = applications;
+    $scope.providers = providers;
+
+    $scope.create = !application.key;
+    
     var navigationToApplications = function() {
         $location.url("/applications");
     };
-
-    if ($routeParams.key != 'new') {
-        $scope.application = Application.get({
-            "key" : $routeParams.key
-        });
-        $scope.create = false;
-    } else {
-        $scope.application = {};
-        $scope.create = true;
-    }
-
-    $scope.providers = Provider.query();
 
     $scope.save = function() {
         if (!$scope.application.key) {
@@ -101,11 +96,11 @@ function ApplicationDetailCtrl($scope, Application, Provider, $location, $routeP
     $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
 }
 
-function UserListCtrl($scope, User) {
-    $scope.users = User.query();
+function UserListCtrl($scope, users) {
+    $scope.users = users;
 }
 
-function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
+function UserDetailCtrl($scope, Auth, user, User, $location) {
     var navigationToUsers = function() {
         if (Auth.loggedIn) {
             $location.url("/users");
@@ -114,15 +109,8 @@ function UserDetailCtrl($scope, Auth, User, $routeParams, $location) {
         }
     };
 
-    if ($routeParams.userId != 'new') {
-        $scope.user = User.get({
-            "userId" : $routeParams.userId
-        });
-        $scope.create = false;
-    } else {
-        $scope.user = {};
-        $scope.create = true;
-    }
+    $scope.user = user;
+    $scope.create = !user.userId;
 
     $scope.save = function() {
         User.save($scope.user, navigationToUsers);
