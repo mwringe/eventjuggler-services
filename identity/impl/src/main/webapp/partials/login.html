@@ -1,0 +1,23 @@
+<fieldset>
+    <legend>Login to {{config.name}}</legend>
+
+    <div class="alert" ng-show="warning == 'invalid'">Invalid username or password</div>
+    <div class="alert alert-info" ng-show="info == 'created'">Created user</div>
+
+    <div style="width: 60%; float: left;">
+        <form action="/ejs-identity/api/login/{{appKey}}" method="post">
+            <label for="username">Username</label> <input type="text" name="username" placeholder="Username" required /> <label
+                for="password">Password</label> <input type="password" name="password" placeholder="Password" required />
+
+            <div style="margin-top: 1em;">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a class="btn" href="#/register/{{appKey}}">Register</a>
+            </div>
+        </form>
+    </div>
+    <div style="width: 40%; float: left;">
+        <div ng-repeat="provider in config.providerConfigs" style="float: left; margin-right: 1em; margin-top: 1em;">
+            <a ng-href="{{provider.loginUri}}"><img ng-src="{{provider.icon}}" /></a>
+        </div>
+    </div>
+</fieldset>

@@ -49,6 +49,9 @@ function ApplicationDetailCtrl($scope, applications, application, Application, p
                 Application.update($scope.application, function() {
                     $scope.changed = false;
                     application = angular.copy($scope.application);
+                    if ($scope.create) {
+                        $location.url("/applications/" + $scope.application.key);
+                    }
                 });
             }
         }
