@@ -9,13 +9,14 @@
                 <span class="gray" ng-hide="create">{{user.userId}}</span>
             </h1>
 
-            <form class="form-horizontal" name="userForm" ng-submit="save()">
+            <form class="form-horizontal" name="userForm">
                 <fieldset>
                     <legend>Details</legend>
                     <div class="control-group">
                         <label class="control-label" for="name">Username </label>
                         <div class="controls">
-                            <input type="text" class="input-xlarge" id="name" ng-model="user.userId" autofocus required>
+                            <input type="text" class="input-xlarge" id="name" ng-model="user.userId" autofocus required ng-show="create">
+                            <input type="text" class="input-xlarge" id="name" ng-model="user.userId" required ng-hide="create" readonly>
                         </div>
                     </div>
 
@@ -65,11 +66,17 @@
                     </table>
                 </fieldset>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button class="btn" ng-click="cancel()">Cancel</button>
-                    <button class="btn" ng-click="remove()" ng-hide="create">Delete</button>
+                <div class="form-actions" ng-show="create">
+                    <button type="submit" ng-click="save()" class="btn btn-primary" ng-show="changed">Save</button>
+                    <button type="submit" ng-click="cancel()" class="btn" ng-click="cancel()" ng-show="changed">Cancel</button>
                 </div>
+
+                <div class="form-actions" ng-show="!create">
+                    <button type="submit" ng-click="save()" class="btn btn-primary" ng-show="changed">Save changes</button>
+                    <button type="submit" ng-click="reset()" class="btn" ng-show="changed">Reset changes</button>
+                    <button type="submit" ng-click="remove()" class="btn btn-danger" ng-hide="changed">Delete</button>
+                </div>
+                
             </form>
         </div>
         <div id="container-right-bg"></div>

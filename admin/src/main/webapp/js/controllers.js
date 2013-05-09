@@ -23,31 +23,52 @@ function ApplicationListCtrl($scope, applications) {
 }
 
 function ApplicationDetailCtrl($scope, applications, application, Application, providers, $location) {
-    $scope.application = application;
+    $scope.application = angular.copy(application);
     $scope.applications = applications;
     $scope.providers = providers;
 
     $scope.create = !application.key;
-    
-    var navigationToApplications = function() {
-        $location.url("/applications");
-    };
+
+    $scope.changed = $scope.create;
+
+    $scope.$watch('application', function() {
+        if (!angular.equals($scope.application, application)) {
+            $scope.changed = true;
+        }
+    }, true);
 
     $scope.save = function() {
-        if (!$scope.application.key) {
-            Application.save($scope.application, navigationToApplications);
-        } else {
-            Application.update($scope.application, navigationToApplications);
+        if ($scope.applicationForm.$valid) {
+            if (!$scope.application.key) {
+                Application.save($scope.application, function(data, headers) {
+                    var l = headers().location;
+                    var key = l.substring(l.lastIndexOf("/") + 1);
+                    $location.url("/applications/" + key);
+                });
+            } else {
+                Application.update($scope.application, function() {
+                    $scope.changed = false;
+                    application = angular.copy($scope.application);
+                });
+            }
         }
     };
 
+    $scope.reset = function() {
+        $scope.application = angular.copy(application);
+        $scope.changed = false;
+    };
+
     $scope.cancel = function() {
-        navigationToApplications();
+        $location.url("/applications");
     };
 
     $scope.remove = function() {
-        $scope.application.$remove(navigationToApplications);
+        $scope.application.$remove(function() {
+            $location.url("/applications");
+        });
     };
+
     $scope.availableProviders = [];
 
     $scope.addProvider = function() {
@@ -100,27 +121,44 @@ function UserListCtrl($scope, users) {
     $scope.users = users;
 }
 
-function UserDetailCtrl($scope, Auth, user, User, $location) {
-    var navigationToUsers = function() {
-        if (Auth.loggedIn) {
-            $location.url("/users");
-        } else {
-            $location.url("/");
+function UserDetailCtrl($scope, user, User, $location) {
+    $scope.user = angular.copy(user);
+    $scope.create = !user.userId;
+    
+    $scope.changed = $scope.create;
+
+    $scope.$watch('user', function() {
+        if (!angular.equals($scope.user, user)) {
+            $scope.changed = true;
+        }
+    }, true);
+
+    
+    $scope.save = function() {
+        if ($scope.userForm.$valid) {
+            User.save($scope.user, function() {
+                $scope.changed = false;
+                user = angular.copy($scope.user);
+                
+                if ($scope.create) {
+                    $location.url("/users/" + user.userId);
+                }
+            });
         }
     };
 
-    $scope.user = user;
-    $scope.create = !user.userId;
-
-    $scope.save = function() {
-        User.save($scope.user, navigationToUsers);
+    $scope.reset = function() {
+        $scope.user = angular.copy(user);
+        $scope.changed = false;
     };
 
     $scope.cancel = function() {
-        navigationToUsers();
+        $location.url("/users");
     };
 
     $scope.remove = function() {
-        $scope.user.$remove(navigationToUsers);
+        $scope.user.$remove(function() {
+            $location.url("/users");
+        });
     };
 }

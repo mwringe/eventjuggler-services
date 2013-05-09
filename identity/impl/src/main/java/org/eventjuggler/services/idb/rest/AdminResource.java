@@ -127,7 +127,7 @@ public class AdminResource implements Admin {
 
         applicationService.create(application);
 
-        return Response.created(uriInfo.getAbsolutePathBuilder().build(application.getKey())).build();
+        return Response.created(URI.create("/applications/" + application.getKey())).build();
     }
 
     @Override
