@@ -9,7 +9,7 @@
                 <span class="gray" ng-hide="create">{{application.name}}</span>
             </h1>
             
-            <form class="form-horizontal" name="applicationForm">
+            <form class="form-horizontal" name="applicationForm" ng-submit="save()">
                 <fieldset>
                     <legend>Settings</legend>
                     <div>
@@ -81,7 +81,7 @@
                 </fieldset>
 
                 <div class="form-actions">
-                    <button class="btn btn-primary" ng-click="save()" ng-disabled="applicationForm.$invalid">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                     <button class="btn" ng-click="cancel()">Cancel</button>
                     <button class="btn" ng-click="remove()" ng-hide="create">Delete</button>
                 </div>
