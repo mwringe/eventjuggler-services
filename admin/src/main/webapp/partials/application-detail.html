@@ -15,7 +15,8 @@
                         <div class="control-group">
                             <label class="control-label" for="name">Name </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge" id="name" ng-model="application.name" autofocus required>
+                                <input type="text" class="input-xlarge" id="name" ng-model="application.name" autofocus required ng-show="create">
+                                <input type="text" class="input-xlarge" id="name" ng-model="application.name" required ng-hide="create">
                             </div>
                         </div>
                         <div class="control-group">
