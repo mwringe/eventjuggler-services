@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.eventjuggler.services</groupId>
         <artifactId>ejs-identity-parent</artifactId>
-        <version>0.1.0.20130510</version>
+        <version>0.1.0.M1-SNAPSHOT</version>
     </parent>
 
     <artifactId>ejs-identity</artifactId>
