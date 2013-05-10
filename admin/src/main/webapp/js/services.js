@@ -129,6 +129,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
 
     auth.token = $location.search().token;
     if (auth.token) {
+        $location.search("token", null);
         localStorage.setItem("token", auth.token);
     } else {
         auth.token = localStorage.getItem("token");
