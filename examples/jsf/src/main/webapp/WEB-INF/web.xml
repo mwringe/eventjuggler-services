@@ -15,7 +15,7 @@
     
     <context-param>
         <param-name>ejs.appKey</param-name>
-        <param-value>INSERT APPLICATION KEY</param-value>
+        <param-value>5687bd50-a44f-4150-b513-15a594e2ad7c</param-value>
     </context-param>
     <context-param>
         <param-name>ejs.appSecret</param-name>

@@ -9,7 +9,7 @@
 
 <h:body>
     <h:panelGroup rendered="#{!user.loggedIn}">
-        <p><a href="/ejs-identity/login?key=#{initParam['ejs.appKey']}">Login</a></p>
+        <p><a href="/ejs-identity/api/login/#{initParam['ejs.appKey']}">Login</a></p>
     </h:panelGroup>
 
     <h:panelGroup rendered="#{user.loggedIn}">

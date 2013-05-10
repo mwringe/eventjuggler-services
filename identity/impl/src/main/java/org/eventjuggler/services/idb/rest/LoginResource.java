@@ -84,6 +84,12 @@ public class LoginResource {
     }
 
     @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getLogin(@PathParam("appKey") String appKey) {
+        return Response.seeOther(URI.create("../#/login/" + appKey)).build();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public LoginConfig getLoginConfig(@PathParam("appKey") String appKey) {
         Application application = getApplication(appKey);
