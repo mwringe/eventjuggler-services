@@ -7,9 +7,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Attribute implements Serializable {
 
-    private final String name;
+    private String name;
 
-    private final String value;
+    private String value;
+
+    public Attribute() {
+    }
 
     public Attribute(String name, String value) {
         this.name = name;
@@ -22,6 +25,14 @@ public class Attribute implements Serializable {
 
     public String getValue() {
         return value;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }
