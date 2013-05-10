@@ -26,8 +26,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
+import org.eventjuggler.services.simpleauth.rest.Attribute;
+import org.eventjuggler.services.simpleauth.rest.Authentication;
+import org.eventjuggler.services.simpleauth.rest.UserInfo;
+import org.jboss.resteasy.client.ProxyFactory;
 import org.picketlink.authentication.BaseAuthenticator;
 import org.picketlink.idm.IdentityManagerFactory;
+import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
 
 /**
@@ -42,17 +47,43 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
     @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
+    @Inject
+    private SimpleAuthConfig config;
+
     @Override
     public void authenticate() {
         String t = token.getValue();
         if (t != null) {
-            User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(t);
-            if (user != null) {
-                setUser(user);
-
-                setStatus(AuthenticationStatus.SUCCESS);
+            if (config.isLocal()) {
+                User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(t);
+                if (user != null) {
+                    setUser(user);
+                    setStatus(AuthenticationStatus.SUCCESS);
+                } else {
+                    setStatus(AuthenticationStatus.FAILURE);
+                }
             } else {
-                setStatus(AuthenticationStatus.FAILURE);
+                Authentication authentication = ProxyFactory
+                        .create(Authentication.class, config.getUrl() + "/ejs-identity/api");
+                UserInfo userInfo = authentication.getInfo(t);
+                if (userInfo != null) {
+                    User user = new SimpleUser(userInfo.getUserId());
+                    user.setFirstName(userInfo.getFirstName());
+                    user.setLastName(userInfo.getLastName());
+                    user.setEmail(userInfo.getEmail());
+
+                    if (userInfo.getAttributes() != null) {
+                        for (Attribute a : userInfo.getAttributes()) {
+                            user.setAttribute(new org.picketlink.idm.model.Attribute<String>(a.getName(), a.getValue()));
+                        }
+                    }
+
+                    setUser(user);
+                    setStatus(AuthenticationStatus.SUCCESS);
+                } else {
+                    setStatus(AuthenticationStatus.FAILURE);
+
+                }
             }
         } else {
             setStatus(AuthenticationStatus.DEFERRED);

@@ -44,10 +44,13 @@ import org.picketlink.Identity.AuthenticationResult;
 public class SimpleAuthFilter implements Filter {
 
     @Inject
-    private SimpleAuthToken simpleAuthToken;
+    private SimpleAuthToken token;
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private SimpleAuthConfig config;
 
     @Override
     public void destroy() {
@@ -74,7 +77,7 @@ public class SimpleAuthFilter implements Filter {
             }
 
             if (!requestToken.equals("logout")) {
-                simpleAuthToken.setToken(requestToken);
+                token.setToken(requestToken);
                 AuthenticationResult result = identity.login();
                 if (result == AuthenticationResult.SUCCESS) {
                     session.setAttribute("token", requestToken);
@@ -86,7 +89,8 @@ public class SimpleAuthFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
+    public void init(FilterConfig filterConfig) throws ServletException {
+        config.init(filterConfig.getServletContext());
     }
 
 }
