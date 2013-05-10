@@ -33,7 +33,6 @@
         <module>build</module>
         <module>common</module>
         <module>dist</module>
-        <module>examples</module>
         <module>identity</module>
         <module>testsuite</module>
     </modules>

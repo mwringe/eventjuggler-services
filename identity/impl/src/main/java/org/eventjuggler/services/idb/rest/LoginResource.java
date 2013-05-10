@@ -140,8 +140,7 @@ public class LoginResource {
 
         AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
-            URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl())
-                    .setQueryParam("token", response.getToken()).build();
+            URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
             URI uri = new UriBuilder(headers, uriInfo, "#/login/" + appKey + "?warning=invalid").build();

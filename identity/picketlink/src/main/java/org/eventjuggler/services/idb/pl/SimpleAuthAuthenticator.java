@@ -21,9 +21,10 @@
  */
 package org.eventjuggler.services.idb.pl;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.simpleauth.rest.Attribute;
@@ -31,6 +32,7 @@ import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.picketlink.authentication.BaseAuthenticator;
+import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
@@ -44,9 +46,6 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
     @Inject
     private SimpleAuthToken token;
 
-    @Resource(name = "IdentityManagerFactory")
-    private IdentityManagerFactory imf;
-
     @Inject
     private SimpleAuthConfig config;
 
@@ -55,7 +54,7 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
         String t = token.getValue();
         if (t != null) {
             if (config.isLocal()) {
-                User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(t);
+                User user = new SimpleAuthIdmUtil(getIdentityManager()).getUser(t);
                 if (user != null) {
                     setUser(user);
                     setStatus(AuthenticationStatus.SUCCESS);
@@ -87,6 +86,16 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
             }
         } else {
             setStatus(AuthenticationStatus.DEFERRED);
+        }
+    }
+
+    private IdentityManager getIdentityManager() {
+        try {
+        IdentityManagerFactory imf = (IdentityManagerFactory) new InitialContext()
+                .lookup("java:comp/env/IdentityManagerFactory");
+        return imf.createIdentityManager();
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
         }
     }
 
