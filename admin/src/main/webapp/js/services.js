@@ -172,6 +172,8 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
 
         auth.loggedIn = false;
         auth.root = false;
+        
+        $location.url("/");
     };
 
     return auth;
