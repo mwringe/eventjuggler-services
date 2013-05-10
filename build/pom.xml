@@ -38,7 +38,7 @@
 
     <properties>
         <jboss.target.dir>${project.build.directory}/${eap.dirname}</jboss.target.dir>
-        <picketlink.as.subsystem.download>http://dl.bintray.com/content/ej/picketlink/picketlink-as-subsystem-0.1.0.20130430.zip</picketlink.as.subsystem.download>
+        <picketlink.as.subsystem.download>http://dl.bintray.com/content/ej/picketlink/picketlink-as-subsystem-0.1.0.20130510.zip</picketlink.as.subsystem.download>
     </properties>
 
     <dependencies>
