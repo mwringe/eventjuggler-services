@@ -22,14 +22,26 @@
 package org.eventjuggler.services.idb.rest;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import org.eventjuggler.services.simpleim.rest.IdentityManagement;
+import org.eventjuggler.services.simpleim.rest.User;
+import org.eventjuggler.services.utils.UriBuilder;
+import org.jboss.resteasy.client.ProxyFactory;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -38,10 +50,43 @@ import javax.ws.rs.core.Response;
 @Stateless
 public class RegisterResource {
 
+    @Context
+    private UriInfo uriInfo;
+
+    @Context
+    private HttpHeaders headers;
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getRegister(@PathParam("appKey") String appKey) {
-        return Response.seeOther(URI.create("../#/register/" + appKey)).build();
+        URI uri = new UriBuilder(headers, uriInfo, "register.html?app=" + appKey).build();
+        return Response.seeOther(uri).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public Response register(@PathParam("appKey") String appKey, @FormParam("username") String username,
+            @FormParam("email") String email, @FormParam("firstName") String firstName, @FormParam("lastName") String lastName,
+            @FormParam("password") String password) throws URISyntaxException {
+        IdentityManagement management = ProxyFactory.create(IdentityManagement.class, uriInfo.getBaseUri().toString());
+
+        User user = new User();
+        user.setUserId(username);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setPassword(password);
+
+        try {
+            management.saveUser(username, user);
+
+            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&info=created").build();
+            return Response.seeOther(uri).build();
+        } catch (Throwable e) {
+            URI uri = new UriBuilder(headers, uriInfo, "register.html?app=" + appKey + "&warning=failed").build();
+            return Response.seeOther(uri).build();
+        }
     }
 
 }

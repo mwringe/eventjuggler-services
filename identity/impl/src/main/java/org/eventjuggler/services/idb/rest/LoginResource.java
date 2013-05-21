@@ -86,7 +86,7 @@ public class LoginResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getLogin(@PathParam("appKey") String appKey) {
-        URI uri = new UriBuilder(headers, uriInfo, "#/login/" + appKey).build();
+        URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey).build();
         return Response.seeOther(uri).build();
     }
 
@@ -143,7 +143,7 @@ public class LoginResource {
             URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
-            URI uri = new UriBuilder(headers, uriInfo, "#/login/" + appKey + "?warning=invalid").build();
+            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&warning=invalid").build();
             return Response.seeOther(uri).build();
         }
     }
