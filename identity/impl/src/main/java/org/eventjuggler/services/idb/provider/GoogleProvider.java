@@ -62,7 +62,7 @@ public class GoogleProvider implements IdentityProvider {
     public URI getLoginUrl(IdentityProviderCallback callback) {
         return callback.createUri("https://accounts.google.com/o/oauth2/auth").setQueryParam("client_id", callback.getProviderKey())
                 .setQueryParam("response_type", "code")
-                .setQueryParam("scope", "https://www.googleapis.com/auth/userinfo.profile")
+                .setQueryParam("scope", "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
                 .setQueryParam("redirect_uri", callback.getBrokerCallbackUrl().toString()).setQueryParam("state", state)
                 .build();
     }
