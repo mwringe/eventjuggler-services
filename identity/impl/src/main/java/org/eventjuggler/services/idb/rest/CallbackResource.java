@@ -107,7 +107,9 @@ public class CallbackResource {
 
                     im.update(user);
                 } else {
-                    if (im.getUser(user.getLoginName()) != null) {
+                    if (user.getEmail() != null && im.getUser(user.getEmail()) == null) {
+                        user.setLoginName(user.getEmail());
+                    } else if (im.getUser(user.getLoginName()) != null) {
                         for (int i = 0;; i++) {
                             if (im.getUser(providerUsername + i) == null) {
                                 user.setLoginName(providerUsername + i);
