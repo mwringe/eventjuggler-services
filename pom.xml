@@ -57,7 +57,7 @@
         <version.checkstyle.plugin>2.9.1</version.checkstyle.plugin>
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.ear.plugin>2.7</version.ear.plugin>
-        <version.org.jboss.as.plugins.maven.plugin>${version.org.wildfly}</version.org.jboss.as.plugins.maven.plugin>
+        <version.org.jboss.as.plugins.maven.plugin>7.4.Final</version.org.jboss.as.plugins.maven.plugin>
         <version.release.plugin>2.4</version.release.plugin>
         <version.surefire.plugin>2.13</version.surefire.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>

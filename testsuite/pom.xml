@@ -172,7 +172,7 @@
                 </property>
             </activation>
             <properties>
-                <jboss.home>${project.parent.basedir}/build/target/wildfly-${version.org.wildfly}</jboss.home>
+                <jboss.home>${project.parent.basedir}/build/target/ejs-${project.version}</jboss.home>
             </properties>
         </profile>
 
