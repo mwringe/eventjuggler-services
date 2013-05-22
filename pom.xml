@@ -168,7 +168,7 @@
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-dist</artifactId>
                 <version>${version.org.wildfly}</version>
-                <type>pom</type>
+                <type>zip</type>
             </dependency>
             <dependency>
                 <groupId>org.wildfly</groupId>

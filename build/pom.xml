@@ -37,7 +37,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <wildfly.target.dir>${project.build.directory}/wildfly-${version.org.wildfly}</wildfly.target.dir>
+        <build.target.dir>${project.build.directory}/ejs-${project.version}</build.target.dir>
         <picketlink.as.subsystem.download>http://dl.bintray.com/content/ej/picketlink/picketlink-as-subsystem-0.1.0.20130522.zip</picketlink.as.subsystem.download>
     </properties>
 
@@ -69,7 +69,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
                 <executions>
                     <execution>
                         <id>default-cli</id>
@@ -124,7 +123,7 @@
                                     <includes>
                                         <include>standalone*.xml</include>
                                     </includes>
-                                    <outputDir>${wildfly.target.dir}/standalone/configuration</outputDir>
+                                    <outputDir>${build.target.dir}/standalone/configuration</outputDir>
                                 </transformationSet>
                             </transformationSets>
                         </configuration>

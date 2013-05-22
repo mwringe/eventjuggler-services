@@ -10,8 +10,8 @@
 
     <fileSets>
         <fileSet>
-            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
+            <directory>../build/target/ejs-${project.version}</directory>
+            <outputDirectory>ejs-${project.version}</outputDirectory>
             <excludes>
                 <exclude>**/*.sh</exclude>
                 <exclude>domain/tmp/auth</exclude>
@@ -20,24 +20,24 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <directory>.../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
+            <directory>../build/target/ejs-${project.version}</directory>
+            <outputDirectory>ejs-${project.version}</outputDirectory>
             <includes>
                 <include>**/*.sh</include>
             </includes>
             <fileMode>0755</fileMode>
         </fileSet>
          <fileSet>
-            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
+            <directory>../build/target/ejs-${project.version}</directory>
+            <outputDirectory>ejs-${project.version}</outputDirectory>
             <includes>
                 <include>**/*-users.properties</include>
             </includes>
             <fileMode>0600</fileMode>
         </fileSet>
         <fileSet>
-            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
+            <directory>../build/target/ejs-${project.version}</directory>
+            <outputDirectory>ejs-${project.version}</outputDirectory>
             <includes>
                 <include>domain/tmp/auth</include>
                 <include>standalone/tmp/auth</include>
