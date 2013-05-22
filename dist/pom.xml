@@ -36,7 +36,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <archive.directory>jboss-ejs-${project.version}</archive.directory>
+        <archive.directory>ejs-${project.version}</archive.directory>
     </properties>
 
     <dependencies>
@@ -73,7 +73,7 @@
                                     <descriptors>
                                         <descriptor>assembly.xml</descriptor>
                                     </descriptors>
-                                    <finalName>jboss-ejs-${project.version}</finalName>
+                                    <finalName>ejs-${project.version}</finalName>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <outputDirectory>target/</outputDirectory>
                                     <workDirectory>target/assembly/work</workDirectory>
@@ -84,18 +84,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-
-        <profile>
-            <id>overlay</id>
-            <activation>
-                <property>
-                    <name>!jboss.zip</name>
-                </property>
-            </activation>
-            <properties>
-                <archive.directory />
-            </properties>
         </profile>
     </profiles>
 </project>

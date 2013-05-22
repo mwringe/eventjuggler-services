@@ -79,7 +79,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
@@ -88,7 +88,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.transaction</groupId>
@@ -117,8 +117,8 @@
             <id>it-remote</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-container-remote</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -141,8 +141,8 @@
             <id>it-managed</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -172,7 +172,7 @@
                 </property>
             </activation>
             <properties>
-                <jboss.home>${project.parent.basedir}/build/target/${eap.dirname}</jboss.home>
+                <jboss.home>${project.parent.basedir}/build/target/wildfly-${version.org.wildfly}</jboss.home>
             </properties>
         </profile>
 

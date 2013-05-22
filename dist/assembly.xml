@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:maven:assembly:1.1.0-SNAPSHOT">
     <id>distro</id>
+
     <formats>
        <format>zip</format>
-       <format>tar.gz</format>
     </formats>
 
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <fileSets>
         <fileSet>
-            <directory>../build/target/jboss-eap-6.1</directory>
+            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>modules/system/layers/base/org/picketlink/**</include>
+                <include>standalone/configuration/standalone**.xml</include>
+                <include>standalone/deployments/*.ear</include>
+                <include>standalone/deployments/*.war</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+<!--  
+    <includeBaseDirectory>true</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
             <outputDirectory>${archive.directory}</outputDirectory>
             <excludes>
                 <exclude>**/*.sh</exclude>
@@ -20,7 +36,7 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <directory>../build/target/jboss-eap-6.1</directory>
+            <directory>.../build/target/wildfly-${version.org.wildfly}</directory>
             <outputDirectory>${archive.directory}</outputDirectory>
             <includes>
                 <include>**/*.sh</include>
@@ -28,7 +44,7 @@
             <fileMode>0755</fileMode>
         </fileSet>
          <fileSet>
-            <directory>../build/target/jboss-eap-6.1</directory>
+            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
             <outputDirectory>${archive.directory}</outputDirectory>
             <includes>
                 <include>**/*-users.properties</include>
@@ -36,7 +52,7 @@
             <fileMode>0600</fileMode>
         </fileSet>
         <fileSet>
-            <directory>../build/target/jboss-eap-6.1</directory>
+            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
             <outputDirectory>${archive.directory}</outputDirectory>
             <includes>
                 <include>domain/tmp/auth</include>
@@ -45,4 +61,5 @@
             <directoryMode>0700</directoryMode>
         </fileSet>
     </fileSets>
+-->
 </assembly>
