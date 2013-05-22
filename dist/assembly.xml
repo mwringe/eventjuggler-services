@@ -11,23 +11,7 @@
     <fileSets>
         <fileSet>
             <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>modules/system/layers/base/org/picketlink/**</include>
-                <include>standalone/configuration/standalone**.xml</include>
-                <include>standalone/deployments/*.ear</include>
-                <include>standalone/deployments/*.war</include>
-            </includes>
-        </fileSet>
-    </fileSets>
-
-<!--  
-    <includeBaseDirectory>true</includeBaseDirectory>
-
-    <fileSets>
-        <fileSet>
-            <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>${archive.directory}</outputDirectory>
+            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
             <excludes>
                 <exclude>**/*.sh</exclude>
                 <exclude>domain/tmp/auth</exclude>
@@ -37,7 +21,7 @@
         </fileSet>
         <fileSet>
             <directory>.../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>${archive.directory}</outputDirectory>
+            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
             <includes>
                 <include>**/*.sh</include>
             </includes>
@@ -45,7 +29,7 @@
         </fileSet>
          <fileSet>
             <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>${archive.directory}</outputDirectory>
+            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
             <includes>
                 <include>**/*-users.properties</include>
             </includes>
@@ -53,13 +37,13 @@
         </fileSet>
         <fileSet>
             <directory>../build/target/wildfly-${version.org.wildfly}</directory>
-            <outputDirectory>${archive.directory}</outputDirectory>
+            <outputDirectory>ejs-${version.org.wildfly}</outputDirectory>
             <includes>
                 <include>domain/tmp/auth</include>
-                <include>standalone//tmp/auth</include>
+                <include>standalone/tmp/auth</include>
             </includes>
             <directoryMode>0700</directoryMode>
         </fileSet>
     </fileSets>
--->
+
 </assembly>
