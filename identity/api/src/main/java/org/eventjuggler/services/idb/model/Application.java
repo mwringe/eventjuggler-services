@@ -46,6 +46,8 @@ public class Application {
 
     private String owner;
 
+    private String javaScriptOrigin;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<IdentityProviderConfig> providers;
 
@@ -65,6 +67,10 @@ public class Application {
 
     public String getOwner() {
         return owner;
+    }
+
+    public String getJavaScriptOrigin() {
+        return javaScriptOrigin;
     }
 
     public List<IdentityProviderConfig> getProviders() {
@@ -89,6 +95,10 @@ public class Application {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public void setJavaScriptOrigin(String javaScriptOrigin) {
+        this.javaScriptOrigin = javaScriptOrigin;
     }
 
     public void setProviders(List<IdentityProviderConfig> providers) {

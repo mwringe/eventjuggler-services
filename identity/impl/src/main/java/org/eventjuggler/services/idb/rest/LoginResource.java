@@ -40,6 +40,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -92,7 +93,7 @@ public class LoginResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public LoginConfig getLoginConfig(@PathParam("appKey") String appKey) {
+    public Response getLoginConfig(@PathParam("appKey") String appKey) {
         Application application = getApplication(appKey);
 
         LoginConfig loginConfig = new LoginConfig();
@@ -122,7 +123,13 @@ public class LoginResource {
 
         loginConfig.setProviderConfigs(providerLoginConfigs);
 
-        return loginConfig;
+        ResponseBuilder response = Response.ok(loginConfig);
+
+        if (application.getJavaScriptOrigin() != null) {
+            response.header("Access-Control-Allow-Origin", application.getJavaScriptOrigin());
+        }
+
+        return response.build();
     }
 
     @POST
