@@ -7,7 +7,7 @@ window.identityBroker = (function () {
                 return decodeURIComponent(param[1]);
             }
         }
-    }
+    };
 
     var messageWarn = queryParameters("warning");
     var messageInfo = queryParameters("info");
@@ -21,7 +21,7 @@ window.identityBroker = (function () {
         get registerUrl() {
             return this.baseUrl + "/api/register/" + this.appKey;
         }
-    }
+    };
 
     ib.getConfig = function (success, error) {
         var req = new XMLHttpRequest();
@@ -40,9 +40,9 @@ window.identityBroker = (function () {
                     }
                 }
             }
-        }
+        };
         req.send();
-    }
+    };
 
 
     var createLogin = function(containerId) {
@@ -55,7 +55,7 @@ window.identityBroker = (function () {
         container.appendChild(login);
 
         return login;
-    }
+    };
 
     var createHeader = function(text) {
         var div = document.createElement("div");
@@ -66,7 +66,7 @@ window.identityBroker = (function () {
         div.appendChild(h);
 
         return div;
-    }
+    };
 
     var createInput = function(group, name, labelText, type) {
         var div = document.createElement("div");
@@ -87,7 +87,7 @@ window.identityBroker = (function () {
         div.appendChild(input);
 
         return div;
-    }
+    };
 
     var createMessage = function(message, type) {
         var div = document.createElement("div");
@@ -104,7 +104,7 @@ window.identityBroker = (function () {
         }
 
         return div;
-    }
+    };
 
     ib.renderLoginForm = function (containerId) {
         var success = function (config) {
@@ -143,7 +143,7 @@ window.identityBroker = (function () {
 
             var registerButton = document.createElement("button");
             registerButton.setAttribute("type", "button");
-            registerButton.setAttribute("onclick", "location.href='register.html?app="+ ib.appKey +"'");
+            registerButton.setAttribute("onclick", "location.href='" + ib.registerUrl + "'");
             registerButton.innerText = "Register";
             buttonsDiv.appendChild(registerButton);
 
@@ -169,10 +169,10 @@ window.identityBroker = (function () {
 
             login.appendChild(createHeader("Invalid"));
             login.appendChild(createMessage("Invalid application key", "warn"));
-        }
+        };
 
         ib.getConfig(success, error);
-    }
+    };
 
     ib.renderRegistrationForm = function (containerId) {
         var login = createLogin(containerId);
@@ -206,13 +206,13 @@ window.identityBroker = (function () {
 
             var cancelButton = document.createElement("button");
             cancelButton.setAttribute("type", "button");
-            cancelButton.setAttribute("onclick", "location.href='login.html?app="+ ib.appKey +"'");
+            cancelButton.setAttribute("onclick", "location.href='" + ib.loginUrl + "'");
             cancelButton.innerText = "Cancel";
             buttonsDiv.appendChild(cancelButton);
-        }
+        };
 
         ib.getConfig(success);
-    }
+    };
 
     return ib;
 }());
