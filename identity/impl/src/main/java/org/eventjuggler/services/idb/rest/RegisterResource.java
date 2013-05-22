@@ -72,10 +72,10 @@ public class RegisterResource {
         IdentityManagement management = ProxyFactory.create(IdentityManagement.class, uriInfo.getBaseUri().toString());
 
         User user = new User();
-        user.setUserId(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
+        user.setUserId(trim(username));
+        user.setFirstName(trim(firstName));
+        user.setLastName(trim(lastName));
+        user.setEmail(trim(email));
         user.setPassword(password);
 
         try {
@@ -86,6 +86,14 @@ public class RegisterResource {
         } catch (Throwable e) {
             URI uri = new UriBuilder(headers, uriInfo, "register.html?app=" + appKey + "&warning=failed").build();
             return Response.seeOther(uri).build();
+        }
+    }
+
+    private String trim(String s) {
+        if (s != null && s.trim().length() == 0) {
+            return null;
+        } else {
+            return s.trim();
         }
     }
 
