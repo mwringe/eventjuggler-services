@@ -20,6 +20,10 @@ To build with WildFly run:
 
     mvn clean install
 
+Then start with:
+
+    build/target/ejs-<PROJECT VERSION>/bin/standalone.sh
+
 
 Distribution
 ============
