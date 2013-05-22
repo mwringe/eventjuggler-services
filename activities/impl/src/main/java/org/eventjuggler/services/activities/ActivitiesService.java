@@ -21,9 +21,6 @@
  */
 package org.eventjuggler.services.activities;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -39,8 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 @EJB(name = "java:global/ejs/Activities", beanInterface = Activities.class)
 public class ActivitiesService implements Activities {
 
-    private final List<String> acceptedContentTypes = Arrays.asList("text/html", "application/json", "application/xml");
-
     @PersistenceContext(unitName = "activities")
     private EntityManager em;
 
@@ -51,11 +46,6 @@ public class ActivitiesService implements Activities {
         }
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-        String contentType = response.getContentType();
-        if (contentType == null || !acceptedContentTypes.contains(contentType.split(";")[0])) {
-            return;
-        }
 
         String contextPath = httpRequest.getContextPath();
         long time = System.currentTimeMillis();
