@@ -21,6 +21,8 @@
  */
 package org.eventjuggler.services.activities;
 
+import org.jboss.logging.Logger;
+
 import java.io.IOException;
 
 import javax.naming.InitialContext;
@@ -30,8 +32,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.jboss.logging.Logger;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>

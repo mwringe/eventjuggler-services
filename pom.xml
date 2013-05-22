@@ -43,7 +43,7 @@
         <version.org.jboss.arquillian>1.0.3.Final</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.drone>1.2.0.Alpha1</version.org.jboss.arquillian.drone>
         <version.org.jboss.arquillian.graphene2>2.0.0.Alpha3</version.org.jboss.arquillian.graphene2>
-        <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
+        <version.org.wildfly>8.0.0.Alpha1</version.org.wildfly>
         <version.org.jboss.as.plugins.maven.plugin>7.3.Final</version.org.jboss.as.plugins.maven.plugin>
         <version.org.jboss.bom>1.0.4.CR7</version.org.jboss.bom>
         <version.org.jboss.resteasy>2.3.5.Final</version.org.jboss.resteasy>
@@ -51,6 +51,7 @@
         <version.org.jboss.weld>1.1.10.Final</version.org.jboss.weld>
         <version.org.json>20090211</version.org.json>
         <version.org.picketlink>3.0.0.Beta2</version.org.picketlink>
+        <version.org.mockito>1.9.5</version.org.mockito>
         <version.junit>4.11</version.junit>
         <version.shrinkwrap.resolver>2.0.0-beta-2</version.shrinkwrap.resolver>
 
@@ -60,8 +61,6 @@
         <version.release.plugin>2.4</version.release.plugin>
         <version.surefire.plugin>2.13</version.surefire.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
-
-        <eap.dirname>jboss-eap-6.1</eap.dirname>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -163,11 +162,23 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.as</groupId>
-                <artifactId>jboss-as-parent</artifactId>
-                <version>${version.org.jboss.as}</version>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-parent</artifactId>
+                <version>${version.org.wildfly}</version>
                 <type>pom</type>
                 <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.wildfly</groupId>
+                        <artifactId>wildfly-build-config</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-dist</artifactId>
+                <version>${version.org.wildfly}</version>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.jboss.bom</groupId>
@@ -175,6 +186,18 @@
                 <version>${version.org.jboss.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-logging</artifactId>
+                <version>${version.org.jboss.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.org.mockito}</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.uadetector</groupId>
