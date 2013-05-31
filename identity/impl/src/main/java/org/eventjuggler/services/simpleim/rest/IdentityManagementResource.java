@@ -17,21 +17,14 @@
  */
 package org.eventjuggler.services.simpleim.rest;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
 
 import org.eventjuggler.services.common.auth.Auth;
+import org.eventjuggler.services.idb.IdmService;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
-import org.eventjuggler.services.utils.UserFactory;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
-import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.SimpleUser;
 
 /**
@@ -40,57 +33,33 @@ import org.picketlink.idm.model.SimpleUser;
 @Stateless
 public class IdentityManagementResource implements IdentityManagement {
 
-    @Resource(name = "IdentityManagerFactory")
-    private IdentityManagerFactory imf;
+    @EJB
+    private IdmService idm;
 
     @Override
-    public void deleteUser(@PathParam("username") String username) {
+    public void deleteUser(String realm, String username) {
         Auth.requireUser(username);
 
-        IdentityManager im = imf.createIdentityManager();
-
-        org.picketlink.idm.model.User user = im.getUser(username);
-        if (user == null) {
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
-
-        im.remove(user);
+        idm.deleteUser(realm, username);
     }
 
     @Override
-    public UserInfo getUser(@PathParam("username") String username) {
+    public UserInfo getUser(String realm, String username) {
         Auth.requireUser(username);
 
-        IdentityManager im = imf.createIdentityManager();
-
-        org.picketlink.idm.model.User user = im.getUser(username);
-        if (user == null) {
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
-
-        return UserFactory.createUserInfo(user);
+        return idm.getUserInfo(realm, username);
     }
 
     @Override
-    public List<UserInfo> getUsers() {
+    public List<UserInfo> getUsers(String realm) {
         Auth.requireSuper();
 
-        IdentityManager im = imf.createIdentityManager();
-
-        List<org.picketlink.idm.model.User> users = im.createIdentityQuery(org.picketlink.idm.model.User.class)
-                .getResultList();
-        List<UserInfo> userInfos = new LinkedList<>();
-        for (org.picketlink.idm.model.User u : users) {
-            userInfos.add(UserFactory.createUserInfo(u));
-        }
-        return userInfos;
+        return idm.getUserInfos(realm);
     }
 
     @Override
-    public void saveUser(String username, User user) {
-        IdentityManager im = imf.createIdentityManager();
-
-        org.picketlink.idm.model.User u = im.getUser(username);
+    public void saveUser(String realm, String username, User user) {
+        org.picketlink.idm.model.User u = idm.getUser(realm, username);
         boolean userExists = u != null;
 
         if (userExists) {
@@ -103,20 +72,10 @@ public class IdentityManagementResource implements IdentityManagement {
         u.setFirstName(user.getFirstName());
         u.setLastName(user.getLastName());
 
-        // user.setAttribute(new Attribute<String>("address", request.getAddress()));
-        // user.setAttribute(new Attribute<String>("city", request.getCity()));
-        // user.setAttribute(new Attribute<String>("state", request.getState()));
-        // user.setAttribute(new Attribute<String>("postalCode", request.getPostalCode()));
-        // user.setAttribute(new Attribute<String>("country", request.getCountry()));
-
         if (userExists) {
-            im.update(u);
+            idm.updateUser(realm, u, user.getPassword());
         } else {
-            im.add(u);
-        }
-
-        if (user.getPassword() != null) {
-            im.updateCredential(u, new Password(user.getPassword()));
+            idm.createUser(realm, u, user.getPassword());
         }
     }
 

@@ -30,26 +30,26 @@ import javax.ws.rs.core.MediaType;
 
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 
-@Path("/im")
+@Path("im")
 public interface IdentityManagement {
 
     @GET
-    @Path("/users/{username}")
+    @Path("{realm}/users/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    UserInfo getUser(@PathParam("username") String username);
+    UserInfo getUser(@PathParam("realm") String realm, @PathParam("username") String username);
 
     @GET
-    @Path("/users")
+    @Path("{realm}/users")
     @Produces(MediaType.APPLICATION_JSON)
-    List<UserInfo> getUsers();
+    List<UserInfo> getUsers(@PathParam("realm") String realm);
 
     @PUT
-    @Path("/users/{username}")
+    @Path("{realm}/users/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
-    void saveUser(@PathParam("username") String username, User user);
+    void saveUser(@PathParam("realm") String realm, @PathParam("username") String username, User user);
 
     @DELETE
-    @Path("/users/{username}")
-    void deleteUser(@PathParam("username") String username);
+    @Path("{realm}/users/{username}")
+    void deleteUser(@PathParam("realm") String realm, @PathParam("username") String username);
 
 }

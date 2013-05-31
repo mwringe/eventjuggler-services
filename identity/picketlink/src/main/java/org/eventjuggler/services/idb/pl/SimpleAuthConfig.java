@@ -12,10 +12,6 @@ public class SimpleAuthConfig {
 
     private String appSecret;
 
-    public boolean isLocal() {
-        return url == null;
-    }
-
     public String getAppKey() {
         return appKey;
     }

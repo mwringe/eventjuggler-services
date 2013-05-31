@@ -193,7 +193,7 @@ window.identityBroker = (function () {
             form.appendChild(createInput("register", "email", "Email", "email"));
             form.appendChild(createInput("register", "firstName", "First name"));
             form.appendChild(createInput("register", "lastName", "Last name"));
-            form.appendChild(createInput("register", "password", "Password"));
+            form.appendChild(createInput("register", "password", "Password", "password"));
 
             var buttonsDiv = document.createElement("div");
             buttonsDiv.setAttribute("class", "ib-login-buttons");

@@ -44,7 +44,7 @@ import org.picketlink.Identity.AuthenticationResult;
 public class SimpleAuthFilter implements Filter {
 
     @Inject
-    private SimpleAuthToken token;
+    private SimpleAuthRequest simpleAuthRequest;
 
     @Inject
     private Identity identity;
@@ -65,6 +65,9 @@ public class SimpleAuthFilter implements Filter {
         String sessionToken = session != null ? (String) session.getAttribute("token") : null;
         String requestToken = httpRequest.getParameter("token");
 
+        String requestURL = httpRequest.getScheme() + "://" + httpRequest.getServerName().split(":")[0] + ":"
+                + httpRequest.getServerPort();
+
         if (requestToken != null && !requestToken.equals(sessionToken)) {
             if (session == null) {
                 session = httpRequest.getSession();
@@ -77,7 +80,8 @@ public class SimpleAuthFilter implements Filter {
             }
 
             if (!requestToken.equals("logout")) {
-                token.setToken(requestToken);
+                simpleAuthRequest.setUrl(requestURL);
+                simpleAuthRequest.setToken(requestToken);
                 AuthenticationResult result = identity.login();
                 if (result == AuthenticationResult.SUCCESS) {
                     session.setAttribute("token", requestToken);

@@ -45,17 +45,15 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.IdmService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
 import org.eventjuggler.services.idb.rest.LoginConfig.ProviderLoginConfig;
-import org.eventjuggler.services.simpleauth.rest.Authentication;
-import org.eventjuggler.services.simpleauth.rest.AuthenticationRequest;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
 import org.eventjuggler.services.utils.UriBuilder;
-import org.jboss.resteasy.client.ProxyFactory;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -68,7 +66,10 @@ public class LoginResource {
     private IdentityProviderService providerService;
 
     @EJB
-    private ApplicationService service;
+    private ApplicationService as;
+
+    @EJB
+    private IdmService idm;
 
     @Context
     private UriInfo uriInfo;
@@ -77,7 +78,7 @@ public class LoginResource {
     private HttpHeaders headers;
 
     private Application getApplication(String appKey) {
-        Application application = service.getApplication(appKey);
+        Application application = as.getApplication(appKey);
         if (application == null) {
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
@@ -135,22 +136,16 @@ public class LoginResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
-    public Response login(@PathParam("appKey") String appKey, @FormParam("username") String username,
+    public Response login(@PathParam("appKey") String applicationKey, @FormParam("username") String username,
             @FormParam("password") String password) throws URISyntaxException {
-        Application application = getApplication(appKey);
+        Application application = as.getApplication(applicationKey);
+        AuthenticationResponse response = idm.login(application.getRealm(), username, password);
 
-        Authentication auth = ProxyFactory.create(Authentication.class, uriInfo.getBaseUri().toString());
-
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setUserId(username);
-        request.setPassword(password);
-
-        AuthenticationResponse response = auth.login(request);
         if (response.isLoggedIn()) {
             URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
-            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&warning=invalid").build();
+            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + applicationKey + "&warning=invalid").build();
             return Response.seeOther(uri).build();
         }
     }

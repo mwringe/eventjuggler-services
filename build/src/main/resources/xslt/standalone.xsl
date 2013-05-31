@@ -22,7 +22,7 @@
          <xsl:apply-templates select="@*|node()"/>
          <subsystem xmlns="urn:jboss:picketlink:1.0">
             <identity-management jndi-name="picketlink/ExampleIMF" alias="default">
-                <jpa-store data-source="jboss/datasources/ExampleDS" realms="default">
+                <jpa-store data-source="jboss/datasources/ExampleDS" realms="default,system,applications,applications2,dummy-social">
                     <features supportsAll="true"/>
                 </jpa-store>
             </identity-management>

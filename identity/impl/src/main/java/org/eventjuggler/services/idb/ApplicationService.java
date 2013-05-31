@@ -40,6 +40,10 @@ public class ApplicationService {
     private EntityManager em;
 
     public void create(Application application) {
+        if (application.getRealm() == null) {
+            application.setRealm("applications");
+        }
+
         if (application.getKey() == null) {
             application.setKey(KeyGenerator.createApplicationKey());
         }

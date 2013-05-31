@@ -4,27 +4,28 @@
         <div id="actions-bg"></div>
 
         <div id="container-right" class="span9">
-            <a class="btn btn-small pull-right" href="#/users/new">Add User</a>
-            <h1>
-                <span class="gray">Users</span>
-            </h1>
+            <a class="btn btn-small pull-right" href="#/realms/{{realm}}/users/new">Add User</a>
 
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>Email</th>
+                <h1>
+                    <span class="gray">{{realm}}</span> users
+                </h1>
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Firstname</th>
+                            <th>Lastname</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="user in users">
+                        <td><a href="#/realms/{{realm}}/users/{{user.userId}}">{{user.userId}}</a></td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.email}}</td>
                     </tr>
-                </thead>
-                <tr ng-repeat="user in users">
-                    <td><a href="#/users/{{user.userId}}">{{user.userId}}</a></td>
-                    <td>{{user.firstName}}</td>
-                    <td>{{user.lastName}}</td>
-                    <td>{{user.email}}</td>
-                </tr>
-            </table>
+                </table>
         </div>
         <div id="container-right-bg"></div>
     </div>

@@ -37,11 +37,11 @@ public interface Authentication {
 
     @GET
     @Path("/logout")
-    void logout(@QueryParam("token") String token);
+    void logout(@QueryParam("appKey") String applicationKey, @QueryParam("token") String token);
 
     @GET
     @Path("/userinfo")
     @Produces(MediaType.APPLICATION_JSON)
-    UserInfo getInfo(@QueryParam("token") String token);
+    UserInfo getInfo(@QueryParam("appKey") String applicationKey, @QueryParam("token") String token);
 
 }

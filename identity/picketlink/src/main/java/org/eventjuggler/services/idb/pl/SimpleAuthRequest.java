@@ -29,11 +29,21 @@ import javax.enterprise.context.RequestScoped;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @RequestScoped
-public class SimpleAuthToken implements Serializable {
+public class SimpleAuthRequest implements Serializable {
+
+    private String url;
 
     private String token;
 
-    public String getValue() {
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String path) {
+        this.url = path;
+    }
+
+    public String getToken() {
         return token;
     }
 

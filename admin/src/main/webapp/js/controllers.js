@@ -22,9 +22,10 @@ function ApplicationListCtrl($scope, applications) {
     $scope.applications = applications;
 }
 
-function ApplicationDetailCtrl($scope, applications, application, Application, providers, $location) {
+function ApplicationDetailCtrl($scope, applications, application, Application, realms, providers, $location) {
     $scope.application = angular.copy(application);
     $scope.applications = applications;
+    $scope.realms = realms;
     $scope.providers = providers;
 
     $scope.create = !application.key;
@@ -120,14 +121,22 @@ function ApplicationDetailCtrl($scope, applications, application, Application, p
     $scope.$watch("providers.length + application.providers.length", updateAvailableProviders);
 }
 
-function UserListCtrl($scope, users) {
+function RealmListCtrl($scope, realms) {
+    $scope.realms = realms;
+}
+
+function UserListCtrl($scope, realms, realm, users) {
+    $scope.realms = realms;
+    $scope.realm = realm;
     $scope.users = users;
 }
 
-function UserDetailCtrl($scope, user, User, $location) {
+function UserDetailCtrl($scope, realms, realm, user, User, $location) {
+    $scope.realms = realms;
+    $scope.realm = realm;
     $scope.user = angular.copy(user);
     $scope.create = !user.userId;
-    
+
     $scope.changed = $scope.create;
 
     $scope.$watch('user', function() {
@@ -136,15 +145,16 @@ function UserDetailCtrl($scope, user, User, $location) {
         }
     }, true);
 
-    
     $scope.save = function() {
         if ($scope.userForm.$valid) {
-            User.save($scope.user, function() {
+            User.save({
+                realmId : realm
+            }, $scope.user, function() {
                 $scope.changed = false;
                 user = angular.copy($scope.user);
-                
+
                 if ($scope.create) {
-                    $location.url("/users/" + user.userId);
+                    $location.url("/realms/" + realm + "/users/" + user.userId);
                 }
             });
         }
@@ -156,12 +166,15 @@ function UserDetailCtrl($scope, user, User, $location) {
     };
 
     $scope.cancel = function() {
-        $location.url("/users");
+        $location.url("/realms/" + realm + "/users");
     };
 
     $scope.remove = function() {
-        $scope.user.$remove(function() {
-            $location.url("/users");
+        $scope.user.$remove({
+            realmId : realm,
+            userId : $scope.user.userId
+        }, function() {
+            $location.url("/realms/" + realm + "/users");
         });
     };
 }

@@ -2,17 +2,12 @@
     <ul class="nav nav-list">
         <li>
             <div>
-                <span class="toggle">Users</span>
+                <span class="toggle">Realms</span>
             </div>
+            <ul>
+                <li ng-repeat="r in realms" ng-class="realm == r && 'active'"><a href=#/realms/{{r}}/users><i
+                        class="icon-globe icon-gray"></i> {{r}}</a></li>
+            </ul>
         </li>
     </ul>
 </nav>
-<div class="actions">
-    <div class="btn-group">
-        <span data-toggle="dropdown" class="btn dropdown-toggle tooltipTrigger" title="Add User"><i
-            class="icon-plus">Add...</i> <i class="caret caret-inverted"></i></span>
-        <ul class="dropdown-menu up">
-            <li><a href="#/users/new">Add User</a></li>
-        </ul>
-    </div>
-</div>

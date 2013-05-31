@@ -22,7 +22,9 @@ import org.picketlink.idm.model.User;
 @Startup
 public class InitialConfig {
 
-    private static final String ROOT_USERNAME = "root";
+    public static final String REALM = "system";
+
+    public static final String ROOT_USERNAME = "root";
 
     public static final String APPLICATION_NAME = "system";
 
@@ -49,13 +51,14 @@ public class InitialConfig {
             application.setSecret(KeyGenerator.createApplicationSecret());
             application.setOwner(ROOT_USERNAME);
             application.setCallbackUrl("/ejs-admin/#");
+            application.setRealm(REALM);
 
             em.persist(application);
 
             log.info("Created system application");
         }
 
-        IdentityManager im = imf.createIdentityManager();
+        IdentityManager im = imf.createIdentityManager(imf.getRealm(REALM));
 
         User root = im.getUser(ROOT_USERNAME);
         if (root == null) {

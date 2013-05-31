@@ -23,17 +23,12 @@ package org.eventjuggler.services.idb.pl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.simpleauth.rest.Attribute;
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.picketlink.authentication.BaseAuthenticator;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
 
@@ -44,58 +39,39 @@ import org.picketlink.idm.model.User;
 public class SimpleAuthAuthenticator extends BaseAuthenticator {
 
     @Inject
-    private SimpleAuthToken token;
+    private SimpleAuthRequest request;
 
     @Inject
     private SimpleAuthConfig config;
 
     @Override
     public void authenticate() {
-        String t = token.getValue();
-        if (t != null) {
-            if (config.isLocal()) {
-                User user = new SimpleAuthIdmUtil(getIdentityManager()).getUser(t);
-                if (user != null) {
-                    setUser(user);
-                    setStatus(AuthenticationStatus.SUCCESS);
-                } else {
-                    setStatus(AuthenticationStatus.FAILURE);
-                }
-            } else {
-                Authentication authentication = ProxyFactory
-                        .create(Authentication.class, config.getUrl() + "/ejs-identity/api");
-                UserInfo userInfo = authentication.getInfo(t);
-                if (userInfo != null) {
-                    User user = new SimpleUser(userInfo.getUserId());
-                    user.setFirstName(userInfo.getFirstName());
-                    user.setLastName(userInfo.getLastName());
-                    user.setEmail(userInfo.getEmail());
+        String appKey = config.getAppKey();
 
-                    if (userInfo.getAttributes() != null) {
-                        for (Attribute a : userInfo.getAttributes()) {
-                            user.setAttribute(new org.picketlink.idm.model.Attribute<String>(a.getName(), a.getValue()));
-                        }
+        String token = request.getToken();
+        if (token != null) {
+            String baseUrl = config.getUrl() != null ? config.getUrl() : request.getUrl();
+            Authentication authentication = ProxyFactory.create(Authentication.class, baseUrl + "/ejs-identity/api");
+            UserInfo userInfo = authentication.getInfo(appKey, token);
+            if (userInfo != null) {
+                User user = new SimpleUser(userInfo.getUserId());
+                user.setFirstName(userInfo.getFirstName());
+                user.setLastName(userInfo.getLastName());
+                user.setEmail(userInfo.getEmail());
+
+                if (userInfo.getAttributes() != null) {
+                    for (Attribute a : userInfo.getAttributes()) {
+                        user.setAttribute(new org.picketlink.idm.model.Attribute<String>(a.getName(), a.getValue()));
                     }
-
-                    setUser(user);
-                    setStatus(AuthenticationStatus.SUCCESS);
-                } else {
-                    setStatus(AuthenticationStatus.FAILURE);
-
                 }
+
+                setUser(user);
+                setStatus(AuthenticationStatus.SUCCESS);
+            } else {
+                setStatus(AuthenticationStatus.FAILURE);
             }
         } else {
             setStatus(AuthenticationStatus.DEFERRED);
-        }
-    }
-
-    private IdentityManager getIdentityManager() {
-        try {
-        IdentityManagerFactory imf = (IdentityManagerFactory) new InitialContext()
-                .lookup("java:comp/env/IdentityManagerFactory");
-        return imf.createIdentityManager();
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
         }
     }
 

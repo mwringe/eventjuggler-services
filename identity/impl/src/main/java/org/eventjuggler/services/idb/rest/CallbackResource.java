@@ -24,9 +24,7 @@ package org.eventjuggler.services.idb.rest;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
@@ -38,16 +36,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.IdmService;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
 import org.eventjuggler.services.idb.provider.IdentityProviderService;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.model.Attribute;
-import org.picketlink.idm.model.IdentityType;
 import org.picketlink.idm.model.User;
 
 /**
@@ -63,8 +58,8 @@ public class CallbackResource {
     @Context
     private HttpHeaders headers;
 
-    @Resource(name = "IdentityManagerFactory")
-    private IdentityManagerFactory imf;
+    @EJB
+    private IdmService idm;
 
     @Context
     private UriInfo uriInfo;
@@ -74,8 +69,6 @@ public class CallbackResource {
 
     @GET
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {
-        IdentityManager im = imf.createIdentityManager();
-
         Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -97,31 +90,29 @@ public class CallbackResource {
 
                 user.setAttribute(new Attribute<String>(providerUsernameKey, user.getLoginName()));
 
-                List<User> l = im.createIdentityQuery(User.class)
-                        .setParameter(IdentityType.ATTRIBUTE.byName(providerUsernameKey), providerUsername).getResultList();
+                User existingUser = idm.getUser(application.getRealm(), provider.getId(), user.getLoginName());
 
-                if (!l.isEmpty()) {
-                    User existingUser = l.get(0);
+                if (existingUser != null) {
                     updateUser(user, existingUser);
                     user = existingUser;
 
-                    im.update(user);
+                    idm.updateUser(application.getRealm(), user, null);
                 } else {
-                    if (user.getEmail() != null && im.getUser(user.getEmail()) == null) {
+                    if (user.getEmail() != null && idm.getUser(application.getRealm(), user.getEmail()) == null) {
                         user.setLoginName(user.getEmail());
-                    } else if (im.getUser(user.getLoginName()) != null) {
+                    } else if (idm.getUser(application.getRealm(), user.getLoginName()) != null) {
                         for (int i = 0;; i++) {
-                            if (im.getUser(providerUsername + i) == null) {
+                            if (idm.getUser(application.getRealm(), providerUsername + i) == null) {
                                 user.setLoginName(providerUsername + i);
                                 break;
                             }
                         }
                     }
 
-                    im.add(user);
+                    idm.createUser(application.getRealm(), user, null);
                 }
 
-                String token = new SimpleAuthIdmUtil(im).setToken(user);
+                String token = idm.createToken(application.getRealm(), user);
 
                 URI uri = callback.createUri(application.getCallbackUrl() + "?token=" + token).build();
                 return Response.seeOther(uri).build();

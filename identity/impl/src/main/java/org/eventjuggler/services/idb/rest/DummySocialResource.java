@@ -38,9 +38,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -53,6 +56,7 @@ import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.credential.UsernamePasswordCredentials;
+import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
 
 /**
@@ -69,6 +73,8 @@ public class DummySocialResource {
     @Resource(name = "IdentityManagerFactory")
     private IdentityManagerFactory imf;
 
+    private static final String REALM = "dummy-social";
+
     @Context
     private UriInfo uriInfo;
 
@@ -79,17 +85,17 @@ public class DummySocialResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getForm(@PathParam("appKey") String appKey, @Context UriInfo uri) {
+    public Response getLoginForm(@PathParam("appKey") String appKey, @Context UriInfo uri) {
         Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        StringBuilder sb = getHtmlForm(appKey, application, null);
+        StringBuilder sb = createLoginForm(appKey, application, null);
         return Response.ok(sb.toString()).build();
     }
 
-    private StringBuilder getHtmlForm(String appKey, Application application, String errorMessage) {
+    private StringBuilder createLoginForm(String appKey, Application application, String errorMessage) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append("<body>");
@@ -99,10 +105,27 @@ public class DummySocialResource {
             sb.append("<p>" + errorMessage + "</p>");
         }
         sb.append("<form action='#' method='post'>");
-        sb.append("<input type='text' name='username' placeholder='Username' />");
-        sb.append("<input type='password' name='password' placeholder='Password' />");
+
+        boolean loggedIn = false;
+        if (headers.getCookies().containsKey("dummy.cookie")) {
+            String username = headers.getCookies().get("dummy.cookie").getValue();
+            IdentityManager im = imf.createIdentityManager(imf.getRealm(REALM));
+            loggedIn = im.getUser(username) != null;
+            if (loggedIn) {
+                sb.append("<p>Logged in as: " + username + "</p>");
+            }
+        }
+
+        if (!loggedIn) {
+            sb.append("<input type='text' name='username' placeholder='Username' />");
+            sb.append("<input type='password' name='password' placeholder='Password' />");
+        }
+
         sb.append("<input type='hidden' name='appkey' value='" + appKey + "' />");
-        sb.append("<button type='submit'>Accept</button>");
+        sb.append("<button name='submit' type='submit' value='login'>Accept</button>");
+        if (!loggedIn) {
+            sb.append("<button name='submit' type='submit' value='register'>Register</button>");
+        }
         sb.append("</form>");
         sb.append("</body>");
         sb.append("</html>");
@@ -113,26 +136,57 @@ public class DummySocialResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Response login(@PathParam("appKey") String appKey, @FormParam("username") String username,
-            @FormParam("password") String password) throws URISyntaxException {
+            @FormParam("password") String password, @FormParam("submit") String submit) throws URISyntaxException {
         Application application = applicationService.getApplication(appKey);
         if (application == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        IdentityManager im = imf.createIdentityManager();
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, new Password(password));
+        boolean valid = false;
+        String error = null;
 
-        im.validateCredentials(credentials);
+        IdentityManager im = imf.createIdentityManager(imf.getRealm(REALM));
 
-        if (Credentials.Status.VALID.equals(credentials.getStatus())) {
+        if (submit.equals("login")) {
+            if (headers.getCookies().containsKey("dummy.cookie")) {
+                username = headers.getCookies().get("dummy.cookie").getValue();
+                valid = im.getUser(username) != null;
+            } else {
+                UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, new Password(password));
+
+                im.validateCredentials(credentials);
+                if (Credentials.Status.VALID.equals(credentials.getStatus())) {
+                    valid = true;
+                } else {
+                    error = "Invalid username or password";
+                }
+            }
+        } else if (submit.equals("register")) {
+            if (im.getUser(username) != null) {
+                valid = false;
+                error = "User already exists";
+            } else {
+                User user = new SimpleUser(username);
+                im.add(user);
+                im.updateCredential(user, new Password(password));
+
+                valid = true;
+            }
+        } else if (submit.equals("logout")) {
+            valid = false;
+        } else {
+            valid = false;
+        }
+
+        if (valid) {
             User user = im.getUser(username);
             String token = KeyGenerator.createToken();
             loggedInUsers.put(token, user);
 
             URI uri = new UriBuilder(headers, uriInfo, "api/callback/" + appKey + "?dummytoken=" + token).build();
-            return Response.seeOther(uri).build();
+            return Response.seeOther(uri).cookie(new NewCookie("dummy.cookie", user.getLoginName())).build();
         } else {
-            StringBuilder sb = getHtmlForm(appKey, application, "Invalid username or password");
+            StringBuilder sb = createLoginForm(appKey, application, error);
             return Response.ok(sb.toString()).build();
         }
     }

@@ -18,18 +18,12 @@
 
 package org.eventjuggler.services.simpleauth.rest;
 
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.QueryParam;
 
-import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
-import org.eventjuggler.services.utils.UserFactory;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
-import org.picketlink.idm.credential.Credentials;
-import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.credential.UsernamePasswordCredentials;
-import org.picketlink.idm.model.User;
+import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.model.Application;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -37,57 +31,28 @@ import org.picketlink.idm.model.User;
 @Stateless
 public class AuthenticationResource implements Authentication {
 
-    @Resource(name = "IdentityManagerFactory")
-    private IdentityManagerFactory imf;
+    @EJB
+    private ApplicationService as;
+
+    @EJB
+    private IdmService idm;
 
     @Override
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
-        IdentityManager im = imf.createIdentityManager();
-        SimpleAuthIdmUtil idmUtil = new SimpleAuthIdmUtil(im);
-
-        User user = null;
-        String token = null;
-
-        if (authcRequest.getPassword() != null) {
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(authcRequest.getUserId(), new Password(
-                    authcRequest.getPassword()));
-
-            im.validateCredentials(credentials);
-
-            if (Credentials.Status.VALID.equals(credentials.getStatus())) {
-                user = im.getUser(credentials.getUsername());
-                token = idmUtil.setToken(user);
-            }
-        } else if (authcRequest.getToken() != null) {
-            user = idmUtil.getUser(authcRequest.getToken());
-            token = authcRequest.getToken();
-        }
-
-        AuthenticationResponse response = new AuthenticationResponse();
-        if (user != null) {
-            response.setLoggedIn(true);
-            response.setUserId(user.getLoginName());
-            response.setToken(token);
-        }
-
-        return response;
+        Application application = as.getApplication(authcRequest.getApplicationKey());
+        return idm.login(application.getRealm(), authcRequest.getUserId(), authcRequest.getPassword());
     }
 
     @Override
-    public void logout(@QueryParam("token") String token) {
-        new SimpleAuthIdmUtil(imf.createIdentityManager()).removeToken(token);
+    public void logout(String applicationKey, String token) {
+        Application application = as.getApplication(applicationKey);
+        idm.logout(application.getRealm(), token);
     }
 
     @Override
-    public UserInfo getInfo(@QueryParam("token") String token) {
-        if (token != null) {
-            User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(token);
-            if (user != null) {
-                return UserFactory.createUserInfo(user);
-            }
-        }
-
-        return new UserInfo();
+    public UserInfo getInfo(String applicationKey, String token) {
+        Application application = as.getApplication(applicationKey);
+        return idm.getUserInfoByToken(application.getRealm(), token);
     }
 
 }

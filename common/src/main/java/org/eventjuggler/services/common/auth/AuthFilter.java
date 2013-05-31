@@ -13,11 +13,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.picketlink.idm.IdentityManagerFactory;
+import org.picketlink.idm.model.Realm;
 import org.picketlink.idm.model.User;
 
 public class AuthFilter implements Filter {
 
     private IdentityManagerFactory imf;
+    private Realm realm;
 
     @Override
     public void destroy() {
@@ -29,7 +31,7 @@ public class AuthFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             String token = ((HttpServletRequest) request).getHeader("token");
             if (token != null) {
-                User user = new SimpleAuthIdmUtil(imf.createIdentityManager()).getUser(token);
+                User user = new SimpleAuthIdmUtil(imf.createIdentityManager(realm)).getUser(token);
                 if (user != null) {
                     Auth.set(user);
                 }
@@ -47,6 +49,7 @@ public class AuthFilter implements Filter {
     public void init(FilterConfig arg0) throws ServletException {
         try {
             imf = (IdentityManagerFactory) new InitialContext().lookup("java:comp/env/IdentityManagerFactory");
+            realm = imf.getRealm("system");
         } catch (NamingException e) {
             throw new ServletException(e);
         }

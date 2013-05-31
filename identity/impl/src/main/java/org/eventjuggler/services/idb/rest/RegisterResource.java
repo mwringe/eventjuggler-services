@@ -24,7 +24,9 @@ package org.eventjuggler.services.idb.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -38,10 +40,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.simpleim.rest.IdentityManagement;
-import org.eventjuggler.services.simpleim.rest.User;
+import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.utils.UriBuilder;
-import org.jboss.resteasy.client.ProxyFactory;
+import org.picketlink.idm.model.SimpleUser;
+import org.picketlink.idm.model.User;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -56,6 +60,12 @@ public class RegisterResource {
     @Context
     private HttpHeaders headers;
 
+    @Inject
+    private ApplicationService as;
+
+    @EJB
+    private IdmService idm;
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getRegister(@PathParam("appKey") String appKey) {
@@ -69,17 +79,15 @@ public class RegisterResource {
     public Response register(@PathParam("appKey") String appKey, @FormParam("username") String username,
             @FormParam("email") String email, @FormParam("firstName") String firstName, @FormParam("lastName") String lastName,
             @FormParam("password") String password) throws URISyntaxException {
-        IdentityManagement management = ProxyFactory.create(IdentityManagement.class, uriInfo.getBaseUri().toString());
+        Application application = as.getApplication(appKey);
 
-        User user = new User();
-        user.setUserId(trim(username));
+        User user = new SimpleUser(trim(username));
         user.setFirstName(trim(firstName));
         user.setLastName(trim(lastName));
         user.setEmail(trim(email));
-        user.setPassword(password);
 
         try {
-            management.saveUser(username, user);
+            idm.createUser(application.getRealm(), user, password);
 
             URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&info=created").build();
             return Response.seeOther(uri).build();

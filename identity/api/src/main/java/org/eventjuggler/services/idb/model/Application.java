@@ -53,8 +53,14 @@ public class Application {
 
     private String secret;
 
+    private String realm;
+
     public String getCallbackUrl() {
         return callbackUrl;
+    }
+
+    public String getJavaScriptOrigin() {
+        return javaScriptOrigin;
     }
 
     public String getKey() {
@@ -69,10 +75,6 @@ public class Application {
         return owner;
     }
 
-    public String getJavaScriptOrigin() {
-        return javaScriptOrigin;
-    }
-
     public List<IdentityProviderConfig> getProviders() {
         return providers;
     }
@@ -81,8 +83,16 @@ public class Application {
         return secret;
     }
 
+    public String getRealm() {
+        return realm;
+    }
+
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
+    }
+
+    public void setJavaScriptOrigin(String javaScriptOrigin) {
+        this.javaScriptOrigin = javaScriptOrigin;
     }
 
     public void setKey(String key) {
@@ -97,16 +107,16 @@ public class Application {
         this.owner = owner;
     }
 
-    public void setJavaScriptOrigin(String javaScriptOrigin) {
-        this.javaScriptOrigin = javaScriptOrigin;
-    }
-
     public void setProviders(List<IdentityProviderConfig> providers) {
         this.providers = providers;
     }
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public void setRealm(String realm) {
+        this.realm = realm;
     }
 
 }

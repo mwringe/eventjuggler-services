@@ -54,8 +54,29 @@ eventjugglerServices.factory('ProviderListLoader', function(Provider, $q) {
     };
 });
 
+eventjugglerServices.factory('Realms', function($resource) {
+    var realms = {};
+    realms.query = function() {
+        return [ "applications", "applications2", "default", "dummy-social", "system" ];
+    };
+    return realms;
+});
+
+eventjugglerServices.factory('RealmsLoader', function(Realms) {
+    return function() {
+        return Realms.query();
+    };
+});
+
+eventjugglerServices.factory('RealmLoader', function($route) {
+    return function() {
+        return $route.current.params.realmId;
+    };
+});
+
 eventjugglerServices.factory('User', function($resource) {
-    return $resource('/ejs-identity/api/im/users/:userId', {
+    return $resource('/ejs-identity/api/im/:realmId/users/:userId', {
+        realmId : '@realmId',
         userId : '@userId'
     }, {
         save : {
@@ -64,10 +85,12 @@ eventjugglerServices.factory('User', function($resource) {
     });
 });
 
-eventjugglerServices.factory('UserListLoader', function(User, $q) {
+eventjugglerServices.factory('UserListLoader', function(User, $route, $q) {
     return function() {
         var delay = $q.defer();
-        User.query(function(users) {
+        User.query({
+            realmId : $route.current.params.realmId
+        }, function(users) {
             delay.resolve(users);
         }, function() {
             delay.reject('Unable to fetch users');
@@ -80,6 +103,7 @@ eventjugglerServices.factory('UserLoader', function(User, $route, $q) {
     return function() {
         var delay = $q.defer();
         User.get({
+            realmId : $route.current.params.realmId,
             userId : $route.current.params.userId
         }, function(user) {
             delay.resolve(user);
@@ -139,6 +163,7 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
         $http.defaults.headers.common['token'] = auth.token;
 
         auth.user = $resource('/ejs-identity/api/auth/userinfo').get({
+            appKey : "system",
             token : auth.token
         }, function() {
             if (auth.user.userId) {
@@ -165,14 +190,16 @@ eventjugglerServices.service('Auth', function($resource, $http, $location) {
     }
 
     auth.logout = function() {
-        $resource('/ejs-identity/api/auth/logout').get();
+        $resource('/ejs-identity/api/auth/logout').get({
+            appKey : "system"
+        });
 
         localStorage.removeItem("token");
         $http.defaults.headers.common['token'] = null;
 
         auth.loggedIn = false;
         auth.root = false;
-        
+
         $location.url("/");
     };
 
