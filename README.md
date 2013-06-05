@@ -8,31 +8,29 @@ Prerequisites
 - Java Development Kit 7
 - Recent Git client
 - Recent Maven 3
+- WildFly 8.0.0.Alpha1
 
 
 Installation
 ============
 
-The build component downloads and extracts WildFly 8.0.0.Alpha1. Then it installs EventJuggler Services and the PicketLink subsystem into the
-WildFly installation.
+To build and install to a running WildFly instance run:
 
-To build with WildFly run:
-
-    mvn clean install
-
-Then start with:
-
-    build/target/ejs-<PROJECT VERSION>/bin/standalone.sh
+    mvn clean install jboss-as:deploy
 
 
 Distribution
 ============
 
-A distribution can be created with the release profile.
+The dist component downloads and extracts WildFly 8.0.0.Alpha1. Then it installs EventJuggler Services into the WildFly installation.
 
-To create a distribution run:
+To build with WildFly run:
 
     mvn clean install -Prelease
+
+Then start with:
+
+    dist/target/ejs-<PROJECT VERSION>/bin/standalone.sh
 
 
 Testsuite
@@ -43,7 +41,7 @@ tests have been configured to use the WildFly installation created by the build 
 
 To run the testsuite in managed mode, run:
 
-    mvn -Pit-managed clean install
+    mvn -Prelease -Pit-managed clean install
 
 To run the testsuite in remote mode, first start WildFly with EventJuggler Services and PicketLink subsystem installed, and run:
 

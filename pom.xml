@@ -36,7 +36,6 @@
     <modules>
         <module>admin</module>
         <module>activities</module>
-        <module>build</module>
         <module>dist</module>
         <module>identity</module>
         <module>testsuite</module>

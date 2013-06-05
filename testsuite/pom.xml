@@ -172,7 +172,7 @@
                 </property>
             </activation>
             <properties>
-                <jboss.home>${project.parent.basedir}/build/target/ejs-${project.version}</jboss.home>
+                <jboss.home>${project.parent.basedir}/dist/target/ejs-${project.version}</jboss.home>
             </properties>
         </profile>
 

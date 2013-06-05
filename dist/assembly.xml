@@ -10,7 +10,7 @@
 
     <fileSets>
         <fileSet>
-            <directory>../build/target/ejs-${project.version}</directory>
+            <directory>${build.target.dir}</directory>
             <outputDirectory>ejs-${project.version}</outputDirectory>
             <excludes>
                 <exclude>**/*.sh</exclude>
@@ -20,7 +20,7 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <directory>../build/target/ejs-${project.version}</directory>
+            <directory>${build.target.dir}</directory>
             <outputDirectory>ejs-${project.version}</outputDirectory>
             <includes>
                 <include>**/*.sh</include>
@@ -28,7 +28,7 @@
             <fileMode>0755</fileMode>
         </fileSet>
          <fileSet>
-            <directory>../build/target/ejs-${project.version}</directory>
+            <directory>${build.target.dir}</directory>
             <outputDirectory>ejs-${project.version}</outputDirectory>
             <includes>
                 <include>**/*-users.properties</include>
@@ -36,7 +36,7 @@
             <fileMode>0600</fileMode>
         </fileSet>
         <fileSet>
-            <directory>../build/target/ejs-${project.version}</directory>
+            <directory>${build.target.dir}</directory>
             <outputDirectory>ejs-${project.version}</outputDirectory>
             <includes>
                 <include>domain/tmp/auth</include>
