@@ -32,7 +32,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eventjuggler.services.activities.ActivitiesQuery;
 import org.eventjuggler.services.activities.Event;
 import org.eventjuggler.services.activities.Statistics;
-import org.eventjuggler.services.common.auth.Auth;
+import org.eventjuggler.services.idb.auth.Auth;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>

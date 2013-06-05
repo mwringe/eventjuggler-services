@@ -2,12 +2,12 @@
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
     <deployment>
         <dependencies>
-            <module name="org.picketlink.idm" />
+            <module name="deployment.ejs-identity.ear" />
         </dependencies>
     </deployment>
     <sub-deployment name="ejs-activities-impl.war">
         <dependencies>
-            <module name="org.picketlink.idm" />
+            <module name="deployment.ejs-identity.ear" />
         </dependencies>
     </sub-deployment>
 </jboss-deployment-structure>

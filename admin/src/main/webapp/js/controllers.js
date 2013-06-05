@@ -178,3 +178,46 @@ function UserDetailCtrl($scope, realms, realm, user, User, $location) {
         });
     };
 }
+
+function RealmDetailCtrl($scope, Realm, realms, realm, $location) {
+    $scope.realms = realms;
+    $scope.realm = angular.copy(realm);
+    $scope.create = !realm.name;
+
+    $scope.changed = $scope.create;
+
+    $scope.$watch('realm', function() {
+        if (!angular.equals($scope.realm, realm)) {
+            $scope.changed = true;
+        }
+    }, true);
+
+    $scope.save = function() {
+        if ($scope.realmForm.$valid) {
+            console.debug($scope.realm);
+            Realm.update($scope.realm, function() {
+                $scope.changed = false;
+                realm = angular.copy($scope.realm);
+
+                if ($scope.create) {
+                    $location.url("/realms/" + realm.name);
+                }
+            });
+        }
+    };
+
+    $scope.reset = function() {
+        $scope.user = angular.copy(user);
+        $scope.changed = false;
+    };
+
+    $scope.cancel = function() {
+        $location.url("/realms");
+    };
+
+    $scope.remove = function() {
+        Realm.remove($scope.realm, function() {
+            $location.url("/realms");
+        });
+    };
+}

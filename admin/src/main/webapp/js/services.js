@@ -26,15 +26,20 @@ eventjugglerServices.factory('ApplicationListLoader', function(Application, $q) 
 
 eventjugglerServices.factory('ApplicationLoader', function(Application, $route, $q) {
     return function() {
-        var delay = $q.defer();
-        Application.get({
-            key : $route.current.params.key
-        }, function(application) {
-            delay.resolve(application);
-        }, function() {
-            delay.reject('Unable to fetch application ' + $route.current.params.recipeId);
-        });
-        return delay.promise;
+        var key = $route.current.params.key;
+        if (key == 'new') {
+            return {};
+        } else {
+            var delay = $q.defer();
+            Application.get({
+                key : key
+            }, function(application) {
+                delay.resolve(application);
+            }, function() {
+                delay.reject('Unable to fetch application ' + $route.current.params.recipeId);
+            });
+            return delay.promise;
+        }
     };
 });
 
@@ -54,23 +59,38 @@ eventjugglerServices.factory('ProviderListLoader', function(Provider, $q) {
     };
 });
 
-eventjugglerServices.factory('Realms', function($resource) {
-    var realms = {};
-    realms.query = function() {
-        return [ "applications", "applications2", "default", "dummy-social", "system" ];
-    };
-    return realms;
+eventjugglerServices.factory('Realm', function($resource) {
+    return $resource('/ejs-identity/api/admin/realms/:name', {
+        name : '@name'
+    }, {
+        update : {
+            method : 'PUT'
+        }
+    });
 });
 
-eventjugglerServices.factory('RealmsLoader', function(Realms) {
+eventjugglerServices.factory('RealmListLoader', function(Realm, $q) {
     return function() {
-        return Realms.query();
+        var delay = $q.defer();
+        Realm.query(function(realms) {
+            delay.resolve(realms);
+        }, function() {
+            delay.reject('Unable to fetch realms');
+        });
+        return delay.promise;
     };
 });
 
 eventjugglerServices.factory('RealmLoader', function($route) {
     return function() {
-        return $route.current.params.realmId;
+        var name = $route.current.params.realmId;
+        if (name == 'new') {
+            return {};
+        } else {
+            return {
+                name : name
+            };
+        }
     };
 });
 
@@ -101,16 +121,21 @@ eventjugglerServices.factory('UserListLoader', function(User, $route, $q) {
 
 eventjugglerServices.factory('UserLoader', function(User, $route, $q) {
     return function() {
-        var delay = $q.defer();
-        User.get({
-            realmId : $route.current.params.realmId,
-            userId : $route.current.params.userId
-        }, function(user) {
-            delay.resolve(user);
-        }, function() {
-            delay.reject('Unable to fetch user ' + $route.current.params.userId);
-        });
-        return delay.promise;
+        var userId = $route.current.params.userId;
+        if (userId == 'new') {
+            return {};
+        } else {
+            var delay = $q.defer();
+            User.get({
+                realmId : $route.current.params.realmId,
+                userId : userId
+            }, function(user) {
+                delay.resolve(user);
+            }, function() {
+                delay.reject('Unable to fetch user ' + $route.current.params.userId);
+            });
+            return delay.promise;
+        }
     };
 });
 

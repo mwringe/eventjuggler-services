@@ -21,8 +21,8 @@ package org.eventjuggler.services.simpleauth.rest;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.eventjuggler.services.idb.ApplicationService;
-import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.ApplicationBean;
+import org.eventjuggler.services.idb.IdentityManagementBean;
 import org.eventjuggler.services.idb.model.Application;
 
 /**
@@ -32,10 +32,10 @@ import org.eventjuggler.services.idb.model.Application;
 public class AuthenticationResource implements Authentication {
 
     @EJB
-    private ApplicationService as;
+    private ApplicationBean as;
 
     @EJB
-    private IdmService idm;
+    private IdentityManagementBean idm;
 
     @Override
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {

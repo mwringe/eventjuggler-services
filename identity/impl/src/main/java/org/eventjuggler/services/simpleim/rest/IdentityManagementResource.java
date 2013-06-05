@@ -21,9 +21,17 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-import org.eventjuggler.services.common.auth.Auth;
-import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.IdentityManagementBean;
+import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.picketlink.idm.model.SimpleUser;
 
@@ -31,34 +39,42 @@ import org.picketlink.idm.model.SimpleUser;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Stateless
-public class IdentityManagementResource implements IdentityManagement {
+@Path("im")
+public class IdentityManagementResource {
 
     @EJB
-    private IdmService idm;
+    private IdentityManagementBean idm;
 
-    @Override
-    public void deleteUser(String realm, String username) {
+    @DELETE
+    @Path("{realm}/users/{username}")
+    public void deleteUser(@PathParam("realm") String realm, @PathParam("username") String username) {
         Auth.requireUser(username);
 
         idm.deleteUser(realm, username);
     }
 
-    @Override
-    public UserInfo getUser(String realm, String username) {
+    @GET
+    @Path("{realm}/users/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserInfo getUser(@PathParam("realm") String realm, @PathParam("username") String username) {
         Auth.requireUser(username);
 
         return idm.getUserInfo(realm, username);
     }
 
-    @Override
-    public List<UserInfo> getUsers(String realm) {
+    @GET
+    @Path("{realm}/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserInfo> getUsers(@PathParam("realm") String realm) {
         Auth.requireSuper();
 
         return idm.getUserInfos(realm);
     }
 
-    @Override
-    public void saveUser(String realm, String username, User user) {
+    @PUT
+    @Path("{realm}/users/{username}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void saveUser(@PathParam("realm") String realm, @PathParam("username") String username, UserDetails user) {
         org.picketlink.idm.model.User u = idm.getUser(realm, username);
         boolean userExists = u != null;
 

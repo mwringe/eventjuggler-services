@@ -1,13 +1,13 @@
 <div id="wrapper" class="container">
     <div class="row">
-        <aside class="span3" ng-include src="'partials/user-menu.html'"></aside>
+        <aside class="span3" ng-include src="'partials/realm-menu.html'"></aside>
         <div id="actions-bg"></div>
 
         <div id="container-right" class="span9">
             <a class="btn btn-small pull-right" href="#/realms/{{realm}}/users/new">Add User</a>
 
                 <h1>
-                    <span class="gray">{{realm}}</span> users
+                    <span class="gray">{{realm.name}}</span> users
                 </h1>
 
                 <table class="table table-striped table-bordered">

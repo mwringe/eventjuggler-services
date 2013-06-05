@@ -65,7 +65,7 @@ public class SimpleAuthAuthenticator extends BaseAuthenticator {
                     }
                 }
 
-                setUser(user);
+                setAgent(user);
                 setStatus(AuthenticationStatus.SUCCESS);
             } else {
                 setStatus(AuthenticationStatus.FAILURE);

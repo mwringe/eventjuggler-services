@@ -19,43 +19,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.services.idb.provider;
+package org.eventjuggler.services.simpleim.rest;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.imageio.spi.ServiceRegistry;
+import org.eventjuggler.services.simpleauth.rest.UserInfo;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@Stateless
-public class IdentityProviderService {
+@XmlRootElement
+public class UserDetails extends UserInfo {
 
-    private final List<IdentityProvider> providers = new LinkedList<>();
+    private String password;
 
-    public IdentityProvider getProvider(String id) {
-        for (IdentityProvider p : providers) {
-            if (p.getId().equals(id)) {
-                return p;
-            }
-        }
-        return null;
+    public String getPassword() {
+        return password;
     }
 
-    public List<IdentityProvider> getProviders() {
-        return providers;
-    }
-
-    @PostConstruct
-    public void loadProviders() {
-        Iterator<IdentityProvider> itr = ServiceRegistry.lookupProviders(IdentityProvider.class);
-        while (itr.hasNext()) {
-            providers.add(itr.next());
-        }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
-            <artifactId>ejs-common</artifactId>
+            <artifactId>ejs-identity-api</artifactId>
             <scope>provided</scope>
         </dependency>
 

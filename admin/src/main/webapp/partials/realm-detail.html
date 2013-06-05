@@ -1,0 +1,39 @@
+<div id="wrapper" class="container">
+    <div class="row">
+        <aside class="span3" ng-include src="'partials/realm-menu.html'"></aside>
+        <div id="actions-bg"></div>
+
+        <div id="container-right" class="span9">
+            <h1>
+                <span class="gray" ng-show="create">New Realm</span>
+                <span class="gray" ng-hide="create">{{realm.name}}</span> configuration
+            </h1>
+
+            <form class="form-horizontal" name="realmForm">
+                <fieldset>
+                    <legend>Details</legend>
+                    <div class="control-group">
+                        <label class="control-label" for="name">Name </label>
+                        <div class="controls">
+                            <input type="text" class="input-xlarge" id="name" ng-model="realm.name" autofocus required ng-show="create">
+                            <input type="text" class="input-xlarge" id="name" ng-model="realm.name" required ng-hide="create" readonly>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions" ng-show="create">
+                    <button type="submit" ng-click="save()" class="btn btn-primary" ng-show="changed">Save</button>
+                    <button type="submit" ng-click="cancel()" class="btn" ng-click="cancel()" ng-show="changed">Cancel</button>
+                </div>
+
+                <div class="form-actions" ng-show="!create">
+                    <button type="submit" ng-click="save()" class="btn btn-primary" ng-show="changed">Save changes</button>
+                    <button type="submit" ng-click="reset()" class="btn" ng-show="changed">Reset changes</button>
+                    <button type="submit" ng-click="remove()" class="btn btn-danger" ng-hide="changed">Delete</button>
+                </div>
+                
+            </form>
+        </div>
+        <div id="container-right-bg"></div>
+    </div>
+</div>

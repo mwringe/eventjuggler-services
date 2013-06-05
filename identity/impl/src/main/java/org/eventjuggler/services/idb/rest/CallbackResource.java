@@ -36,12 +36,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.idb.ApplicationService;
-import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.ApplicationBean;
+import org.eventjuggler.services.idb.IdentityManagementBean;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
-import org.eventjuggler.services.idb.provider.IdentityProviderService;
+import org.eventjuggler.services.idb.provider.IdentityProviderBean;
 import org.picketlink.idm.model.Attribute;
 import org.picketlink.idm.model.User;
 
@@ -53,19 +53,19 @@ import org.picketlink.idm.model.User;
 public class CallbackResource {
 
     @EJB
-    private ApplicationService applicationService;
+    private ApplicationBean applicationService;
 
     @Context
     private HttpHeaders headers;
 
     @EJB
-    private IdmService idm;
+    private IdentityManagementBean idm;
 
     @Context
     private UriInfo uriInfo;
 
     @EJB
-    private IdentityProviderService providerService;
+    private IdentityProviderBean providerService;
 
     @GET
     public Response callback(@PathParam("appKey") String appKey) throws URISyntaxException {

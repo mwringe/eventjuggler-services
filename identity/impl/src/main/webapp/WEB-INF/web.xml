@@ -4,7 +4,7 @@
 
     <filter>
         <filter-name>AuthFilter</filter-name>
-        <filter-class>org.eventjuggler.services.common.auth.AuthFilter</filter-class>
+        <filter-class>org.eventjuggler.services.idb.auth.AuthFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -12,10 +12,5 @@
         <url-pattern>/api/admin/*</url-pattern>
         <url-pattern>/api/im/*</url-pattern>
     </filter-mapping>
-
-    <resource-ref>
-        <res-ref-name>IdentityManagerFactory</res-ref-name>
-        <lookup-name>java:/picketlink/ExampleIMF</lookup-name>
-    </resource-ref>
 
 </web-app>

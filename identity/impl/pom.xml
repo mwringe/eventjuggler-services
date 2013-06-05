@@ -37,11 +37,6 @@
     <dependencies>
         <dependency>
             <groupId>org.eventjuggler.services</groupId>
-            <artifactId>ejs-common</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eventjuggler.services</groupId>
             <artifactId>ejs-identity-api</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -69,6 +64,16 @@
         <dependency>
             <groupId>org.picketlink</groupId>
             <artifactId>picketlink-idm-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-idm-impl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-idm-schema</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

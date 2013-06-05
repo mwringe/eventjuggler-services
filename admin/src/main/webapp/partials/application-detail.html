@@ -48,7 +48,7 @@
                             <label class="control-label" for="realm">Realm </label>
                             <div class="controls">
                                 <select ng-model="application.realm" id="realm" required>
-                                    <option ng-repeat="r in realms" value="{{r}}" ng-selected="r == application.realm">{{r}}</option>
+                                    <option ng-repeat="r in realms" value="{{r.name}}" ng-selected="r.name == application.realm">{{r.name}}</option>
                                 </select>
                             </div>
                         </div>

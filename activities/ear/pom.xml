@@ -44,10 +44,6 @@
             <artifactId>ejs-activities-impl</artifactId>
             <type>war</type>
         </dependency>
-        <dependency>
-            <groupId>org.eventjuggler.services</groupId>
-            <artifactId>ejs-common</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

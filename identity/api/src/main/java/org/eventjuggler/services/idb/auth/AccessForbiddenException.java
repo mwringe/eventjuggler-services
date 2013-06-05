@@ -19,25 +19,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.eventjuggler.services.common;
-
-import java.util.UUID;
+package org.eventjuggler.services.idb.auth;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public class KeyGenerator {
-
-    public static String createApplicationKey() {
-        return UUID.randomUUID().toString();
-    }
-
-    public static String createApplicationSecret() {
-        return UUID.randomUUID().toString();
-    }
-
-    public static String createToken() {
-        return UUID.randomUUID().toString();
-    }
+public class AccessForbiddenException extends RuntimeException {
 
 }

@@ -15,10 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eventjuggler.services.common.auth;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
+package org.eventjuggler.services.idb.auth;
 
 import org.picketlink.idm.model.User;
 
@@ -51,20 +48,20 @@ public class Auth {
 
     public static void requireSuper() {
         if (!isSuper()) {
-            throw new WebApplicationException(Status.FORBIDDEN);
+            throw new AccessForbiddenException();
         }
     }
 
     public static void requireUser() {
         if (!isUser()) {
-            throw new WebApplicationException(Status.FORBIDDEN);
+            throw new AccessForbiddenException();
         }
     }
 
     public static void requireUser(String requiredUser) {
         String userId = getUserId();
         if (userId == null) {
-            throw new WebApplicationException(Status.FORBIDDEN);
+            throw new AccessForbiddenException();
         }
 
         if (!userId.equals(requiredUser)) {

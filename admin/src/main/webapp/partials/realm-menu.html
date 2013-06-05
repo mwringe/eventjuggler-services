@@ -1,0 +1,18 @@
+<nav id="local-nav">
+    <ul class="nav nav-list">
+        <li>
+            <div>
+                <span class="toggle">Realms</span>
+            </div>
+            <ul>
+                <li ng-repeat="r in realms" ng-class="realm.name == r.name && 'active'">
+                    <a href=#/realms/{{r.name}}>{{r.name}}</a>
+                    <ul class="sub-items" ng-show="realm.name == r.name">
+                        <li ng-class="!path[2] && 'active'"><a href="#/realms/{{r.name}}">Configuration</a></li>
+                        <li ng-class="path[2] == 'users' && 'active'"><a href="#/realms/{{r.name}}/users">Users</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>

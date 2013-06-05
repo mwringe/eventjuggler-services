@@ -27,43 +27,59 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.common.auth.Auth;
-import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.ApplicationBean;
+import org.eventjuggler.services.idb.IdentityManagerRegistry;
+import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.idb.model.Application;
+import org.eventjuggler.services.idb.model.Realm;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
-import org.eventjuggler.services.idb.provider.IdentityProviderService;
+import org.eventjuggler.services.idb.provider.IdentityProviderBean;
 import org.eventjuggler.services.utils.UriBuilder;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Stateless
-public class AdminResource implements Admin {
+@Path("/admin")
+public class AdminResource {
 
     @EJB
-    private ApplicationService applicationService;
-
-    @EJB
-    private IdentityProviderService providerService;
-
-    @Context
-    private UriInfo uriInfo;
+    private ApplicationBean applicationService;
 
     @Context
     private HttpHeaders headers;
 
+    @EJB
+    private IdentityManagerRegistry identityManagerRegistry;
+
+    @EJB
+    private IdentityProviderBean providerService;
+
+    @Context
+    private UriInfo uriInfo;
+
     public AdminResource() {
     }
 
-    @Override
-    public void delete(String key) {
+    @DELETE
+    @Path("/applications/{key}")
+    public void deleteApplication(@PathParam("key") String key) {
         Application application = getApplication(key);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
@@ -74,8 +90,22 @@ public class AdminResource implements Admin {
         applicationService.remove(application);
     }
 
-    @Override
-    public Application getApplication(String key) {
+    @DELETE
+    @Path("/realms/{name}")
+    public void deleteRealm(@PathParam("name") String name) {
+        if (!identityManagerRegistry.containsRealm(name)) {
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
+
+        Auth.requireUser();
+
+        identityManagerRegistry.deleteRealm(name);
+    }
+
+    @GET
+    @Path("/applications/{key}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Application getApplication(@PathParam("key") String key) {
         Application application = applicationService.getApplication(key);
         if (application == null) {
             throw new WebApplicationException(Status.NOT_FOUND);
@@ -86,7 +116,9 @@ public class AdminResource implements Admin {
         return application;
     }
 
-    @Override
+    @GET
+    @Path("/applications")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Application> getApplications() {
         Auth.requireUser();
 
@@ -97,7 +129,9 @@ public class AdminResource implements Admin {
         }
     }
 
-    @Override
+    @GET
+    @Path("/providers")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<IdentityProviderDescription> getProviderTypes() {
         List<IdentityProviderDescription> descriptions = new LinkedList<>();
         for (IdentityProvider provider : providerService.getProviders()) {
@@ -107,7 +141,18 @@ public class AdminResource implements Admin {
         return descriptions;
     }
 
-    @Override
+    @GET
+    @Path("/realms")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Realm> getRealms() {
+        Auth.requireUser();
+
+        return identityManagerRegistry.getRealms();
+    }
+
+    @POST
+    @Path("/applications")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response save(Application application) {
         Auth.requireUser();
 
@@ -130,8 +175,10 @@ public class AdminResource implements Admin {
         return Response.created(URI.create("/applications/" + application.getKey())).build();
     }
 
-    @Override
-    public void save(String key, Application application) {
+    @PUT
+    @Path("/applications/{key}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void save(@PathParam("key") String key, Application application) {
         Application a = applicationService.getApplication(key);
 
         if (a == null) {
@@ -158,6 +205,17 @@ public class AdminResource implements Admin {
             Auth.requireUser(application.getOwner());
 
             applicationService.update(application);
+        }
+    }
+
+    @PUT
+    @Path("/realms/{name}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void save(@PathParam("name") String name, Realm realm) {
+        Auth.requireUser();
+
+        if (!identityManagerRegistry.containsRealm(name)) {
+            identityManagerRegistry.createRealm(realm);
         }
     }
 

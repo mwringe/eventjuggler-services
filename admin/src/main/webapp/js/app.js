@@ -28,23 +28,6 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
             }
         },
         controller : ActivitiesStatisticsCtrl
-    }).when('/applications/new', {
-        templateUrl : 'partials/application-detail.html',
-        resolve : {
-            applications : function(ApplicationListLoader) {
-                return ApplicationListLoader();
-            },
-            application : function() {
-                return {};
-            },
-            realms : function(RealmsLoader) {
-                return RealmsLoader();
-            },
-            providers : function(ProviderListLoader) {
-                return ProviderListLoader();
-            }
-        },
-        controller : ApplicationDetailCtrl
     }).when('/applications/:key', {
         templateUrl : 'partials/application-detail.html',
         resolve : {
@@ -54,8 +37,8 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
             application : function(ApplicationLoader) {
                 return ApplicationLoader();
             },
-            realms : function(RealmsLoader) {
-                return RealmsLoader();
+            realms : function(RealmListLoader) {
+                return RealmListLoader();
             },
             providers : function(ProviderListLoader) {
                 return ProviderListLoader();
@@ -70,25 +53,11 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
             }
         },
         controller : ApplicationListCtrl
-    }).when('/realms/:realmId/users/new', {
-        templateUrl : 'partials/user-detail.html',
-        resolve : {
-            realms : function(RealmsLoader) {
-                return RealmsLoader();
-            },
-            realm : function(RealmLoader) {
-                return RealmLoader();
-            },
-            user : function() {
-                return {};
-            }
-        },
-        controller : UserDetailCtrl
     }).when('/realms/:realmId/users/:userId', {
         templateUrl : 'partials/user-detail.html',
         resolve : {
-            realms : function(RealmsLoader) {
-                return RealmsLoader();
+            realms : function(RealmListLoader) {
+                return RealmListLoader();
             },
             realm : function(RealmLoader) {
                 return RealmLoader();
@@ -101,8 +70,8 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
     }).when('/realms/:realmId/users', {
         templateUrl : 'partials/user-list.html',
         resolve : {
-            realms : function(RealmsLoader) {
-                return RealmsLoader();
+            realms : function(RealmListLoader) {
+                return RealmListLoader();
             },
             realm : function(RealmLoader) {
                 return RealmLoader();
@@ -112,11 +81,22 @@ eventjugglerModule.config([ '$routeProvider', function($routeProvider) {
             }
         },
         controller : UserListCtrl
+    }).when('/realms/:realmId', {
+        templateUrl : 'partials/realm-detail.html',
+        resolve : {
+            realms : function(RealmListLoader) {
+                return RealmListLoader();
+            },
+            realm : function(RealmLoader) {
+                return RealmLoader();
+            }
+        },
+        controller : RealmDetailCtrl
     }).when('/realms', {
         templateUrl : 'partials/realm-list.html',
         resolve : {
-            realms : function(RealmsLoader) {
-                return RealmsLoader();
+            realms : function(RealmListLoader) {
+                return RealmListLoader();
             }
         },
         controller : RealmListCtrl

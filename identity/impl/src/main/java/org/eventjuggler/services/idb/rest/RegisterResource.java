@@ -40,8 +40,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.idb.ApplicationService;
-import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.ApplicationBean;
+import org.eventjuggler.services.idb.IdentityManagementBean;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.utils.UriBuilder;
 import org.picketlink.idm.model.SimpleUser;
@@ -61,10 +61,10 @@ public class RegisterResource {
     private HttpHeaders headers;
 
     @Inject
-    private ApplicationService as;
+    private ApplicationBean as;
 
     @EJB
-    private IdmService idm;
+    private IdentityManagementBean idm;
 
     @GET
     @Produces(MediaType.TEXT_HTML)

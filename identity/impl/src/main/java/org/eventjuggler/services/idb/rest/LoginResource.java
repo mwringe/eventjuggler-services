@@ -44,13 +44,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.idb.ApplicationService;
-import org.eventjuggler.services.idb.IdmService;
+import org.eventjuggler.services.idb.ApplicationBean;
+import org.eventjuggler.services.idb.IdentityManagementBean;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.IdentityProviderConfig;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
-import org.eventjuggler.services.idb.provider.IdentityProviderService;
+import org.eventjuggler.services.idb.provider.IdentityProviderBean;
 import org.eventjuggler.services.idb.rest.LoginConfig.ProviderLoginConfig;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
 import org.eventjuggler.services.utils.UriBuilder;
@@ -63,13 +63,13 @@ import org.eventjuggler.services.utils.UriBuilder;
 public class LoginResource {
 
     @EJB
-    private IdentityProviderService providerService;
+    private IdentityProviderBean providerService;
 
     @EJB
-    private ApplicationService as;
+    private ApplicationBean as;
 
     @EJB
-    private IdmService idm;
+    private IdentityManagementBean idm;
 
     @Context
     private UriInfo uriInfo;

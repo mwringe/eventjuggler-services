@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ws.rs.Consumes;
@@ -38,21 +38,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eventjuggler.services.common.KeyGenerator;
-import org.eventjuggler.services.idb.ApplicationService;
+import org.eventjuggler.services.idb.ApplicationBean;
+import org.eventjuggler.services.idb.IdentityManagerRegistry;
 import org.eventjuggler.services.idb.model.Application;
+import org.eventjuggler.services.idb.model.Realm;
+import org.eventjuggler.services.idb.utils.KeyGenerator;
 import org.eventjuggler.services.utils.UriBuilder;
 import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.credential.UsernamePasswordCredentials;
@@ -68,10 +67,10 @@ import org.picketlink.idm.model.User;
 public class DummySocialResource {
 
     @EJB
-    private ApplicationService applicationService;
+    private ApplicationBean applicationService;
 
-    @Resource(name = "IdentityManagerFactory")
-    private IdentityManagerFactory imf;
+    @EJB
+    private IdentityManagerRegistry identityManagerService;
 
     private static final String REALM = "dummy-social";
 
@@ -82,6 +81,16 @@ public class DummySocialResource {
     private HttpHeaders headers;
 
     private final Map<String, User> loggedInUsers = Collections.synchronizedMap(new HashMap<String, User>());
+
+    @PostConstruct
+    public void init() {
+        if (!identityManagerService.containsRealm(REALM)) {
+            Realm realm = new Realm();
+            realm.setName(REALM);
+
+            identityManagerService.createRealm(realm);
+        }
+    }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -109,7 +118,7 @@ public class DummySocialResource {
         boolean loggedIn = false;
         if (headers.getCookies().containsKey("dummy.cookie")) {
             String username = headers.getCookies().get("dummy.cookie").getValue();
-            IdentityManager im = imf.createIdentityManager(imf.getRealm(REALM));
+            IdentityManager im = identityManagerService.createIdentityManager(REALM);
             loggedIn = im.getUser(username) != null;
             if (loggedIn) {
                 sb.append("<p>Logged in as: " + username + "</p>");
@@ -145,7 +154,7 @@ public class DummySocialResource {
         boolean valid = false;
         String error = null;
 
-        IdentityManager im = imf.createIdentityManager(imf.getRealm(REALM));
+        IdentityManager im = identityManagerService.createIdentityManager(REALM);
 
         if (submit.equals("login")) {
             if (headers.getCookies().containsKey("dummy.cookie")) {

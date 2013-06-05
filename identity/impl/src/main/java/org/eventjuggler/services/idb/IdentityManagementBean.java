@@ -24,18 +24,16 @@ package org.eventjuggler.services.idb;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
-import org.eventjuggler.services.common.auth.SimpleAuthIdmUtil;
+import org.eventjuggler.services.idb.auth.SimpleAuthIdmUtil;
 import org.eventjuggler.services.simpleauth.rest.AuthenticationResponse;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.eventjuggler.services.utils.UserFactory;
 import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.IdentityManagerFactory;
 import org.picketlink.idm.credential.Credentials;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.credential.UsernamePasswordCredentials;
@@ -46,23 +44,25 @@ import org.picketlink.idm.model.User;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 @Stateless
-public class IdmService {
+public class IdentityManagementBean {
 
     @EJB
-    private ApplicationService as;
+    private IdentityManagerRegistry identityManagerService;
 
-    @Resource(name = "IdentityManagerFactory")
-    private IdentityManagerFactory imf;
+    public String createToken(String realm, User user) {
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
+        return new SimpleAuthIdmUtil(im).setToken(user);
+    }
 
     public void createUser(String realm, User user, String password) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
 
         im.add(user);
         im.updateCredential(user, new Password(password));
     }
 
     public void deleteUser(String realm, String username) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
 
         User user = im.getUser(username);
         if (user == null) {
@@ -72,17 +72,22 @@ public class IdmService {
         im.remove(user);
     }
 
-    private IdentityManager getIdentityManager(String realm) {
-        return imf.createIdentityManager(imf.getRealm(realm));
-    }
-
     public User getUser(String realm, String username) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
         return im.getUser(username);
     }
 
+    public User getUser(String realm, String provider, String username) {
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
+
+        List<User> l = im.createIdentityQuery(User.class)
+                .setParameter(IdentityType.ATTRIBUTE.byName(provider + ".username"), username).getResultList();
+
+        return l.isEmpty() ? null : l.get(0);
+    }
+
     public User getUserByToken(String realm, String token) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
         SimpleAuthIdmUtil idmUtil = new SimpleAuthIdmUtil(im);
         return idmUtil.getUser(token);
     }
@@ -115,28 +120,14 @@ public class IdmService {
         return userInfos;
     }
 
-    public User getUser(String realm, String provider, String username) {
-        IdentityManager im = getIdentityManager(realm);
-
-        List<User> l = im.createIdentityQuery(User.class)
-                .setParameter(IdentityType.ATTRIBUTE.byName(provider + ".username"), username).getResultList();
-
-        return l.isEmpty() ? null : l.get(0);
-    }
-
-    public String createToken(String realm, User user) {
-        IdentityManager im = getIdentityManager(realm);
-        return new SimpleAuthIdmUtil(im).setToken(user);
-    }
-
     public List<User> getUsers(String realm) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
 
         return im.createIdentityQuery(User.class).getResultList();
     }
 
     public AuthenticationResponse login(String realm, String username, String password) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
 
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, new Password(password));
         im.validateCredentials(credentials);
@@ -158,14 +149,14 @@ public class IdmService {
     }
 
     public void logout(String realm, String token) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
 
         SimpleAuthIdmUtil idmUtil = new SimpleAuthIdmUtil(im);
         idmUtil.removeToken(token);
     }
 
     public void updateUser(String realm, User user, String password) {
-        IdentityManager im = getIdentityManager(realm);
+        IdentityManager im = identityManagerService.createIdentityManager(realm);
 
         im.update(user);
 
