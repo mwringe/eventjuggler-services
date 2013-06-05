@@ -21,13 +21,13 @@
  */
 package org.eventjuggler.services.idb.pl;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eventjuggler.services.simpleauth.rest.Attribute;
 import org.eventjuggler.services.simpleauth.rest.Authentication;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.jboss.resteasy.client.ProxyFactory;
+import org.picketlink.annotations.PicketLink;
 import org.picketlink.authentication.BaseAuthenticator;
 import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
@@ -35,7 +35,7 @@ import org.picketlink.idm.model.User;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-@ApplicationScoped
+@PicketLink
 public class SimpleAuthAuthenticator extends BaseAuthenticator {
 
     @Inject
