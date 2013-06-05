@@ -29,7 +29,7 @@
         <version>0.1.0.M2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ejs-activities</artifactId>
+    <artifactId>ejs-activities-ear</artifactId>
     <name>Activites EAR</name>
 
     <packaging>ear</packaging>
@@ -47,7 +47,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>ejs-activities</finalName>
 
         <plugins>
             <plugin>

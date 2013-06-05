@@ -58,12 +58,12 @@
                 </dependency>
                 <dependency>
                     <groupId>org.eventjuggler.services</groupId>
-                    <artifactId>ejs-activities</artifactId>
+                    <artifactId>ejs-activities-ear</artifactId>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>org.eventjuggler.services</groupId>
-                    <artifactId>ejs-identity</artifactId>
+                    <artifactId>ejs-identity-ear</artifactId>
                     <type>ear</type>
                 </dependency>
                 <dependency>

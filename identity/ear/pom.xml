@@ -29,7 +29,7 @@
         <version>0.1.0.M2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ejs-identity</artifactId>
+    <artifactId>ejs-identity-ear</artifactId>
     <name>Identity EAR</name>
 
     <packaging>ear</packaging>
@@ -60,7 +60,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>ejs-identity</finalName>
 
         <plugins>
             <plugin>

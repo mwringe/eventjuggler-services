@@ -43,8 +43,8 @@
 
 	<target name="copy-deployments">
 		<copy file="${org.eventjuggler.services:ejs-admin:war}" tofile="${build.target.dir}/standalone/deployments/ejs-admin.war" overwrite="true" />
-		<copy file="${org.eventjuggler.services:ejs-activities:ear}" tofile="${build.target.dir}/standalone/deployments/ejs-activities.ear" overwrite="true" />
-		<copy file="${org.eventjuggler.services:ejs-identity:ear}" tofile="${build.target.dir}/standalone/deployments/ejs-identity.ear" overwrite="true" />
+		<copy file="${org.eventjuggler.services:ejs-activities-ear:ear}" tofile="${build.target.dir}/standalone/deployments/ejs-activities.ear" overwrite="true" />
+		<copy file="${org.eventjuggler.services:ejs-identity-ear:ear}" tofile="${build.target.dir}/standalone/deployments/ejs-identity.ear" overwrite="true" />
 	</target>
 
 	<target name="all" depends="install-wildfly, copy-deployments">

@@ -101,7 +101,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
-                <artifactId>ejs-activities</artifactId>
+                <artifactId>ejs-activities-ear</artifactId>
                 <version>${project.version}</version>
                 <type>ear</type>
             </dependency>
@@ -124,7 +124,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
-                <artifactId>ejs-identity</artifactId>
+                <artifactId>ejs-identity-ear</artifactId>
                 <version>${project.version}</version>
                 <type>ear</type>
             </dependency>
