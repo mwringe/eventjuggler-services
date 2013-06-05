@@ -62,7 +62,7 @@ window.identityBroker = (function () {
         div.setAttribute("class", "ib-login-header");
 
         var h = document.createElement("h1");
-        h.innerText = text;
+        h.textContent = text;
         div.appendChild(h);
 
         return div;
@@ -74,7 +74,7 @@ window.identityBroker = (function () {
 
         var label = document.createElement("label");
         label.setAttribute("for", name);
-        label.innerText = labelText;
+        label.textContent = labelText;
         div.appendChild(label);
 
         var input = document.createElement("input");
@@ -94,13 +94,13 @@ window.identityBroker = (function () {
         div.setAttribute("class", "ib-login-message-" + type);
 
         if (message == "invalid") {
-            div.innerText = "Invalid username or password";
+            div.textContent = "Invalid username or password";
         } else if (message == "created") {
-            div.innerText = "Created user";
+            div.textContent = "Created user";
         } else if (message = "failed") {
-            div.innerText = "Failed to create user";
+            div.textContent = "Failed to create user";
         } else {
-            div.innerText = message;
+            div.textContent = message;
         }
 
         return div;
@@ -138,13 +138,13 @@ window.identityBroker = (function () {
 
             var submitButton = document.createElement("button");
             submitButton.setAttribute("type", "submit");
-            submitButton.innerText = "Login";
+            submitButton.textContent = "Login";
             buttonsDiv.appendChild(submitButton);
 
             var registerButton = document.createElement("button");
             registerButton.setAttribute("type", "button");
             registerButton.setAttribute("onclick", "location.href='" + ib.registerUrl + "'");
-            registerButton.innerText = "Register";
+            registerButton.textContent = "Register";
             buttonsDiv.appendChild(registerButton);
 
             var socialLogin = document.createElement("div");
@@ -201,13 +201,13 @@ window.identityBroker = (function () {
 
             var submitButton = document.createElement("button");
             submitButton.setAttribute("type", "submit");
-            submitButton.innerText = "Register";
+            submitButton.textContent = "Register";
             buttonsDiv.appendChild(submitButton);
 
             var cancelButton = document.createElement("button");
             cancelButton.setAttribute("type", "button");
             cancelButton.setAttribute("onclick", "location.href='" + ib.loginUrl + "'");
-            cancelButton.innerText = "Cancel";
+            cancelButton.textContent = "Cancel";
             buttonsDiv.appendChild(cancelButton);
         };
 
