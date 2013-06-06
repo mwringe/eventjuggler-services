@@ -148,13 +148,13 @@ function UserDetailCtrl($scope, realms, realm, user, User, $location) {
     $scope.save = function() {
         if ($scope.userForm.$valid) {
             User.save({
-                realmId : realm
+                realmId : realm.name
             }, $scope.user, function() {
                 $scope.changed = false;
                 user = angular.copy($scope.user);
 
                 if ($scope.create) {
-                    $location.url("/realms/" + realm + "/users/" + user.userId);
+                    $location.url("/realms/" + realm.name + "/users/" + user.userId);
                 }
             });
         }
@@ -166,15 +166,15 @@ function UserDetailCtrl($scope, realms, realm, user, User, $location) {
     };
 
     $scope.cancel = function() {
-        $location.url("/realms/" + realm + "/users");
+        $location.url("/realms/" + realm.name + "/users");
     };
 
     $scope.remove = function() {
         $scope.user.$remove({
-            realmId : realm,
+            realmId : realm.name,
             userId : $scope.user.userId
         }, function() {
-            $location.url("/realms/" + realm + "/users");
+            $location.url("/realms/" + realm.name + "/users");
         });
     };
 }
