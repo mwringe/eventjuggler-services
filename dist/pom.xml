@@ -38,6 +38,11 @@
 
     <properties>
         <build.target.dir>${project.build.directory}/ejs-${project.version}</build.target.dir>
+
+        <ejs.dist.download.url>http://ejs-download-url</ejs.dist.download.url>
+        <ejs.saas.url>https://ejs-saas-url</ejs.saas.url>
+        <ejs.saas.root.username>root</ejs.saas.root.username>
+        <ejs.saas.root.password>root</ejs.saas.root.password>
     </properties>
 
     <profiles>
@@ -80,7 +85,7 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>default-cli</id>
+                                <id>build</id>
                                 <phase>package</phase>
                                 <configuration>
                                     <target>
@@ -116,6 +121,29 @@
                                     <workDirectory>target/assembly/work</workDirectory>
                                     <tarLongFileMode>gnu</tarLongFileMode>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.6</version>
+                        <executions>
+                            <execution>
+                                <id>copy-documentation</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <outputDirectory>target/ejs-doc-${project.version}</outputDirectory>
+                                    <resources>          
+                                        <resource>
+                                            <directory>src/main/resources/doc</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>              
+                                </configuration>   
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>         
                             </execution>
                         </executions>
                     </plugin>

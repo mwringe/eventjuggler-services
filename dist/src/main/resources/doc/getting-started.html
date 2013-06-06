@@ -1,0 +1,490 @@
+<html>
+<style>
+html {
+    background-color: #eee;
+}
+
+body {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    font-family: sans-serif;
+    margin: 5em auto;
+    padding: 8em 5em;
+    max-width: 900px;
+}
+
+h2 {
+    margin-top: 2em;
+}
+
+span.selectable {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+span.ref {
+    font-weight: bold;
+}
+
+img {
+    margin: 20px;
+}
+
+pre {
+    background-color: #fafafa;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+input#saas-appkey,input#local-appkey {
+    color: #333;
+    font-size: 1.0em;
+    padding: 5px;
+    width: 100%;
+}
+
+::-webkit-input-placeholder {
+    color: #f44;
+}
+
+:-moz-placeholder {
+    color: #f44;
+}
+
+::-moz-placeholder {
+    color: #f44;
+}
+
+:-ms-input-placeholder {
+    color: #f44;
+}
+
+p.note {
+    color: #3a87ad;
+    background-color: #d9edf7;
+    border: 1px solid #bce8f1;
+    padding: 10px;
+}
+</style>
+<body>
+
+    <h1>EventJuggler Services ${project.version} Getting Started</h1>
+
+    <h2>Requirements</h2>
+
+    <ul>
+        <li>JDK 7</li>
+        <li>Maven 3</li>
+        <li>Git</li>
+        <li>WildFly ${version.org.wildfly}</li>
+    </ul>
+
+    <h2>Introduction</h2>
+
+    <p>EventJuggler Services (EJS) contains a set of services to make it simpler to create modern web applications. Currently
+        the focus is on the Identity Broker which aims to make it simple to provide authentication for web applications using
+        traditional logins or with external identity providers such as Google, Facebook and Twitter. There is also an Activities
+        service, which logs page views and allows retrieving basic statistics such as popular pages and related pages.</p>
+
+    <p>In fact, all an application developer has to do to add authentication to an application is to register and configure
+        the application with EJS. A simple link to login is then added to the application. Alternatively, the login form can also
+        be embedded into the application with the supplied JavaScript. Finally, user information is retrieved from a simple REST
+        interface or through the provided PicketLink integration. These steps are the same for a locally installed Identity
+        Provider, or one deployed to a public or private cloud.</p>
+
+    <p>Later, the application developer can add additional identity providers without touching the application. All that is
+        required is to configure the additional identity providers through the Admin console. If EJS is used as a SaaS the
+        application developer has the additional benefit of not having to maintain it. The developer doesn't have to worry about
+        securely storing users or identity providers changing their APIs, these concerns and a lot more are dealt with by the SaaS
+        provider.</p>
+
+    <p>The Admin console makes it simple to manage the services, through the Admin console it is currently possible to:</p>
+    <ul>
+        <li>Manage users - add, delete and edit users</li>
+        <li>Manage applications - configure applications with the Identity Broker</li>
+        <li>View activities - view basic statistics from the Activity service</li>
+    </ul>
+
+    <p>This guide describes three alternatives to experimenting with EJS:</p>
+
+    <ul>
+        <li><a href="#demo">5 Minute Overview</a> - the quick introduction using a demo installation of EJS on OpenShift</li>
+        <li><a href="#saas">EJS SaaS</a> - register and configure an applications with the demo installation of EJS, then
+            deploy the application to a locally running application server</li>
+        <li><a href="#local">Local EJS</a> - install and configure EJS locally, then deploy the application to the same
+            application server as EJS is deployed to</li>
+    </ul>
+
+    <!-- 5 Minute Overview -->
+
+    <h2>
+        <a id="demo">5 Minute Overview</a>
+    </h2>
+
+    <p>The simplest way to experiment with EJS is to use the live version on OpenShift. There's also two example applications
+        deployed here to try out login with the Identity Broker.</p>
+
+    <img src="deployment-demo.png">
+
+    <p>The diagram above shows the deployment of the Identity Broker and the application for this scenario. Both the
+        application and the Identity Broker are deployed to the same application server on OpenShift. If the user logs in with the
+        standard login the Identity Broker uses the IDM store to authenticate the user. Or if the user wants to login with another
+        identity provider, in this case Google+, the Identity Broker uses Google+ to authenticate the user.</p>
+
+    <p>
+        Open <a href="${ejs.saas.url}/ejs-admin/">${ejs.saas.url}/ejs-admin/</a> and login with
+        username <span class="selectable">${ejs.saas.root.username}</span> and password <span class="selectable">${ejs.saas.root.password}</span>. Navigate to <span
+            class="ref">Applications</span> and select <span class="ref">EventJuggler</span> from the side menu. This shows the
+        configuration for the EventJuggler application. In the table under <span class="ref">Identity Providers</span> two
+        identity providers have been configured, Google and My Dummy Social Site. Adding the key and value for the providers is
+        all that is required to add login with an additional identity provider to an application.
+    </p>
+
+    <p>
+        Now open <a href="${ejs.saas.url}/eventjuggler/">${ejs.saas.url}/eventjuggler/</a> and click
+        on <span class="ref">Register</span>. Fill in the details of the form and submit, then login. Go back to the <a
+            href="${ejs.saas.url}/ejs-admin/" target="_blank">Admin console</a> and navigate to <span class="ref">Users</span>.
+        Observe that the user you just created is listed in the table of users. You can edit and delete the user from the Admin
+        console if you'd like.
+    </p>
+
+    <p>
+        If you have a Google account, go back to <a href="${ejs.saas.url}/eventjuggler/">EventJuggler</a> logout,
+        then click on <span class="ref">Login</span>. Select the <span class="ref">G+</span> icon. This redirects you to Google to
+        authorize the application to access details about your account. If you accept you'll be logged in to EventJuggler using
+        your Google account.
+    </p>
+
+    <p>
+        There's also a more basic example application available at <a
+            href="${ejs.saas.url}/ejs-examples-jsf/index.jsf">${ejs.saas.url}/ejs-examples-jsf/index.jsf</a>.
+        This application lets you login by clicking <span class="ref">Login</span>, it also displays the login form embedded on
+        the page. Once logged in all it does is display the name of the user.
+    </p>
+
+    <!-- EJS SaaS -->
+    <h2>
+        <a id="saas">EJS SaaS</a>
+    </h2>
+
+    <p>This section takes a look at how to configure an application with an external Identity Broker, in this case EJS has already been
+        deployed to OpenShift. It then describes how to deploy the application to a locally running application server.</p>
+
+    <img src="deployment-saas.png">
+
+    <p>The diagram above shows the deployment of the Identity Broker and the application for this scenario. In this case the
+        Identity Broker is deployed to OpenShift and used as a SaaS, while the application is deployed to a locally installed
+        application server.</p>
+
+    <h3>Install the local application server</h3>
+
+    <p>
+        First you need to install an application server locally. This application server is only used for the sample application.
+        Download and extracted <a href="http://download.jboss.org/wildfly/${version.org.wildfly}/wildfly-${version.org.wildfly}.zip">WildFly
+            ${version.org.wildfly}</a>. Once installed start the server by running:
+    </p>
+
+    <pre>bin/standalone.sh</pre>
+
+    <h3>Configure the application with the Identity Broker</h3>
+
+    <p>
+        Open the <a href="${ejs.saas.url}/ejs-admin/">Admin console</a>
+            (<a href="${ejs.saas.url}/ejs-admin/">${ejs.saas.url}/ejs-admin/</a>), click on <span class="ref">Register</span> (if you're already logged in,
+        logout first). Fill in the form to register a new user and login. Alternatively, if
+        you have a Google account you can login with that directly instead of registering a user first. The Admin console uses the
+        Identity Broker to authenticate users, so login works in the same way as it does for applications.
+    </p>
+
+    <p>
+        Once logged in navigate to <span class="ref">Applications</span> and select <span class="ref">Add Application</span>. Fill
+        in the form with the following details:
+    </p>
+
+    <ul>
+        <li>Name: <span class="selectable">Example</span></li>
+        <li>Callback URL: <span class="selectable">http://localhost:8080/ejs-examples-jsf/index.jsf</span></li>
+        <li>JavaScript Origin: <span class="selectable">http://localhost:8080</span></li>
+    </ul>
+
+    <p>
+        Click <span class="ref">Save</span>, then copy the <span class="ref">Key</span> into the input field below (this will
+        update the documentation to include your application key). The <span class="ref">Secret</span> is not currently used so
+        ignore that for now.
+    </p>
+
+    <input id="saas-appkey" placeholder="Copy/paste application key from admin console into this field"
+        onchange="updateAppKeys();" />
+
+    <p>Now clone the example application from Github by running:</p>
+
+    <pre>git clone https://github.com/eventjuggler/eventjuggler-services-examples.git
+cd eventjuggler-services-examples</pre>
+
+    <p>Then build and install the example with:</p>
+
+    <pre>mvn clean install jboss-as:deploy -Dejs.url=${ejs.saas.url} \
+-Dejs.appKey=<span class="saas-appkey"></span></pre>
+
+    <p>
+        Now open <a href="http://localhost:8080/ejs-examples-jsf/index.jsf">http://localhost:8080/ejs-examples-jsf/index.jsf</a>
+        and select <span class="ref">Login</span>. You can either login with the user you created when registering the application
+        or register a new user by clicking on <span class="ref">Register</span>. The next sections will describe how to enable
+        additional identity providers.
+    </p>
+
+    <h3>Enable Dummy Provider</h3>
+
+    <p>
+        The Dummy Provider is a mock identity provider that uses PicketLink IDM to authenticate users. To enable it for the
+        example application, open the <a href="${ejs.saas.url}/ejs-admin/">Admin console</a>, login and navigate
+        to <span class="ref">Applications</span>.
+    </p>
+
+    <p>
+        Click on <span class="ref">Example</span> in the sidebar on the left. Then select <span class="ref">My Dummy Social
+            Site</span> in the drop-down under <span class="ref">Identity Providers</span> and click <span class="ref">Add
+            Provider</span>. Add a random value for <span class="ref">Key</span> and <span class="ref">Secret</span> for the Dummy
+        Provider (the Dummy Provider is just a mock so it doesn't use these values). Then click <span class="ref">Save
+            Changes</span>.
+    </p>
+
+    <p>
+        Open <a href="http://localhost:8080/ejs-examples-jsf/index.jsf">http://localhost:8080/ejs-examples-jsf/index.jsf</a>
+        and select <span class="ref">Login</span>. Now there's a <span class="ref">DS</span> icon, by clicking on this you are
+        redirected to the Dummy Provider to authorize the application to authenticate using your account with the dummy social
+        provider. The Dummy Provider uses the same PicketLink IDM store as the standard login, so you can login with the username
+        and password for the user you previously registered (or if you logged in with Goolge use username <span class="selectable">Foo</span>
+        and password <span class="selectable">bar</span>).
+    </p>
+
+    <h3>Enable Google Provider</h3>
+
+    <p>
+        To enable Google login open <a href="https://code.google.com/apis/console/">https://code.google.com/apis/console/</a>.
+        From the drop-down menu select <span class="ref">Create</span>.
+    </p>
+
+    <p>
+        Use any name that you'd like, click <span class="ref">Create Project</span>, select <span class="ref">API Access</span>
+        and click on <span class="ref">Create an OAuth 2.0 client ID</span>.
+    </p>
+
+    <p>
+        Use any product name you'd like and leave the other fields empty, then click <span class="ref">Next</span>. On the next
+        page select <span class="ref">Web application</span> as the application type. Click <span class="ref">more options</span>
+        next to <span class="ref">Your site or hostname</span>. Fill in the form with the following values:
+    </p>
+
+    <ul>
+        <li>Authorized Redirect URIs: <span class="selectable">${ejs.saas.url}/ejs-identity/api/callback/<span
+                class="saas-appkey"></span></span>
+    </ul>
+
+    <p>
+        Click on <span class="ref">Create client ID</span>. Take a note of the <span class="ref">Client ID</span> and <span class="ref">Client Secret</span> as you will need these
+        when adding the Google provider to your application in the <a href="${ejs.saas.url}/ejs-admin/">Admin
+            console</a>.
+    </p>
+
+    <p>
+        Open the <a href="${ejs.saas.url}/ejs-admin/">Admin console</a>, then select the <span class="ref">Example</span>
+        application you created earlier. Select the Google provider and click <span class="ref">Add Provider</span>. Insert <span
+            class="ref">Client ID</span> from Google into <span class="ref">Key</span> and <span class="ref">Client secret</span>
+        into <span class="ref">Secret</span>. Click <span class="ref">Save</span>.
+    </p>
+
+    <p>
+        Open <a href="http://localhost:8080/ejs-examples-jsf/index.jsf">http://localhost:8080/ejs-examples-jsf/index.jsf</a>
+        and select Login. Now there's an additional icon in the login form which allows you to login using your Google account.
+    </p>
+
+    <!-- Local -->
+    <h2>
+        <a id="local">Local EJS</a>
+    </h2>
+
+    <p>This section takes a look at how to install the Identity Broker locally. It then describes how to configure an
+        application in the local Idenity Broker, and how to deploy an application to the same application server as the Identity
+        Broker is deployed to.</p>
+
+    <img src="deployment-local.png">
+
+    <p>The diagram above shows the deployment of the Identity Broker and the application for this scenario. In this case the
+        Identity Broker and the application is deployed locally to the same application server.</p>
+
+    <h3>Install the local Identity Broker</h3>
+
+    <p>
+        This section provides instructions on how to install the Identity Broker from the distribution. If you want to build and
+        install it from the source, clone it from <a href="https://github.com/eventjuggler/eventjuggler-services">https://github.com/eventjuggler/eventjuggler-services</a>
+        and look at the <span class="ref">README.md</span> for instructions.
+    </p>
+
+    <p>
+        Download and extract <a href="${ejs.dist.download.url}">${ejs.dist.download.url}</a>.
+        This archive contains WildFly ${version.org.wildfly} with EJS and PicketLink 3 IDM subsystem. Once installed, start it by running:
+    </p>
+
+    <pre>bin/standalone.sh</pre>
+
+    <h3>Configure the application with the Identity Broker</h3>
+
+    <p>
+        Open the <a href="http://localhost:8080/ejs-admin">Admin console</a> (<a href="http://localhost:8080/ejs-admin">http://localhost:8080/ejs-admin</a>), click on <span
+            class="ref">Register</span>. Fill in the form to register a new user and login.
+    </p>
+
+    <p class="note">
+        The Admin console uses the Identity Broker to authenticate users, which means it can also authenticate users with other
+        identity providers such as Google. This has to be configured first though, if you want to try this out you can login using
+        username <span class="selectable">root</span> and password <span class="selectable">root</span>. Then follow the
+        instructions under <a href="#local-enable-google">Enable Google Provider</a>, but configuring the <span class="ref">system</span>
+        application instead of <span class="ref">Example</span>.
+    </p>
+
+    <p>
+        Once logged in navigate to <span class="ref">Applications</span> and select <span class="ref">Add Application</span>. Fill
+        in the form with the following details:
+    </p>
+
+    <ul>
+        <li>Name: <span class="selectable">Example</span></li>
+        <li>Callback URL: <span class="selectable">http://localhost:8080/ejs-examples-jsf/index.jsf</span></li>
+    </ul>
+
+    <p>
+        Click <span class="ref">Save</span>, then copy the <span class="ref">Key</span> into the input field below (this will
+        update the documentation to include your application key). The <span class="ref">Secret</span> is not currently used so
+        ignore that for now.
+    </p>
+
+    <input id="local-appkey" placeholder="Copy/paste application key from admin console into this field"
+        onchange="updateAppKeys();" />
+
+    <p>Now clone the example application from Github by running:</p>
+
+    <pre>git clone https://github.com/eventjuggler/eventjuggler-services-examples.git
+cd eventjuggler-services-examples</pre>
+
+    <p>Then build and install the example with:</p>
+
+    <pre>mvn clean install jboss-as:deploy -Dejs.appKey=<span class="local-appkey"></span></pre>
+
+    <p>
+        Now open <a href="http://localhost:8080/ejs-examples-jsf/index.jsf">http://localhost:8080/ejs-examples-jsf/index.jsf</a>
+        and select <span class="ref">Login</span>. You can either login with the user you created when registering the application
+        or register a new user by clicking on <span class="ref">Register</span>. The next sections will describe how to enable
+        additional identity providers.
+    </p>
+
+    <h3>Enable Dummy Provider</h3>
+
+    <p>
+        The Dummy Provider is a mock identity provider that uses PicketLink IDM to authenticate users. To enable it for the
+        example application, open the <a href="http://localhost:8080/ejs-admin">Admin console</a>, login and navigate to <span
+            class="ref">Applications</span>.
+    </p>
+
+    <p>
+        Click on <span class="ref">Example</span> in the sidebar on the left. Then select <span class="ref">My Dummy Social
+            Site</span> in the drop-down under <span class="ref">Identity Providers</span> and click <span class="ref">Add
+            Provider</span>. Add a random value for <span class="ref">Key</span> and <span class="ref">Secret</span> for the Dummy
+        Provider (the Dummy Provider is just a mock so it doesn't use these values). Then click <span class="ref">Save
+            Changes</span>.
+    </p>
+
+    <p>
+        Open <a href="http://localhost:8080/ejs-examples-jsf/index.jsf">http://localhost:8080/ejs-examples-jsf/index.jsf</a>
+        and select <span class="ref">Login</span>. Now there's a <span class="ref">DS</span> icon, by clicking on this you are
+        redirected to the Dummy Provider to authorize the application to authenticate using your account with the dummy social
+        provider. to login. As the Dummy Provider uses the same PicketLink IDM store as the standard login you can login with the
+        username and password you previously used.
+    </p>
+
+    <h3 id="local-enable-google">Enable Google Provider</h3>
+
+    <p>
+        To enable Google login open <a href="https://code.google.com/apis/console/">https://code.google.com/apis/console/</a>.
+        From the drop-down menu select <span class="ref">Create</span>.
+    </p>
+
+    <p>
+        Use any name that you'd like, click <span class="ref">Create Project</span>, select <span class="ref">API Access</span>
+        and click on <span class="ref">Create an OAuth 2.0 client ID</span>.
+    </p>
+
+    <p>
+        Use any product name you'd like and leave the other fields empty, then click <span class="ref">Next</span>. On the next
+        page select <span class="ref">Web application</span> as the application type. Click <span class="ref">more options</span>
+        next to <span class="ref">Your site or hostname</span>. Fill in the form with the following values:
+    </p>
+
+    <ul>
+        <li>Authorized Redirect URIs: <span class="selectable">http://localhost:8080/ejs-identity/api/callback/<span
+                class="local-appkey"></span></span>
+    </ul>
+
+    <p>
+        Click on <span class="ref">Create client ID</span>. Take a note of the <span class="ref">Client ID</span> and <span class="ref">Client Secret</span> as you will need these
+        when adding the Google provider to your application in the <a href="http://localhost:8080/ejs-admin">Admin console</a>.
+    </p>
+
+    <p>
+        Open the <a href="http://localhost:8080/ejs-admin">Admin console</a>, then select the <span class="ref">Example</span>
+        application you created earlier. Select the Google provider and click <span class="ref">Add Provider</span>. Insert <span
+            class="ref">Client ID</span> from Google into <span class="ref">Key</span> and <span class="ref">Client secret</span>
+        into <span class="ref">Secret</span>. Click <span class="ref">Save</span>.
+    </p>
+
+    <p>
+        Open <a href="http://localhost:8080/ejs-examples-jsf/index.jsf">http://localhost:8080/ejs-examples-jsf/index.jsf</a>
+        and select Login. Now there's an additional icon in the login form which allows you to login using your Google account.
+    </p>
+
+    <!-- Scripts -->
+
+    <script type="text/javascript">
+                    function select(el) {
+                        if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+                            var range = document.createRange();
+                            range.selectNodeContents(el);
+                            var sel = window.getSelection();
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        } else if (typeof document.selection != "undefined"
+                                && typeof document.body.createTextRange != "undefined") {
+                            var textRange = document.body.createTextRange();
+                            textRange.moveToElementText(el);
+                            textRange.select();
+                        }
+                    }
+
+                    var selectables = document.getElementsByClassName("selectable");
+                    for ( var i = 0; i < selectables.length; i++) {
+                        var e = selectables[i];
+                        selectables[i].onclick = function() {
+                            select(this);
+                        };
+                    }
+
+                    function updateAppKeys() {
+                        var keys = [ "saas-appkey", "local-appkey" ];
+                        for ( var i = 0; i < keys.length; i++) {
+                            var key = keys[i];
+                            var appKey = document.getElementById(key).value;
+                            var insertAppKey = document.getElementsByClassName(key);
+                            console.debug(insertAppKey.length);
+                            for ( var j = 0; j < insertAppKey.length; j++) {
+                                console.debug(insertAppKey[j]);
+                                insertAppKey[j].innerText = appKey != null && appKey.length > 0 ? appKey : "<APP KEY>";
+                            }
+                        }
+                    }
+
+                    updateAppKeys();
+                </script>
+</body>
+</html>
