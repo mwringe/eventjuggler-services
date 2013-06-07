@@ -34,7 +34,15 @@ public class UriBuilder {
 
     private final javax.ws.rs.core.UriBuilder b;
 
+    private String fragment;
+
     public UriBuilder(HttpHeaders headers, UriInfo uriInfo, String path) {
+        if (path.contains("#")) {
+            String t = path;
+            path = t.substring(0, t.indexOf('#'));
+            fragment = t.substring(t.indexOf('#'));
+        }
+
         if (path.contains("://")) {
             b = javax.ws.rs.core.UriBuilder.fromUri(path);
         } else {
@@ -67,7 +75,11 @@ public class UriBuilder {
     }
 
     public URI build() {
-        return b.build();
+        URI uri = b.build();
+        if (fragment != null) {
+            uri = uri.resolve(fragment);
+        }
+        return uri;
     }
 
 }

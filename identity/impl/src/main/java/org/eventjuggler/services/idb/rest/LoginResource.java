@@ -143,7 +143,8 @@ public class LoginResource {
         AuthenticationResponse response = idm.login(application.getRealm(), username, password);
 
         if (response.isLoggedIn()) {
-            URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
+            URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl())
+                    .setQueryParam("token", response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
             URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + applicationKey + "&error=login_failed").build();

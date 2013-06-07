@@ -115,7 +115,7 @@ public class CallbackResource {
 
                 String token = idm.createToken(application.getRealm(), user);
 
-                URI uri = callback.createUri(application.getCallbackUrl() + "?token=" + token).build();
+                URI uri = callback.createUri(application.getCallbackUrl()).setQueryParam("token", token).build();
                 return Response.seeOther(uri).build();
             }
         }

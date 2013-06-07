@@ -78,6 +78,13 @@ public class UriBuilderTest {
     }
 
     @Test
+    public void absoluteHash() {
+        URI uri = new UriBuilder(httpHeaders, uriInfo, "http://www.somedomain.com/test#/test").setQueryParam("test", "value")
+                .setQueryParam("test2", "value2").build();
+        Assert.assertEquals("http://www.somedomain.com/test?test=value&test2=value2#/test", uri.toString());
+    }
+
+    @Test
     public void relativeToHost() {
         URI uri = new UriBuilder(httpHeaders, uriInfo, "/test").setQueryParam("test", "value")
                 .setQueryParam("test2", "value2").build();
