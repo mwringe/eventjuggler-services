@@ -31,6 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eventjuggler.services.idb.IdentityManagementBean;
+import org.eventjuggler.services.idb.IdentityManagerRegistry;
 import org.eventjuggler.services.idb.auth.Auth;
 import org.eventjuggler.services.simpleauth.rest.UserInfo;
 import org.picketlink.idm.model.SimpleUser;
@@ -43,12 +44,15 @@ import org.picketlink.idm.model.SimpleUser;
 public class IdentityManagementResource {
 
     @EJB
+    private IdentityManagerRegistry registry;
+
+    @EJB
     private IdentityManagementBean idm;
 
     @DELETE
     @Path("{realm}/users/{username}")
     public void deleteUser(@PathParam("realm") String realm, @PathParam("username") String username) {
-        Auth.requireUser(username);
+        hasAccess(realm, username);
 
         idm.deleteUser(realm, username);
     }
@@ -57,7 +61,7 @@ public class IdentityManagementResource {
     @Path("{realm}/users/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserInfo getUser(@PathParam("realm") String realm, @PathParam("username") String username) {
-        Auth.requireUser(username);
+        hasAccess(realm, username);
 
         return idm.getUserInfo(realm, username);
     }
@@ -66,7 +70,7 @@ public class IdentityManagementResource {
     @Path("{realm}/users")
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserInfo> getUsers(@PathParam("realm") String realm) {
-        Auth.requireSuper();
+        hasAccess(realm);
 
         return idm.getUserInfos(realm);
     }
@@ -79,7 +83,7 @@ public class IdentityManagementResource {
         boolean userExists = u != null;
 
         if (userExists) {
-            Auth.requireUser(username);
+            hasAccess(realm, username);
         } else {
             u = new SimpleUser(username);
         }
@@ -92,6 +96,18 @@ public class IdentityManagementResource {
             idm.updateUser(realm, u, user.getPassword());
         } else {
             idm.createUser(realm, u, user.getPassword());
+        }
+    }
+
+    private void hasAccess(String realm) {
+        Auth.requireUser(registry.getRealm(realm).getOwner());
+    }
+
+    private void hasAccess(String realm, String username) {
+        if (Auth.getUserId().equals(username)) {
+            return;
+        } else {
+            hasAccess(realm);
         }
     }
 

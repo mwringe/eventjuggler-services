@@ -31,14 +31,34 @@ import javax.persistence.Id;
 public class Realm {
 
     @Id
+    private String key;
+
     private String name;
+
+    private String owner;
+
+    public String getKey() {
+        return key;
+    }
 
     public String getName() {
         return name;
     }
 
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
 }

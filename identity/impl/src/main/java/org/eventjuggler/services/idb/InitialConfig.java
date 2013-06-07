@@ -45,8 +45,6 @@ import org.picketlink.idm.model.User;
 @Startup
 public class InitialConfig {
 
-    public static final String APPLICATIONS_REALM = "applications";
-
     public static final String ROOT_USERNAME = "root";
 
     public static final String SYSTEM_APPLICATION_KEY = "system";
@@ -71,18 +69,11 @@ public class InitialConfig {
     @PostConstruct
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void init() {
-        if (!identityManagerService.containsRealm(APPLICATIONS_REALM)) {
-            Realm realm = new Realm();
-            realm.setName(APPLICATIONS_REALM);
-
-            identityManagerService.createRealm(realm);
-
-            log.info("Created applications realm");
-        }
-
         if (!identityManagerService.containsRealm(SYSTEM_REALM)) {
             Realm realm = new Realm();
             realm.setName(SYSTEM_REALM);
+            realm.setOwner(ROOT_USERNAME);
+            realm.setKey(SYSTEM_REALM);
 
             identityManagerService.createRealm(realm);
 

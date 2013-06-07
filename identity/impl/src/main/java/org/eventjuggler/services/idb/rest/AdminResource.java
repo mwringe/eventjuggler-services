@@ -91,15 +91,15 @@ public class AdminResource {
     }
 
     @DELETE
-    @Path("/realms/{name}")
-    public void deleteRealm(@PathParam("name") String name) {
-        if (!identityManagerRegistry.containsRealm(name)) {
+    @Path("/realms/{key}")
+    public void deleteRealm(@PathParam("key") String key) {
+        if (!identityManagerRegistry.containsRealm(key)) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
 
         Auth.requireUser();
 
-        identityManagerRegistry.deleteRealm(name);
+        identityManagerRegistry.deleteRealm(key);
     }
 
     @GET
@@ -142,12 +142,30 @@ public class AdminResource {
     }
 
     @GET
+    @Path("/realms/{key}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Realm getRealm(@PathParam("key") String key) {
+        Realm realm = identityManagerRegistry.getRealm(key);
+        if (realm == null) {
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
+
+        Auth.requireUser(realm.getOwner());
+
+        return realm;
+    }
+
+    @GET
     @Path("/realms")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Realm> getRealms() {
         Auth.requireUser();
 
-        return identityManagerRegistry.getRealms();
+        if (Auth.isSuper()) {
+            return identityManagerRegistry.getRealms();
+        } else {
+            return identityManagerRegistry.getRealms(Auth.getUserId());
+        }
     }
 
     @POST
@@ -208,14 +226,51 @@ public class AdminResource {
         }
     }
 
-    @PUT
-    @Path("/realms/{name}")
+    @POST
+    @Path("/realms")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void save(@PathParam("name") String name, Realm realm) {
+    public Response save(Realm realm) {
         Auth.requireUser();
 
-        if (!identityManagerRegistry.containsRealm(name)) {
-            identityManagerRegistry.createRealm(realm);
+        if (realm.getOwner() == null) {
+            realm.setOwner(Auth.getUserId());
+        } else {
+            Auth.requireUser(realm.getOwner());
+        }
+
+        if (realm.getKey() != null) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+
+        identityManagerRegistry.createRealm(realm);
+
+        return Response.created(URI.create("/realms/" + realm.getKey())).build();
+    }
+
+    @PUT
+    @Path("/realms/{key}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void save(@PathParam("key") String key, Realm realm) {
+        Realm r = identityManagerRegistry.getRealm(key);
+
+        if (r == null) {
+            if (Auth.isSuper()) {
+                if (realm.getOwner() == null) {
+                    realm.setOwner(Auth.getUserId());
+                }
+
+                identityManagerRegistry.createRealm(realm);
+            } else {
+                throw new WebApplicationException(Status.FORBIDDEN);
+            }
+        } else {
+            if (!r.getKey().equals(realm.getKey())) {
+                throw new WebApplicationException(Status.BAD_REQUEST);
+            }
+
+            Auth.requireUser(realm.getOwner());
+
+            identityManagerRegistry.updateRealm(realm);
         }
     }
 

@@ -47,6 +47,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eventjuggler.services.idb.ApplicationBean;
 import org.eventjuggler.services.idb.IdentityManagerRegistry;
+import org.eventjuggler.services.idb.InitialConfig;
 import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.model.Realm;
 import org.eventjuggler.services.idb.utils.KeyGenerator;
@@ -87,6 +88,8 @@ public class DummySocialResource {
         if (!identityManagerService.containsRealm(REALM)) {
             Realm realm = new Realm();
             realm.setName(REALM);
+            realm.setKey(REALM);
+            realm.setOwner(InitialConfig.ROOT_USERNAME);
 
             identityManagerService.createRealm(realm);
         }

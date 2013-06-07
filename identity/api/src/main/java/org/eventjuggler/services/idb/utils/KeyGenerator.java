@@ -36,6 +36,10 @@ public class KeyGenerator {
         return UUID.randomUUID().toString();
     }
 
+    public static String createRealmKey() {
+        return UUID.randomUUID().toString();
+    }
+
     public static String createToken() {
         return UUID.randomUUID().toString();
     }

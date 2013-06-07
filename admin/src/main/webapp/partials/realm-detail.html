@@ -19,6 +19,19 @@
                             <input type="text" class="input-xlarge" id="name" ng-model="realm.name" required ng-hide="create" readonly>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="key">Key </label>
+                        <div class="controls">
+                            <input class="input-xxlarge" type="text" id="key" ng-model="realm.key" ng-show="auth.root && create">
+                            <input class="input-xxlarge" type="text" id="key" ng-model="realm.key" readonly ng-show="!(auth.root && create)">
+                        </div>
+                    </div>
+                    <div class="control-group" ng-show="auth.root">
+                        <label class="control-label" for="owner">Owner </label>
+                        <div class="controls">
+                            <input class="input-xxlarge" type="text" id="owner" ng-model="realm.owner">
+                        </div>
+                    </div>
                 </fieldset>
 
                 <div class="form-actions" ng-show="create">

@@ -148,13 +148,13 @@ function UserDetailCtrl($scope, realms, realm, user, User, $location) {
     $scope.save = function() {
         if ($scope.userForm.$valid) {
             User.save({
-                realmId : realm.name
+                realmKey : realm.key
             }, $scope.user, function() {
                 $scope.changed = false;
                 user = angular.copy($scope.user);
 
                 if ($scope.create) {
-                    $location.url("/realms/" + realm.name + "/users/" + user.userId);
+                    $location.url("/realms/" + realm.key + "/users/" + user.userId);
                 }
             });
         }
@@ -166,15 +166,15 @@ function UserDetailCtrl($scope, realms, realm, user, User, $location) {
     };
 
     $scope.cancel = function() {
-        $location.url("/realms/" + realm.name + "/users");
+        $location.url("/realms/" + realm.key + "/users");
     };
 
     $scope.remove = function() {
         $scope.user.$remove({
-            realmId : realm.name,
+            realmKey : realm.key,
             userId : $scope.user.userId
         }, function() {
-            $location.url("/realms/" + realm.name + "/users");
+            $location.url("/realms/" + realm.key + "/users");
         });
     };
 }
@@ -194,15 +194,21 @@ function RealmDetailCtrl($scope, Realm, realms, realm, $location) {
 
     $scope.save = function() {
         if ($scope.realmForm.$valid) {
-            console.debug($scope.realm);
-            Realm.update($scope.realm, function() {
-                $scope.changed = false;
-                realm = angular.copy($scope.realm);
-
-                if ($scope.create) {
-                    $location.url("/realms/" + realm.name);
-                }
-            });
+            if (!$scope.realm.key) {
+                Realm.save($scope.realm, function(data, headers) {
+                    var l = headers().location;
+                    var key = l.substring(l.lastIndexOf("/") + 1);
+                    $location.url("/realms/" + key);
+                });
+            } else {
+                Realm.update($scope.realm, function() {
+                    $scope.changed = false;
+                    realm = angular.copy($scope.realm);
+                    if ($scope.create) {
+                        $location.url("/realms/" + $scope.realm.key);
+                    }
+                });
+            }
         }
     };
 

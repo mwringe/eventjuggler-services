@@ -37,8 +37,14 @@ public interface IdentityManagerRegistry {
 
     void createRealm(Realm realm);
 
+    Realm updateRealm(Realm realm);
+
     void deleteRealm(String name);
 
+    Realm getRealm(String key);
+
     List<Realm> getRealms();
+
+    List<Realm> getRealms(String user);
 
 }

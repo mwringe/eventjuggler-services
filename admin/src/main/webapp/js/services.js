@@ -36,7 +36,7 @@ eventjugglerServices.factory('ApplicationLoader', function(Application, $route, 
             }, function(application) {
                 delay.resolve(application);
             }, function() {
-                delay.reject('Unable to fetch application ' + $route.current.params.recipeId);
+                delay.reject('Unable to fetch application ' + key);
             });
             return delay.promise;
         }
@@ -60,8 +60,8 @@ eventjugglerServices.factory('ProviderListLoader', function(Provider, $q) {
 });
 
 eventjugglerServices.factory('Realm', function($resource) {
-    return $resource('/ejs-identity/api/admin/realms/:name', {
-        name : '@name'
+    return $resource('/ejs-identity/api/admin/realms/:key', {
+        key : '@key'
     }, {
         update : {
             method : 'PUT'
@@ -81,22 +81,28 @@ eventjugglerServices.factory('RealmListLoader', function(Realm, $q) {
     };
 });
 
-eventjugglerServices.factory('RealmLoader', function($route) {
+eventjugglerServices.factory('RealmLoader', function(Realm, $route, $q) {
     return function() {
-        var name = $route.current.params.realmId;
-        if (name == 'new') {
+        var key = $route.current.params.realmKey;
+        if (key == 'new') {
             return {};
         } else {
-            return {
-                name : name
-            };
+            var delay = $q.defer();
+            Realm.get({
+                key : key
+            }, function(realm) {
+                delay.resolve(realm);
+            }, function() {
+                delay.reject('Unable to fetch key ' + key);
+            });
+            return delay.promise;
         }
     };
 });
 
 eventjugglerServices.factory('User', function($resource) {
-    return $resource('/ejs-identity/api/im/:realmId/users/:userId', {
-        realmId : '@realmId',
+    return $resource('/ejs-identity/api/im/:realmKey/users/:userId', {
+        realmKey : '@realmKey',
         userId : '@userId'
     }, {
         save : {
@@ -109,7 +115,7 @@ eventjugglerServices.factory('UserListLoader', function(User, $route, $q) {
     return function() {
         var delay = $q.defer();
         User.query({
-            realmId : $route.current.params.realmId
+            realmKey : $route.current.params.realmKey
         }, function(users) {
             delay.resolve(users);
         }, function() {
@@ -127,7 +133,7 @@ eventjugglerServices.factory('UserLoader', function(User, $route, $q) {
         } else {
             var delay = $q.defer();
             User.get({
-                realmId : $route.current.params.realmId,
+                realmKey : $route.current.params.realmKey,
                 userId : userId
             }, function(user) {
                 delay.resolve(user);

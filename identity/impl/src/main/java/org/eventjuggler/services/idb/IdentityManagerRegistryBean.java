@@ -36,6 +36,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
 import org.eventjuggler.services.idb.model.Realm;
+import org.eventjuggler.services.idb.utils.KeyGenerator;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.config.IdentityConfiguration;
 import org.picketlink.idm.config.IdentityConfigurationBuilder;
@@ -81,9 +82,18 @@ public class IdentityManagerRegistryBean implements IdentityManagerRegistry {
     @Override
     @Lock(LockType.WRITE)
     public void createRealm(Realm realm) {
+        if (realm.getKey() == null) {
+            realm.setKey(KeyGenerator.createRealmKey());
+        }
+
         em.persist(realm);
 
         recreateIdentityManagerFactory();
+    }
+
+    @Override
+    public Realm updateRealm(Realm realm) {
+        return em.merge(realm);
     }
 
     @Override
@@ -96,8 +106,19 @@ public class IdentityManagerRegistryBean implements IdentityManagerRegistry {
     }
 
     @Override
+    public Realm getRealm(String name) {
+        return em.find(Realm.class, name);
+    }
+
+    @Override
     public List<Realm> getRealms() {
         return em.createQuery("from Realm", Realm.class).getResultList();
+    }
+
+    @Override
+    public List<Realm> getRealms(String username) {
+        return em.createQuery("from Realm r where r.owner = :owner", Realm.class).setParameter("owner", username)
+                .getResultList();
     }
 
     @PostConstruct
@@ -124,7 +145,7 @@ public class IdentityManagerRegistryBean implements IdentityManagerRegistry {
 
         jpaBuilder.supportAllFeatures();
         for (Realm r : realms) {
-            jpaBuilder.addRealm(r.getName());
+            jpaBuilder.addRealm(r.getKey());
         }
 
         IdentityConfiguration configuration = builder.build();
