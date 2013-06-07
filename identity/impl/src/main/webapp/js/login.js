@@ -9,7 +9,7 @@ window.identityBroker = (function () {
         }
     };
 
-    var messageWarn = queryParameters("warning");
+    var messageError = queryParameters("error");
     var messageInfo = queryParameters("info");
 
     var ib = {
@@ -93,12 +93,12 @@ window.identityBroker = (function () {
         var div = document.createElement("div");
         div.setAttribute("class", "ib-login-message-" + type);
 
-        if (message == "invalid") {
-            div.textContent = "Invalid username or password";
-        } else if (message == "created") {
+        if (message == "login_failed") {
+            div.textContent = "Failed to login";
+        } else if (message == "register_failed") {
+            div.textContent = "Failed to register user";
+        } else if (message = "register_created") {
             div.textContent = "Created user";
-        } else if (message = "failed") {
-            div.textContent = "Failed to create user";
         } else {
             div.textContent = message;
         }
@@ -112,8 +112,8 @@ window.identityBroker = (function () {
 
             login.appendChild(createHeader("Login to " + config.name));
 
-            if (messageWarn) {
-                login.appendChild(createMessage(messageWarn, "warn"));
+            if (messageError) {
+                login.appendChild(createMessage(messageError, "warn"));
             }
 
             if (messageInfo) {
@@ -180,8 +180,8 @@ window.identityBroker = (function () {
         var success = function (config) {
             login.appendChild(createHeader("Register with " + config.name));
 
-            if (messageWarn) {
-                login.appendChild(createMessage(messageWarn, "warn"));
+            if (messageError) {
+                login.appendChild(createMessage(messageError, "warn"));
             }
 
             var form = document.createElement("form");

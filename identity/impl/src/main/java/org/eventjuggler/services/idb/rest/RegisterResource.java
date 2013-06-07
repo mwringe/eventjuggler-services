@@ -89,10 +89,10 @@ public class RegisterResource {
         try {
             idm.createUser(application.getRealm(), user, password);
 
-            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&info=created").build();
+            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&info=register_created").build();
             return Response.seeOther(uri).build();
         } catch (Throwable e) {
-            URI uri = new UriBuilder(headers, uriInfo, "register.html?app=" + appKey + "&warning=failed").build();
+            URI uri = new UriBuilder(headers, uriInfo, "register.html?app=" + appKey + "&error=register_failed").build();
             return Response.seeOther(uri).build();
         }
     }

@@ -145,7 +145,7 @@ public class LoginResource {
             URI uri = new UriBuilder(headers, uriInfo, application.getCallbackUrl() + "?token=" + response.getToken()).build();
             return Response.seeOther(uri).build();
         } else {
-            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + applicationKey + "&warning=invalid").build();
+            URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + applicationKey + "&error=login_failed").build();
             return Response.seeOther(uri).build();
         }
     }

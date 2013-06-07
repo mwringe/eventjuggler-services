@@ -105,7 +105,8 @@ public class GoogleProvider implements IdentityProvider {
 
     @Override
     public boolean isCallbackHandler(IdentityProviderCallback callback) {
-        return callback.containsQueryParam("state") && callback.getQueryParam("state").equals(state);
+        return callback.containsQueryParam("code") && callback.containsQueryParam("state")
+                && callback.getQueryParam("state").equals(state);
     }
 
 }

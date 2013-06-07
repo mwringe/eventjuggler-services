@@ -42,6 +42,7 @@ import org.eventjuggler.services.idb.model.Application;
 import org.eventjuggler.services.idb.provider.IdentityProvider;
 import org.eventjuggler.services.idb.provider.IdentityProviderCallback;
 import org.eventjuggler.services.idb.provider.IdentityProviderBean;
+import org.eventjuggler.services.utils.UriBuilder;
 import org.picketlink.idm.model.Attribute;
 import org.picketlink.idm.model.User;
 
@@ -119,7 +120,8 @@ public class CallbackResource {
             }
         }
 
-        return Response.status(Status.BAD_REQUEST).build();
+        URI uri = new UriBuilder(headers, uriInfo, "login.html?app=" + appKey + "&error=login_failed").build();
+        return Response.seeOther(uri).build();
     }
 
     private void updateUser(User source, User destination) {
