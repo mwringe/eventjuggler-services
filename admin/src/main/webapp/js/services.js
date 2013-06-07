@@ -178,11 +178,18 @@ eventjugglerServices.factory('ActivitiesEventsLoader', function(Activities, $q) 
     };
 });
 
-eventjugglerServices.service('Auth', function($resource, $http, $location) {
+eventjugglerServices.service('Auth', function($resource, $http, $location, $routeParams) {
     var auth = {};
     auth.user = {};
+    
+    var parameters = window.location.search.substring(1).split("&");
+    for (var i = 0; i < parameters.length; i++) {
+        var param = parameters[i].split("=");
+        if (decodeURIComponent(param[0]) == "token") {
+            auth.token = decodeURIComponent(param[1]);
+        }
+    }
 
-    auth.token = $location.search().token;
     if (auth.token) {
         $location.search("token", null);
         localStorage.setItem("token", auth.token);
