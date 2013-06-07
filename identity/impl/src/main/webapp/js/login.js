@@ -14,12 +14,16 @@ window.identityBroker = (function () {
 
     var ib = {
         appKey: queryParameters("app"),
+        token: queryParameters("token"),
         baseUrl: "/ejs-identity",
         get loginUrl() {
             return this.baseUrl + "/api/login/" + this.appKey;
         },
         get registerUrl() {
             return this.baseUrl + "/api/register/" + this.appKey;
+        },
+        get userInfoUrl() {
+            return this.baseUrl + "/api/auth/userinfo?appKey=" + this.appKey;
         }
     };
 
@@ -44,6 +48,26 @@ window.identityBroker = (function () {
         req.send();
     };
 
+    ib.getUser = function (success, error) {
+        var req = new XMLHttpRequest();
+        req.open("GET", ib.userInfoUrl + "&token=" + ib.token);
+        req.setRequestHeader("Accept", "application/json");
+        req.onreadystatechange = function () {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    var user = JSON.parse(req.responseText);
+                    if (success) {
+                        success(user);
+                    }
+                } else {
+                    if (error) {
+                        error(req.status);
+                    }
+                }
+            }
+        };
+        req.send();
+    };
 
     var createLogin = function(containerId) {
         var login = document.createElement("div");
