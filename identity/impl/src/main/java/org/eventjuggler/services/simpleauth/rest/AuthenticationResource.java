@@ -20,6 +20,8 @@ package org.eventjuggler.services.simpleauth.rest;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
 
 import org.eventjuggler.services.idb.ApplicationBean;
 import org.eventjuggler.services.idb.IdentityManagementBean;
@@ -37,21 +39,36 @@ public class AuthenticationResource implements Authentication {
     @EJB
     private IdentityManagementBean idm;
 
+    @Context
+    private HttpServletResponse response;
+
     @Override
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
         Application application = as.getApplication(authcRequest.getApplicationKey());
+        if (application.getJavaScriptOrigin() != null) {
+            response.setHeader("Access-Control-Allow-Origin", application.getJavaScriptOrigin());
+        }
+
         return idm.login(application.getRealm(), authcRequest.getUserId(), authcRequest.getPassword());
     }
 
     @Override
     public void logout(String applicationKey, String token) {
         Application application = as.getApplication(applicationKey);
+        if (application.getJavaScriptOrigin() != null) {
+            response.setHeader("Access-Control-Allow-Origin", application.getJavaScriptOrigin());
+        }
+
         idm.logout(application.getRealm(), token);
     }
 
     @Override
     public UserInfo getInfo(String applicationKey, String token) {
         Application application = as.getApplication(applicationKey);
+        if (application.getJavaScriptOrigin() != null) {
+            response.setHeader("Access-Control-Allow-Origin", application.getJavaScriptOrigin());
+        }
+
         return idm.getUserInfoByToken(application.getRealm(), token);
     }
 
