@@ -146,6 +146,12 @@ window.identityBroker = (function () {
             registerButton.setAttribute("onclick", "location.href='" + ib.registerUrl + "'");
             registerButton.textContent = "Register";
             buttonsDiv.appendChild(registerButton);
+            
+            var cancelButton = document.createElement("button");
+            cancelButton.setAttribute("type", "button");
+            cancelButton.setAttribute("onclick", "location.href='" + config.callbackUrl + "'");
+            cancelButton.textContent = "Cancel";
+            buttonsDiv.appendChild(cancelButton);
 
             var socialLogin = document.createElement("div");
             socialLogin.setAttribute("class", "ib-login-social");

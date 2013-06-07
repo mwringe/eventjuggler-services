@@ -99,6 +99,7 @@ public class LoginResource {
 
         LoginConfig loginConfig = new LoginConfig();
         loginConfig.setName(application.getName());
+        loginConfig.setCallbackUrl(application.getCallbackUrl());
 
         List<ProviderLoginConfig> providerLoginConfigs = new LinkedList<>();
 

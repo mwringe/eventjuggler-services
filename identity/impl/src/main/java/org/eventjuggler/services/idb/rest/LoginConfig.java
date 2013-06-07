@@ -34,14 +34,24 @@ public class LoginConfig {
 
     private String name;
 
+    private String callbackUrl;
+
     private List<ProviderLoginConfig> providerConfigs;
 
     public String getName() {
         return name;
     }
 
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 
     public List<ProviderLoginConfig> getProviderConfigs() {
