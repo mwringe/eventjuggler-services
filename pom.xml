@@ -35,9 +35,12 @@
 
     <modules>
         <module>admin</module>
-        <module>activities</module>
+        <module>activities-api</module>
+        <module>activities-impl</module>
         <module>dist</module>
-        <module>identity</module>
+        <module>ear</module>
+        <module>identity-api</module>
+        <module>identity-impl</module>
         <module>testsuite</module>
     </modules>
 
@@ -101,7 +104,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>
-                <artifactId>ejs-activities-ear</artifactId>
+                <artifactId>ejs-ear</artifactId>
                 <version>${project.version}</version>
                 <type>ear</type>
             </dependency>
@@ -121,12 +124,6 @@
                 <artifactId>ejs-identity-impl</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
-            </dependency>
-            <dependency>
-                <groupId>org.eventjuggler.services</groupId>
-                <artifactId>ejs-identity-ear</artifactId>
-                <version>${project.version}</version>
-                <type>ear</type>
             </dependency>
             <dependency>
                 <groupId>org.eventjuggler.services</groupId>

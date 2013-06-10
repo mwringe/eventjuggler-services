@@ -58,17 +58,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.eventjuggler.services</groupId>
-                    <artifactId>ejs-admin</artifactId>
-                    <type>war</type>
-                </dependency>
-                <dependency>
-                    <groupId>org.eventjuggler.services</groupId>
-                    <artifactId>ejs-activities-ear</artifactId>
-                    <type>ear</type>
-                </dependency>
-                <dependency>
-                    <groupId>org.eventjuggler.services</groupId>
-                    <artifactId>ejs-identity-ear</artifactId>
+                    <artifactId>ejs-ear</artifactId>
                     <type>ear</type>
                 </dependency>
                 <dependency>

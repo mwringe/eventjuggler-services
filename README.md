@@ -46,4 +46,3 @@ To run the testsuite in managed mode, run:
 To run the testsuite in remote mode, first start WildFly with EventJuggler Services and PicketLink subsystem installed, and run:
 
     mvn -Pit-remote clean install
-

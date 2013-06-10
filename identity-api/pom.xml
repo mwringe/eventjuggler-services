@@ -25,66 +25,35 @@
 
     <parent>
         <groupId>org.eventjuggler.services</groupId>
-        <artifactId>ejs-identity-parent</artifactId>
+        <artifactId>ejs-parent</artifactId>
         <version>0.1.0.M2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ejs-identity-ear</artifactId>
-    <name>Identity EAR</name>
+    <artifactId>ejs-identity-api</artifactId>
+    <name>Identity API</name>
 
-    <packaging>ear</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.eventjuggler.services</groupId>
-            <artifactId>ejs-identity-api</artifactId>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.eventjuggler.services</groupId>
-            <artifactId>ejs-identity-impl</artifactId>
-            <type>war</type>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.picketlink</groupId>
             <artifactId>picketlink-idm-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.picketlink</groupId>
-            <artifactId>picketlink-idm-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.picketlink</groupId>
-            <artifactId>picketlink-idm-schema</artifactId>
-        </dependency>
+            <scope>provided</scope>            
+        </dependency>   
     </dependencies>
-
-    <build>
-        <finalName>ejs-identity</finalName>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ear-plugin</artifactId>
-                <configuration>
-                    <modules>
-                        <webModule>
-                            <groupId>org.eventjuggler.services</groupId>
-                            <artifactId>ejs-identity-impl</artifactId>
-                            <contextRoot>ejs-identity</contextRoot>
-                        </webModule>
-                    </modules>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

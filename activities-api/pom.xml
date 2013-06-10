@@ -25,38 +25,29 @@
 
     <parent>
         <groupId>org.eventjuggler.services</groupId>
-        <artifactId>ejs-identity-parent</artifactId>
+        <artifactId>ejs-parent</artifactId>
         <version>0.1.0.M2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ejs-identity-picketlink</artifactId>
-    <name>Identity PicketLink Integration</name>
+    <artifactId>ejs-activities-api</artifactId>
+    <name>Activites API</name>
 
     <packaging>jar</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.picketlink</groupId>
-            <artifactId>picketlink-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eventjuggler.services</groupId>
-            <artifactId>ejs-identity-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -65,5 +56,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
 </project>
